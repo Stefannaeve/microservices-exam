@@ -1,10 +1,7 @@
 package microservices.exam.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
@@ -15,11 +12,18 @@ import java.util.Date;
 @AllArgsConstructor
 public class Book {
 
+    public Book(String title, String author, int pages, String bookContent) {
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.bookContent = bookContent;
+    }
+
     @Id
     @GeneratedValue(generator = "model_generator")
     @SequenceGenerator(name = "model_generator", sequenceName = "model_seq", initialValue = 1, allocationSize = 1)
     @Column(name = "id")
-    private int id;
+    private Long id;
 
     @Column(name = "title")
     private String title;
@@ -33,7 +37,8 @@ public class Book {
     @Column(name = "publish_date")
     private Date publishDate;
 
-    @Column(name = "book_content")
+    @Lob
+    @Column(name = "book_content", columnDefinition = "LONGTEXT")
     private String bookContent;
 
     // TODO: State management
