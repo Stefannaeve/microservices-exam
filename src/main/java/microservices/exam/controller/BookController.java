@@ -20,7 +20,7 @@ public class BookController {
     }
 
     @GetMapping("/fetchAll")
-    public List<Book> fetchAll(){
+    public ApiResponse<List<Book>> fetchAll(){
         return bookService.fetchAll();
     }
 
