@@ -1,0 +1,32 @@
+###
+POST localhost:8080/book/saveOneBook
+Content-Type: application/json
+
+{
+  "title": "Mistborn: The Final Emprire",
+  "author": "Brandon Sanderson",
+  "pages": 523,
+  "bookContent": "Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, "
+}
+
+###
+POST localhost:8080/book/saveOneBook
+Content-Type: application/json
+
+{
+"title": "Mistborn: The well of ascension",
+"author": "Brandon Sanderson",
+"pages": 585,
+"bookContent": "Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, "
+}
+
+###
+POST localhost:8080/book/saveOneBook
+Content-Type: application/json
+
+{
+  "title": "Mistborn: The hero of ages",
+  "author": "Brandon Sanderson",
+  "pages": 613,
+  "bookContent": "Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, Hei mitt navn er Stefan, "
+}
