@@ -3,7 +3,7 @@
 ## Setup guide
 
 ```shell
-    mvn clean install
+mvn clean install
 ```
 
 ```
@@ -17,5 +17,5 @@ Run the populateDatabase in the scratchFiles folder, this is to populate the dat
 ## Using the application
 
 ```
-   Use the bookScratchFile in the scratchFile to test the application
+Use the bookScratchFile in the scratchFile to test the application
 ```
