@@ -6,7 +6,6 @@
 mvn clean install
 ```
 
-
 ```
 Start application 
 ```
