@@ -17,6 +17,7 @@ public class Book {
         this.author = author;
         this.pages = pages;
         this.bookContent = bookContent;
+        title.toLowerCase();
     }
 
     @Id

@@ -11,6 +11,7 @@
 	<groupId>microservices</groupId>
 	<artifactId>exam</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
 	<name>microservices-exam</name>
 	<description>microservices-exam</description>
 	<url/>
@@ -20,6 +21,9 @@
 	<developers>
 		<developer/>
 	</developers>
+	<modules>
+		<module>Frontend</module>
+	</modules>
 	<scm>
 		<connection/>
 		<developerConnection/>
