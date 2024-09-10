@@ -22,7 +22,7 @@
 		<developer/>
 	</developers>
 	<modules>
-		<module>Frontend</module>
+		<module>Book</module>
 	</modules>
 	<scm>
 		<connection/>
