@@ -20,13 +20,8 @@ public class BookController {
     }
 
     @GetMapping("/fetchAll")
-    public List<Book> fetchAll(){
-        System.out.println("It works I think possibly maybe");
-        ApiResponse<List<Book>> books = bookService.fetchAll();
-        for (int i = 0; i < books.Value.get().size(); i++) {
-            System.out.println(books.Value.get().get(i).getTitle());
-        }
-        return books.Value.get();
+    public ApiResponse<List<Book>> fetchAll(){
+        return bookService.fetchAll();
     }
 
     @PostMapping("/saveOneBook")

@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:bookhub
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+    generate-unique-name: false
+    name: bookhub
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
