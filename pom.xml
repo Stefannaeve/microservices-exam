@@ -11,6 +11,7 @@
 	<groupId>microservices</groupId>
 	<artifactId>exam</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
 	<name>microservices-exam</name>
 	<description>microservices-exam</description>
 	<url/>
@@ -20,6 +21,9 @@
 	<developers>
 		<developer/>
 	</developers>
+	<modules>
+		<module>Frontend</module>
+	</modules>
 	<scm>
 		<connection/>
 		<developerConnection/>
@@ -56,8 +60,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
