@@ -30,7 +30,7 @@ public class CommentController {
     }
 
     @PostMapping("/saveOneComment")
-    public ApiResponse<Comment> saveOneComment(RequestBody Comment comment){
+    public ApiResponse<Comment> saveOneComment(@RequestBody Comment comment ){
         return commentService.saveOneComment(comment);
     }
 }
