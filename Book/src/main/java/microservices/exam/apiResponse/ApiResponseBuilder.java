@@ -1,21 +1,23 @@
 package microservices.exam.apiResponse;
 
+import org.springframework.http.HttpStatus;
+
 import java.util.*;
 
-public class ApiResponseBuilder {
-    public static <T> ApiResponse Success(T value){
+public class ApiResponseBuilder<T> {
+    public ApiResponse<T> success(T value){
         return new ApiResponse.Success<T>(Optional.of(value));
     }
 
-    public static <T> ApiResponse Success(){
+    public ApiResponse<T> success(){
         return new ApiResponse.Success<T>(Optional.empty());
     }
 
-    public static <T> ApiResponse Failure(T value, String errorMessage){
-        return new ApiResponse.Failure<T>(Optional.of(value), errorMessage);
+    public ApiResponse<T> failure(T value, HttpStatus status,  String errorMessage){
+        return new ApiResponse.Failure<T>(Optional.of(value), status, errorMessage);
     }
 
-    public static <T> ApiResponse Failure(String errorMessage){
-        return new ApiResponse.Failure<T>(Optional.empty(), errorMessage);
+    public ApiResponse<T> failure(HttpStatus status, String errorMessage){
+        return new ApiResponse.Failure<T>(Optional.empty(), status, errorMessage);
     }
 }

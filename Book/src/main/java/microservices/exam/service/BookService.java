@@ -1,14 +1,12 @@
 package microservices.exam.service;
-
 import lombok.extern.slf4j.Slf4j;
 import microservices.exam.apiResponse.ApiResponseBuilder;
 import microservices.exam.apiResponse.ApiResponse;
 import microservices.exam.models.Book;
 import microservices.exam.repository.BookRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -20,37 +18,52 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public ApiResponse fetchAll(){
-        Optional<List<Book>> listBooks;
+    public ApiResponse<List<Book>> fetchAll(){
+        ApiResponseBuilder<List<Book>> apiResponseBuilder = new ApiResponseBuilder<>();
+        List<Book> listBooks;
+
         try {
-            listBooks = Optional.of(bookRepository.findAll());
+            listBooks = bookRepository.findAll();
         } catch (Exception exception){
             log.error(exception.getMessage());
-            return ApiResponseBuilder.Failure(exception.getMessage());
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong...");
         }
-        log.info("Returning list of books");
 
-        System.out.println();
-
-        return ApiResponseBuilder.Success(listBooks);
-        //return new ApiResponse.Success(listBooks);
+        log.info("Found {} books", listBooks.size());
+        return apiResponseBuilder.success(listBooks);
     }
 
-    public ApiResponse saveOneBook(Book book){
+    /*
+    public List<Book> fetchAll() {
+        List<Book> listBooks;
+
+        try {
+            listBooks = bookRepository.findAll();
+            log.info("Found {} books", listBooks.size());
+            return listBooks;
+        } catch (Exception exception){
+            log.error(exception.getMessage());
+            throw exception;
+        }
+    }
+     */
+
+    public ApiResponse<Book> saveOneBook(Book book){
+        ApiResponseBuilder<Book> apiResponseBuilder = new ApiResponseBuilder<>();
         try {
             Book bookFromDatabase = bookRepository.findBookByTitleAndAuthorAndPublishDate(book.getTitle(), book.getAuthor(), book.getPublishDate());
             if (bookFromDatabase == null){
-                Optional<Book> savedBook = Optional.of(bookRepository.save(book));
-                log.info("Added book to database");
-                ApiResponse apiResponse = ApiResponseBuilder.Failure("Error");
-                return apiResponse;
+                Book savedBook = bookRepository.save(book);
+                log.info("Added book with id: {} to the database", savedBook.getId());
+
+                return apiResponseBuilder.success(savedBook);
             } else {
-                log.error("Tried adding already existing book");
-                return ApiResponseBuilder.Failure("Book already exists");
+                log.error("Tried adding already existing book, already existing book has id: {}", bookFromDatabase.getId());
+                return apiResponseBuilder.failure(HttpStatus.CONFLICT, "Book already exists");
             }
         } catch (Exception exception){
             log.error(exception.getMessage());
-            return ApiResponseBuilder.Failure(exception.getMessage());
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong...");
         }
     }
 

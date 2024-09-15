@@ -1,23 +1,17 @@
 package microservices.exam.controller;
 
-import microservices.exam.apiResponse.ApiResponseBuilder;
+import lombok.extern.slf4j.Slf4j;
 import microservices.exam.models.Book;
 import microservices.exam.service.BookService;
 import microservices.exam.apiResponse.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.http.HttpHeaders;
-import java.net.http.HttpResponse;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/book")
 public class BookController {
@@ -30,29 +24,42 @@ public class BookController {
     }
 
     @GetMapping("/fetchAll")
-    public ApiResponse fetchAll() {
-        System.out.println("It works I think possibly maybe");
-        ApiResponse books = bookService.fetchAll();
+    public ResponseEntity<ApiResponse<List<Book>>> fetchAll() {
+        ApiResponse<List<Book>> books = bookService.fetchAll();
 
-
-
-        return switch (books){
-            case ApiResponse.Success success -> {
-                for (int i = 0; i < success.value().get().size; i++) {
-                    System.out.println(success.value().get().title);
-                }
+        switch (books) {
+            case ApiResponse.Success<List<Book>> success -> {
+                return ResponseEntity.status(HttpStatus.OK).body(books);
             }
-            case ApiResponse.Failure failure -> System.out.println("Something went wrong: " + failure.errorMessage());
-        };
-        for (int i = 0; i < books.; i++) {
-            System.out.println(books.Value.get().get(i).getTitle());
-        };
-        return books;
+            case ApiResponse.Failure<List<Book>> failure -> {
+                log.error(failure.errorMessage());
+                return ResponseEntity.status(failure.status()).body(books);
+            }
+        }
     }
 
+    /*
+    @GetMapping("/fetchAll")
+    public ResponseEntity<List<Book>> fetchAll() {
+        List<Book> books = bookService.fetchAll();
+
+        return ResponseEntity.status(HttpStatus.OK).body(books);
+    }
+     */
+
     @PostMapping("/saveOneBook")
-    public ApiResponse saveOneBook(@RequestBody Book book) {
-        return bookService.saveOneBook(book);
+    public ResponseEntity<ApiResponse<Book>> saveOneBook(@RequestBody Book book) {
+        ApiResponse<Book> savedBook = bookService.saveOneBook(book);
+
+        switch (savedBook) {
+            case ApiResponse.Success<Book> success -> {
+                return ResponseEntity.status(HttpStatus.OK).body(savedBook);
+            }
+            case ApiResponse.Failure<Book> failure -> {
+                System.out.println("Something went wrong: " + failure.errorMessage());
+                return ResponseEntity.status(failure.status()).body(savedBook);
+            }
+        }
     }
 
 
