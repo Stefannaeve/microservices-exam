@@ -53,7 +53,7 @@ public class BookController {
 
         switch (savedBook) {
             case ApiResponse.Success<Book> success -> {
-                return ResponseEntity.status(HttpStatus.OK).body(savedBook);
+                return ResponseEntity.status(HttpStatus.CREATED).body(savedBook);
             }
             case ApiResponse.Failure<Book> failure -> {
                 System.out.println("Something went wrong: " + failure.errorMessage());
