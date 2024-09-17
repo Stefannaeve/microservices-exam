@@ -44,7 +44,4 @@ public class Book {
 
     // TODO: State management
     // Genres, International Standard Book Number
-
-
-
 }
