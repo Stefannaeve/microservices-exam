@@ -1,6 +1,8 @@
 package microservices.exam.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import microservices.exam.clients.BookClient;
+import microservices.exam.dtos.CommentDTO;
 import microservices.exam.models.Book;
 import microservices.exam.service.BookService;
 import microservices.exam.apiResponse.ApiResponse;
@@ -17,10 +19,12 @@ import java.util.List;
 public class BookController {
 
     BookService bookService;
+    BookClient bookClient;
 
     @Autowired
-    public BookController(BookService bookService) {
+    public BookController(BookService bookService, BookClient bookClient) {
         this.bookService = bookService;
+        this.bookClient = bookClient;
     }
 
     @GetMapping("/fetchAll")
@@ -36,6 +40,12 @@ public class BookController {
                 return ResponseEntity.status(failure.status()).body(books);
             }
         }
+    }
+
+    @GetMapping("/fetchAllComments")
+    public ResponseEntity<ApiResponse<CommentDTO>> fetchAllComments(){
+        ApiResponse<CommentDTO> comments = bookClient.externalComment();
+        return ResponseEntity.status(HttpStatus.OK).body(comments);
     }
 
     /*
