@@ -23,6 +23,7 @@
 	</developers>
 	<modules>
 		<module>Book</module>
+		<module>Comment</module>
 	</modules>
 	<scm>
 		<connection/>
