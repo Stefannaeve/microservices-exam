@@ -1,0 +1,17 @@
+###
+POST localhost:8080/comment/saveOneComment
+Content-Type: application/json
+
+{
+  "page": 10000,
+  "comment_text": "Lorem ipsum Stefan lol "
+}
+
+###
+POST localhost:8080/comment/saveOneComment
+Content-Type: application/json
+
+{
+  "page": 112310,
+  "comment_text": "Lorem ipsum Martin lol "
+}

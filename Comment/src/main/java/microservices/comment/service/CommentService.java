@@ -5,7 +5,6 @@ import microservices.comment.repository.CommentRepository;
 import apiResponse.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +13,7 @@ public class CommentService {
 
     CommentRepository commentRepository;
 
-    public CommentService(CommentRepository commentRepository){
+    public CommentService(CommentRepository commentRepository) {
         this.commentRepository = commentRepository;
     }
 
@@ -26,8 +25,14 @@ public class CommentService {
         return new ApiResponse.Success<>(Optional.of(comments));
     }
 
-    public Optional<Comment> fetchById(Long id){
-        return commentRepository.findById(id);
+    public ApiResponse<Comment> fetchById(Long id) {
+        Optional<Comment> comment = commentRepository.findById(id);
+
+        if (comment.isPresent()) {
+            return new ApiResponse.Success<>(comment);
+        } else {
+            return new ApiResponse.Failure<>(Optional.empty(), HttpStatus.NOT_FOUND, "Comment with id: " + id + ", not found" );
+        }
     }
 
     public ApiResponse<Comment> saveOneComment(Comment comment){

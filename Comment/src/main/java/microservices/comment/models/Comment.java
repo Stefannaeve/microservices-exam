@@ -28,6 +28,6 @@ public class Comment {
     private int page;
 
     @Lob
-    @Column(name = "comment_text", columnDefinition = "LONGTEXT")
+    @Column(name = "comment_text", columnDefinition = "VARCHAR(1000)")
     private String comment_text;
 }
