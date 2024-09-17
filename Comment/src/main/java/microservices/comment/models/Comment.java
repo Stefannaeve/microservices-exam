@@ -13,9 +13,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Comment {
 
-    public Comment(int page, String text){
+    public Comment(int page, String comment_text){
         this.page = page;
-        this.text = text;
+        this.comment_text = comment_text;
     }
 
     @Id
@@ -27,6 +27,7 @@ public class Comment {
     @Column(name = "page")
     private int page;
 
-    @Column(name = "text")
-    private String text;
+    @Lob
+    @Column(name = "comment_text", columnDefinition = "LONGTEXT")
+    private String comment_text;
 }
