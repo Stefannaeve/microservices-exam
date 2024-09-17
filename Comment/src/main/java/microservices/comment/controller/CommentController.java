@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -38,6 +39,21 @@ public class CommentController {
         }
     }
 
+    @GetMapping("/fetchCommentById/{id}")
+    public ResponseEntity<ApiResponse<Comment>> fetchCommentById(@PathVariable long id) {
+        ApiResponse<Comment> commentResponse = commentService.fetchById(id);
+
+        switch (commentResponse) {
+            case ApiResponse.Success<Comment> success -> {
+                return ResponseEntity.status(HttpStatus.OK).body(commentResponse);
+            }
+            case ApiResponse.Failure<Comment> failure -> {
+                log.error(failure.errorMessage());
+                return ResponseEntity.status(failure.status()).body(commentResponse);
+            }
+        }
+    }
+
     /*
     @GetMapping("/fetchAll")
     public ResponseEntity<List<Book>> fetchAll() {
@@ -61,4 +77,5 @@ public class CommentController {
             }
         }
     }
+
 }
