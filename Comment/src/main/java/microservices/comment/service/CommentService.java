@@ -22,14 +22,14 @@ public class CommentService {
         if (comments.isEmpty()) {
             return new ApiResponse.Failure<>(Optional.empty(), HttpStatus.NOT_FOUND, "No comments found");
         }
-        return new ApiResponse.Success<>(Optional.of(comments));
+        return new ApiResponse.Success<>(Optional.of(comments), HttpStatus.OK);
     }
 
     public ApiResponse<Comment> fetchById(Long id) {
         Optional<Comment> comment = commentRepository.findById(id);
 
         if (comment.isPresent()) {
-            return new ApiResponse.Success<>(comment);
+            return new ApiResponse.Success<>(comment, HttpStatus.OK);
         } else {
             return new ApiResponse.Failure<>(Optional.empty(), HttpStatus.NOT_FOUND, "Comment with id: " + id + ", not found" );
         }
@@ -38,7 +38,7 @@ public class CommentService {
     public ApiResponse<Comment> saveOneComment(Comment comment){
         try {
             Comment savedComment = commentRepository.save(comment);
-            return new ApiResponse.Success<>(Optional.of(savedComment));
+            return new ApiResponse.Success<>(Optional.of(savedComment), HttpStatus.OK);
         } catch (Exception e) {
             return new ApiResponse.Failure<>(Optional.empty(), HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save comment");
         }

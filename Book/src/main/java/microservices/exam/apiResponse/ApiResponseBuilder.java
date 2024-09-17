@@ -1,5 +1,6 @@
 package microservices.exam.apiResponse;
 
+import microservices.exam.dtos.ApiResponseDTO;
 import org.springframework.http.HttpStatus;
 
 import java.util.*;
@@ -19,5 +20,21 @@ public class ApiResponseBuilder<T> {
 
     public ApiResponse<T> failure(HttpStatus status, String errorMessage){
         return new ApiResponse.Failure<T>(Optional.empty(), status, errorMessage);
+    }
+
+    public ApiResponse<T> parseDto(ApiResponseDTO<T> apiResponseDTO, HttpStatus status){
+        if (apiResponseDTO.getErrorMessage() == null){
+            if (apiResponseDTO.getValue() != null){
+                return success(apiResponseDTO.getValue());
+            } else {
+                return success();
+            }
+        } else {
+            if (apiResponseDTO.getValue() != null){
+                return failure(apiResponseDTO.getValue(), status, apiResponseDTO.getErrorMessage());
+            } else {
+                return failure(status, apiResponseDTO.getErrorMessage());
+            }
+        }
     }
 }
