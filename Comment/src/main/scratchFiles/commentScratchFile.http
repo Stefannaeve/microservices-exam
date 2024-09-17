@@ -1,0 +1,20 @@
+###
+GET localhost:8080/comment/fetchAll
+
+###
+POST localhost:8080/comment/saveOneComment
+Content-Type: application/json
+
+{
+  "page": 15,
+  "comment_text": "Stefan Hei"
+}
+
+###
+POST localhost:8080/comment/saveOneComment
+Content-Type: application/json
+
+{
+  "page": 30,
+  "comment_text": "Hei Stefan"
+}
