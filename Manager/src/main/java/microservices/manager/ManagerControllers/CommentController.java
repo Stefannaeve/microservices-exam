@@ -26,21 +26,7 @@ public class CommentController {
     @GetMapping("/fetchAll")
     public ResponseEntity<ApiResponse<List<CommentDTO>>> fetchAllComments(){
         ApiResponse<List<CommentDTO>> comments = commentClient.externalGetAllComments();
-
-        switch (comments){
-            case ApiResponse.Success<List<CommentDTO>> success -> {
-                if (success.value().isPresent()){
-                    log.info("Success, returning {} comments from comments service", success.value().get().size());
-                } else {
-                    log.info("Success");
-                }
-                return ResponseEntity.status(200).body(success);
-            }
-            case ApiResponse.Failure<List<CommentDTO>> failure -> {
-                log.debug(failure.errorMessage());
-                return ResponseEntity.status(failure.status()).body(failure);
-            }
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(comments);
     }
 
     @GetMapping("fetchById/{id}")
