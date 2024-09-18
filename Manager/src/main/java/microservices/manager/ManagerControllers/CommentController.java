@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import microservices.manager.ManagerClients.CommentClient;
 import microservices.manager.apiResponse.ApiResponse;
 import microservices.manager.dtos.CommentDTO;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
