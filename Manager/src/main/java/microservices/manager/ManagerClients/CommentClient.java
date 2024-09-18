@@ -33,8 +33,9 @@ public class CommentClient {
 
     public ApiResponse<List<CommentDTO>> externalGetAllComments(){
         String url = restServiceUrl + "/comment/fetchAll";
-        log.info("This is the url: " + url);
+        log.debug("This is the url: {}", url);
         ResponseEntity<ApiResponseDTO<List<CommentDTO>>> response;
+        ApiResponseBuilder<List<CommentDTO>> apiResponseBuilder = new ApiResponseBuilder<>();
 
         try {
             response = restTemplate.exchange(
@@ -45,12 +46,18 @@ public class CommentClient {
                     }
             );
         } catch (Exception exception){
-            log.error(exception.getMessage());
-            exception.printStackTrace();
-            return null;
+            log.error("An unexpected error occurred: ", exception);
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to comment service");
         }
-        log.info("Http code: " + HttpStatus.valueOf(response.getStatusCode().value()));
-        log.info("Response: " + response);
-        return new ApiResponseBuilder<List<CommentDTO>>().parseDto(response.getBody(), HttpStatus.valueOf(response.getStatusCode().value()));
+
+        if (response.getBody() == null){
+            log.error("Response body is null");
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Empty response from comment service");
+        }
+
+        HttpStatus statusCode = HttpStatus.valueOf(response.getStatusCode().value());
+
+        log.debug("Received response with status: {}", statusCode);
+        return apiResponseBuilder.parseDto(response.getBody(), statusCode);
     }
 }
