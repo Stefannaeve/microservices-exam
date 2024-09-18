@@ -43,6 +43,11 @@ public class CommentController {
 
         switch (comments) {
             case ApiResponse.Success<List<Comment>> success -> {
+                if (success.value().isPresent()){
+                    log.info("Success, returning {} comments", success.value().get().size());
+                } else {
+                    log.info("Success");
+                }
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<List<Comment>> failure -> {
