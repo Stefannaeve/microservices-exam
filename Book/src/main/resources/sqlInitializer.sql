@@ -1,6 +1,6 @@
-DROP SCHEMA if EXISTS bookHub; /* Its named after github, calm down */
+DROP SCHEMA if EXISTS book; /* Its named after github, calm down */
 
-CREATE SCHEMA bookHub;
+CREATE SCHEMA book;
 
 USE bookHub;
 
