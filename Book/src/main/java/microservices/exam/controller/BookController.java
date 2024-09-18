@@ -43,10 +43,16 @@ public class BookController {
     }
 
     @GetMapping("/fetchAllComments")
-    public ResponseEntity<ApiResponse<CommentDTO>> fetchAllComments(){
-        ApiResponse<CommentDTO> comments = bookClient.externalComment();
+    public ResponseEntity<ApiResponse<List<CommentDTO>>> fetchAllComments(){
+        ApiResponse<List<CommentDTO>> comments = bookClient.externalComment();
         return ResponseEntity.status(HttpStatus.OK).body(comments);
     }
+
+//    @GetMapping("/fetchAllComments")
+//    public ResponseEntity<List<CommentDTO>> fetchAllComments(){
+//        List<CommentDTO> comments = bookClient.externalComment();
+//        return ResponseEntity.status(HttpStatus.OK).body(comments);
+//    }
 
     /*
     @GetMapping("/fetchAll")

@@ -13,9 +13,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Comment {
 
-    public Comment(int page, String comment_text){
+    public Comment(int page, String text){
         this.page = page;
-        this.comment_text = comment_text;
+        this.text = text;
     }
 
     @Id
@@ -29,5 +29,5 @@ public class Comment {
 
     @Lob
     @Column(name = "comment_text", columnDefinition = "VARCHAR(1000)")
-    private String comment_text;
+    private String text;
 }
