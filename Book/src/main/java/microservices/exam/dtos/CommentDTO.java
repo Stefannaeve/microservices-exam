@@ -10,4 +10,5 @@ public class CommentDTO {
     private Long id;
     private int page;
     private String text;
+
 }

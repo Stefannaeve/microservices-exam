@@ -3,6 +3,7 @@ package microservices.comment.configuration;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,14 +11,13 @@ import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 import org.springframework.messaging.handler.annotation.support.MessageHandlerMethodFactory;
 
-
 @Configuration
 public class AMQPConfiguration {
 
     @Bean
     public TopicExchange bookTopicExchange(
-            @Value("${amqp.exchange.book}") final String exchangeName
-    ){
+            @Value("${amqp.exchange.name}") final String exchangeName
+    ) {
         return ExchangeBuilder
                 .topicExchange(exchangeName)
                 .durable(true)
@@ -34,18 +34,41 @@ public class AMQPConfiguration {
     }
 
     @Bean
-    public Binding bookCommentBinding(
+    public Binding bookCommentCreatedBinding(
             final Queue commentQueue,
             final TopicExchange bookTopicExchange
-    ) {
+    ){
         return BindingBuilder
                 .bind(commentQueue)
                 .to(bookTopicExchange)
-                .with("book.comment.#");
+                .with("book.comment.created");
+        //.with("book.comment.#"); /** # (wildcard) for create, update, delete comments for a book **/
     }
 
     @Bean
-    public MessageHandlerMethodFactory messageHandlerMethodFactory(){
+    public Binding bookCommentUpdatedBinding(
+            final Queue commentQueue,
+            final TopicExchange bookTopicExchange
+    ){
+        return BindingBuilder
+                .bind(commentQueue)
+                .to(bookTopicExchange)
+                .with("book.comment.updated");
+    }
+
+    @Bean
+    public Binding bookCommentDeletedBinding(
+            final Queue commentQueue,
+            final TopicExchange bookTopicExchange
+    ){
+        return BindingBuilder
+                .bind(commentQueue)
+                .to(bookTopicExchange)
+                .with("book.comment.deleted");
+    }
+
+    @Bean
+    public MessageHandlerMethodFactory messageHandlerMethodFactory() {
         DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();
 
         final MappingJackson2MessageConverter jsonConverter =
@@ -55,9 +78,12 @@ public class AMQPConfiguration {
 
         factory.setMessageConverter(jsonConverter);
         return factory;
+    }
 
+    @Bean
+    public RabbitListenerConfigurer rabbitListenerConfigurer(
+            final MessageHandlerMethodFactory messageHandlerMethodFactory) {
+        return (c) -> c.setMessageHandlerMethodFactory(messageHandlerMethodFactory);
     }
 }
-
-
 

@@ -1,5 +1,7 @@
-
 package microservices.exam.service;
+
+import microservices.exam.eventDriven.BookEvent;
+import microservices.exam.eventDriven.BookEventPublisher;
 import lombok.extern.slf4j.Slf4j;
 import microservices.exam.apiResponse.ApiResponseBuilder;
 import microservices.exam.apiResponse.ApiResponse;
@@ -14,18 +16,20 @@ import java.util.List;
 public class BookService {
 
     BookRepository bookRepository;
+    BookEventPublisher bookEventPublisher;
 
-    public BookService(BookRepository bookRepository){
+    public BookService(BookRepository bookRepository, BookEventPublisher bookEventPublisher) {
         this.bookRepository = bookRepository;
+        this.bookEventPublisher = bookEventPublisher;
     }
 
-    public ApiResponse<List<Book>> fetchAll(){
+    public ApiResponse<List<Book>> fetchAll() {
         ApiResponseBuilder<List<Book>> apiResponseBuilder = new ApiResponseBuilder<>();
         List<Book> listBooks;
 
         try {
             listBooks = bookRepository.findAll();
-        } catch (Exception exception){
+        } catch (Exception exception) {
             log.error(exception.getMessage());
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong...");
         }
@@ -49,24 +53,25 @@ public class BookService {
     }
      */
 
-    public ApiResponse<Book> saveOneBook(Book book){
+    public ApiResponse<Book> saveOneBook(Book book) {
         ApiResponseBuilder<Book> apiResponseBuilder = new ApiResponseBuilder<>();
         try {
             Book bookFromDatabase = bookRepository.findBookByTitleAndAuthorAndPublishDate(book.getTitle(), book.getAuthor(), book.getPublishDate());
-            if (bookFromDatabase == null){
+            if (bookFromDatabase == null) {
                 Book savedBook = bookRepository.save(book);
                 log.info("Added book with id: {} to the database", savedBook.getId());
+
+                BookEvent bookEvent = new BookEvent(savedBook.getId(), 1, "This is a sample comment for the book");
+                bookEventPublisher.publishBookEventString(bookEvent);
 
                 return apiResponseBuilder.success(savedBook);
             } else {
                 log.error("Tried adding already existing book, already existing book has id: {}", bookFromDatabase.getId());
                 return apiResponseBuilder.failure(HttpStatus.CONFLICT, "Book already exists");
             }
-        } catch (Exception exception){
+        } catch (Exception exception) {
             log.error(exception.getMessage());
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong...");
         }
     }
-
-
 }
