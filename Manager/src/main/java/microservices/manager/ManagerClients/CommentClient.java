@@ -60,4 +60,34 @@ public class CommentClient {
         log.debug("Received response with status: {}", statusCode);
         return apiResponseBuilder.parseDto(response.getBody(), statusCode);
     }
+
+    public ApiResponse<CommentDTO> fetchById(long id) {
+        String url = restServiceUrl + "/comment/fetchCommentById/" + id;
+        log.debug("This is the url: {}", url);
+        ResponseEntity<ApiResponseDTO<CommentDTO>> response;
+        ApiResponseBuilder<CommentDTO> apiResponseBuilder = new ApiResponseBuilder<>();
+
+        try {
+            response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<>() {
+                    }
+            );
+        } catch (Exception exception){
+            log.error("An unexpected error occurred: ", exception);
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to comment service");
+        }
+
+        if (response.getBody() == null){
+            log.error("Response body is null");
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Empty response from comment service");
+        }
+
+        HttpStatus statusCode = HttpStatus.valueOf(response.getStatusCode().value());
+
+        log.debug("Received response with status: {}", statusCode);
+        return apiResponseBuilder.parseDto(response.getBody(), statusCode);
+    }
 }
