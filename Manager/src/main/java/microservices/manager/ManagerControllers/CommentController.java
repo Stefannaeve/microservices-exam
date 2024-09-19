@@ -21,7 +21,7 @@ public class CommentController {
         this.commentClient = commentClient;
     }
 
-    @GetMapping("/fetchAllComments")
+    @GetMapping("/fetchAll")
     public ResponseEntity<ApiResponse<List<CommentDTO>>> fetchAllComments(){
         ApiResponse<List<CommentDTO>> comments = commentClient.externalGetAllComments();
 

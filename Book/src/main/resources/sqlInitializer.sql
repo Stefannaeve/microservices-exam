@@ -1,8 +1,8 @@
-DROP SCHEMA if EXISTS book; /* Its named after github, calm down */
+DROP SCHEMA if EXISTS book;
 
 CREATE SCHEMA book;
 
-USE bookHub;
+USE book;
 
 CREATE TABLE book(
     id BIGINT not null auto_increment,
