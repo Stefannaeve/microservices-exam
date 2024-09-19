@@ -10,9 +10,12 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -23,12 +26,12 @@ public class BookClient {
     public BookClient(
             RestTemplateBuilder restTemplateBuilder,
             @Value("http://localhost:8082") final String url
-    ){
+    ) {
         this.restServiceUrl = url;
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public ApiResponse<List<BookDTO>> externalGetAllBooks(){
+    public ApiResponse<List<BookDTO>> externalGetAllBooks() {
         String url = restServiceUrl + "/book/fetchAll";
         log.debug("This is the url: {}", url);
         ResponseEntity<ApiResponseDTO<List<BookDTO>>> response;
@@ -42,12 +45,12 @@ public class BookClient {
                     new ParameterizedTypeReference<>() {
                     }
             );
-        } catch (Exception exception){
+        } catch (Exception exception) {
             log.error("An unexpected error occurred: ", exception);
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to book service");
         }
 
-        if (response.getBody() == null){
+        if (response.getBody() == null) {
             log.error("Response body is null");
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Empty response from book service");
         }
@@ -77,12 +80,28 @@ public class BookClient {
 
                     }
             );
+        } catch (HttpClientErrorException clientException) {
+            log.debug("Entered exception handling block");
+
+            HttpStatus status = HttpStatus.valueOf(clientException.getStatusCode().value());
+
+            String messageToParse = clientException.getMessage();
+
+            String regexPattern = "\\\"errorMessage\\\":\\\"(.*?)\\\"";
+            Pattern compiledRegex = Pattern.compile(regexPattern);
+            Matcher matcher = compiledRegex.matcher(messageToParse);
+
+            if (matcher.find()) {
+                String errorMessage = matcher.group(1);
+                return apiResponseBuilder.failure(status, errorMessage);
+            }
+            return apiResponseBuilder.failure(status, clientException.getMessage());
         } catch (Exception exception){
-            log.error("An unexpected error occurred: ", exception);
+            log.error("Error message: {}", exception.getMessage());
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to book service");
         }
 
-        if (response.getBody() == null){
+        if (response.getBody() == null) {
             log.error("Response body is null");
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Empty response from book service");
         }
