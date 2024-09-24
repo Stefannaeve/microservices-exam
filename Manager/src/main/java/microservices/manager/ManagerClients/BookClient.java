@@ -14,8 +14,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -85,18 +83,19 @@ public class BookClient {
 
             HttpStatus status = HttpStatus.valueOf(clientException.getStatusCode().value());
 
-            String messageToParse = clientException.getMessage();
+            ApiResponse apiResponse = clientException.getResponseBodyAs(ApiResponse.Failure.class);
 
-            String regexPattern = "\\\"errorMessage\\\":\\\"(.*?)\\\"";
-            Pattern compiledRegex = Pattern.compile(regexPattern);
-            Matcher matcher = compiledRegex.matcher(messageToParse);
 
-            if (matcher.find()) {
-                String errorMessage = matcher.group(1);
-                return apiResponseBuilder.failure(status, errorMessage);
-            }
-            return apiResponseBuilder.failure(status, clientException.getMessage());
-        } catch (Exception exception){
+//            String regexPattern = "\\\"errorMessage\\\":\\\"(.*?)\\\"";
+//            Pattern compiledRegex = Pattern.compile(regexPattern);
+//            Matcher matcher = compiledRegex.matcher(messageToParse);
+
+//            if (matcher.find()) {
+//                String errorMessage = matcher.group(1);
+//                return apiResponseBuilder.failure(status, errorMessage);
+//            }
+            return apiResponse;
+        } catch (Exception exception) {
             log.error("Error message: {}", exception.getMessage());
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to book service");
         }
