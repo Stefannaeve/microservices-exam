@@ -33,11 +33,11 @@ public class BookController {
 
         switch (books) {
             case ApiResponse.Success<List<Book>> success -> {
-                return ResponseEntity.status(HttpStatus.OK).body(books);
+                return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<List<Book>> failure -> {
                 log.error(failure.errorMessage());
-                return ResponseEntity.status(failure.status()).body(books);
+                return ResponseEntity.status(failure.status()).body(failure);
             }
         }
     }
@@ -69,11 +69,11 @@ public class BookController {
 
         switch (savedBook) {
             case ApiResponse.Success<Book> success -> {
-                return ResponseEntity.status(HttpStatus.CREATED).body(savedBook);
+                return ResponseEntity.status(HttpStatus.CREATED).body(success);
             }
             case ApiResponse.Failure<Book> failure -> {
                 System.out.println("Something went wrong: " + failure.errorMessage());
-                return ResponseEntity.status(failure.status()).body(savedBook);
+                return new ResponseEntity<>(failure, failure.status());
             }
         }
     }
