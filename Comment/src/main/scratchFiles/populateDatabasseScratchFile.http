@@ -1,5 +1,5 @@
 ###
-POST localhost:8080/comment/saveOneComment
+POST localhost:8082/comment/saveOneComment
 Content-Type: application/json
 
 {
@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 
 ###
-POST localhost:8080/comment/saveOneComment
+POST localhost:8082/comment/saveOneComment
 Content-Type: application/json
 
 {
