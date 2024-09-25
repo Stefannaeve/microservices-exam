@@ -1,3 +1,4 @@
+CREATE DATABASE IF NOT EXISTS user;
 DROP SCHEMA if EXISTS user;
 
 CREATE SCHEMA user;
@@ -19,13 +20,3 @@ CREATE TABLE book_Id(
     PRIMARY KEY(id)
 
 );
-# create table user_books
-# (
-#     user_id BIGINT not null,
-#     book_id BIGINT not null,
-#     constraint book_id
-#         foreign key (book_id) references user.book_Id (id),
-#     constraint user_id
-#         foreign key (user_id) references user.user (id)
-# );
-
