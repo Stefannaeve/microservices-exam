@@ -26,7 +26,7 @@ public class AMQPConfiguration {
 
     @Bean
     public Queue commentQueue(
-            @Value("${amqp.queue.comment}") final String queueName
+            @Value("${amqp.queue.name}") final String queueName
     ){
         return QueueBuilder
                 .durable(queueName)
@@ -42,7 +42,6 @@ public class AMQPConfiguration {
                 .bind(commentQueue)
                 .to(bookTopicExchange)
                 .with("book.comment.created");
-        //.with("book.comment.#"); /** # (wildcard) for create, update, delete comments for a book **/
     }
 
     @Bean
@@ -67,10 +66,10 @@ public class AMQPConfiguration {
                 .with("book.comment.deleted");
     }
 
+
     @Bean
     public MessageHandlerMethodFactory messageHandlerMethodFactory() {
         DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();
-
         final MappingJackson2MessageConverter jsonConverter =
                 new MappingJackson2MessageConverter();
         jsonConverter.getObjectMapper().registerModule(
@@ -86,4 +85,3 @@ public class AMQPConfiguration {
         return (c) -> c.setMessageHandlerMethodFactory(messageHandlerMethodFactory);
     }
 }
-

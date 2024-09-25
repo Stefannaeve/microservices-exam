@@ -39,10 +39,15 @@ public class CommentController {
 //    }
     @GetMapping("/fetchAll")
     public ResponseEntity<ApiResponse<List<Comment>>> fetchAll() {
-        ApiResponse<List<Comment>> comments = commentService.fetchAll();
+        ApiResponse<List<Comment>> commentResponse = commentService.fetchAll();
 
-        switch (comments) {
+        switch (commentResponse) {
             case ApiResponse.Success<List<Comment>> success -> {
+                if (success.value().isPresent()){
+                    log.info("Success, returning {} comments", success.value().get().size());
+                } else {
+                    log.info("Success");
+                }
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<List<Comment>> failure -> {
@@ -58,11 +63,16 @@ public class CommentController {
 
         switch (commentResponse) {
             case ApiResponse.Success<Comment> success -> {
-                return ResponseEntity.status(HttpStatus.OK).body(commentResponse);
+                if (success.value().isPresent()){
+                    log.info("Success, returning comment with id: {}", success.value().get().getId());
+                } else {
+                    log.info("Success");
+                }
+                return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<Comment> failure -> {
                 log.error(failure.errorMessage());
-                return ResponseEntity.status(failure.status()).body(commentResponse);
+                return ResponseEntity.status(failure.status()).body(failure);
             }
         }
     }
@@ -78,15 +88,20 @@ public class CommentController {
 
     @PostMapping("/saveOneComment")
     public ResponseEntity<ApiResponse<Comment>> saveOneComment(@RequestBody Comment comment) {
-        ApiResponse<Comment> savedComment = commentService.saveOneComment(comment);
+        ApiResponse<Comment> commentResponse = commentService.saveOneComment(comment);
 
-        switch (savedComment) {
+        switch (commentResponse) {
             case ApiResponse.Success<Comment> success -> {
-                return ResponseEntity.status(HttpStatus.CREATED).body(savedComment);
+                if (success.value().isPresent()){
+                    log.info("Success, comment with id: {}, added to the database", success.value().get().getId());
+                } else {
+                    log.info("Success");
+                }
+                return ResponseEntity.status(HttpStatus.CREATED).body(success);
             }
             case ApiResponse.Failure<Comment> failure -> {
                 log.error(failure.errorMessage());
-                return ResponseEntity.status(failure.status()).body(savedComment);
+                return ResponseEntity.status(failure.status()).body(failure);
             }
         }
     }

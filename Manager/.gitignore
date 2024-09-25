@@ -31,5 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
-Book/src/main/resources/application.properties
-Comment/src/main/resources/application.properties
+/src/main/resources/application.properties

@@ -1,8 +1,7 @@
 package microservices.exam.eventDriven;
+
 import lombok.extern.slf4j.Slf4j;
-
-
-import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -10,36 +9,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class BookEventPublisher {
 
-    private final AmqpTemplate amqpTemplate;
+    private final RabbitTemplate rabbitTemplate;
     private final String exchangeName;
 
-    public BookEventPublisher(
-            final AmqpTemplate amqpTemplate,
-            @Value("${amqp.exchange.name}") final String exchangeName
-    ){
-        this.amqpTemplate = amqpTemplate;
+    public BookEventPublisher(RabbitTemplate rabbitTemplate, @Value("${amqp.exchange.name}") String exchangeName) {
+        this.rabbitTemplate = rabbitTemplate;
         this.exchangeName = exchangeName;
     }
 
-    public void publishBookEventString(
-            BookEvent bookEvent
-    ){
-        // build the message/event
-        String event = buildEventString(bookEvent);
-        // decide on routing
-        String routingKey = "book." + (bookEvent.getId() + "comment.created");
-        // send the thing
-        amqpTemplate.convertAndSend(exchangeName, routingKey, event);
-    }
-
-    public String buildEventString(BookEvent bookEvent){
-        StringBuffer eventBuffer = new StringBuffer();
-
-        eventBuffer.append("{")
-                .append("\"id\":" + bookEvent.getId() + ",")
-                .append("\"page\":" + bookEvent.getPage() + ",")
-                .append("\"text\":" + bookEvent.getText() + ",")
-                .append("}");
-        return eventBuffer.toString();
+    public void publishBookEvent(BookEvent bookEvent) {
+        String routingKey = "book.comment.created"; // Customize routing key as needed
+        rabbitTemplate.convertAndSend(exchangeName, routingKey, bookEvent);
+        log.info("Published event to exchange '{}' with routing key '{}': {}", exchangeName, routingKey, bookEvent);
     }
 }
