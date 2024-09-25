@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>microservices</groupId>
-    <artifactId>Comment</artifactId>
+    <artifactId>comment</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Comment</name>
+    <name>comment</name>
     <description>Comment</description>
     <url/>
     <licenses>
