@@ -1,6 +1,5 @@
 package microservices.user.user.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,7 +26,6 @@ public class User {
     @Column(name = "username")
     private String username;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("userIds")
+    @OneToMany
     private List<BookId> books;
 }

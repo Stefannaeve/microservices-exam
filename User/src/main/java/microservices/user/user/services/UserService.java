@@ -1,16 +1,11 @@
 package microservices.user.user.services;
 
 import lombok.extern.slf4j.Slf4j;
-import microservices.user.user.models.BookId;
 import microservices.user.user.models.User;
 import microservices.user.user.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,36 +28,4 @@ public class UserService {
         return userRepo.findById(id);
     }
 
-    public ResponseEntity<List<Long>> fetchUserBooks(Long userId){
-
-        User user = userRepo.findById(userId).orElse(null);
-
-        if (user == null){
-            return ResponseEntity.status(
-                    HttpStatus.NOT_FOUND).header("Error message", "No matching user found").body(null);
-        }
-
-        if(user.getBooks() != null){
-
-            List<Long> bookIdList = new ArrayList<>();
-
-            user.getBooks().forEach(bookId -> bookIdList.add(bookId.getId()));
-
-            return ResponseEntity.status(HttpStatus.OK).body(bookIdList);
-        }
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error " +
-                                                                          "message", "User has no books").body(null);
-    }
-
-    public ResponseEntity<User> addBookToUser(Long userId, BookId bookId){
-        User user = userRepo.findById(userId).orElse(null);
-        if (user == null){
-            log.info(String.valueOf(user.getId()));
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error message", "No matching user found").body(null);
-        }
-        user.getBooks().add(bookId);
-        userRepo.save(user);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
-    }
 }

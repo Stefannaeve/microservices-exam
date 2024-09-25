@@ -1,6 +1,5 @@
 package microservices.user.user.controllers;
 
-import lombok.extern.slf4j.Slf4j;
 import microservices.user.user.models.BookId;
 import microservices.user.user.models.User;
 import microservices.user.user.services.UserService;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-@Slf4j
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -47,13 +45,29 @@ public class UserController {
     }
 
     @GetMapping("/fetchUserBooks/{userId}")
-    public ResponseEntity<List<Long>> fetchUserBooks(@PathVariable Long userId){
+    public ResponseEntity<List<BookId>> fetchUserBooks(@PathVariable Long userId){
 
-        return userService.fetchUserBooks(userId);
+        User user = userService.fetchUserById(userId).orElse(null);
+        if (user == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error message", "No matching user found").body(null);
+        }
+
+        if(user.getBooks() != null){
+            return ResponseEntity.status(HttpStatus.OK).body(user.getBooks());
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error message", "User has no books").body(user.getBooks());
     }
-    @PostMapping("/addBookToUser/{userId}")
-    public ResponseEntity addBookToUser(@PathVariable Long userId, @RequestBody BookId bookId){
 
-        return userService.addBookToUser(userId, bookId);
+    @PostMapping("/user/addBookToUser/{userId}")
+    public ResponseEntity addBookToUser(@PathVariable long userId, @RequestBody BookId bookId){
+
+        User user = userService.fetchUserById(userId).orElse(null);
+        if (user == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error message", "No matching user found").body(null);
+        }
+        user.getBooks().add(bookId);
+        userService.saveOneUser(user);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }
