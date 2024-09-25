@@ -1,5 +1,6 @@
 package microservices.user.user.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import microservices.user.user.models.BookId;
 import microservices.user.user.models.User;
 import microservices.user.user.services.UserService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -59,11 +61,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error message", "User has no books").body(user.getBooks());
     }
 
-    @PostMapping("/user/addBookToUser/{userId}")
-    public ResponseEntity addBookToUser(@PathVariable long userId, @RequestBody BookId bookId){
-
+    @PostMapping("/addBookToUser/{userId}")
+    public ResponseEntity addBookToUser(@PathVariable Long userId, @RequestBody BookId bookId){
         User user = userService.fetchUserById(userId).orElse(null);
         if (user == null){
+            log.info(user.getUsername());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error message", "No matching user found").body(null);
         }
         user.getBooks().add(bookId);

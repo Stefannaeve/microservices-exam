@@ -25,6 +25,7 @@
 		<module>Book</module>
 		<module>Comment</module>
 		<module>Manager</module>
+		<module>User</module>
 	</modules>
 	<scm>
 		<connection/>
