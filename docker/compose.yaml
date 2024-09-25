@@ -1,0 +1,69 @@
+volumes:
+  book_db:
+    driver: local
+  comment_db:
+    driver: local
+services:
+  book_db:
+    image: 'mysql:latest'
+    environment:
+      - 'MYSQL_ROOT_PASSWORD=12345678'
+      - 'MYSQL_ROOT_USER=root'
+    volumes:
+      - ./mysql/book/init:/docker-entrypoint-initdb.d
+    ports:
+      - '3306:3306'
+    networks:
+      - services
+  comment_db:
+    image: 'mysql:latest'
+    environment:
+      - 'MYSQL_ROOT_PASSWORD=12345678'
+      - 'MYSQL_ROOT_USER=root'
+    volumes:
+      - ./mysql/comment/init:/docker-entrypoint-initdb.d
+    ports:
+      - '3307:3306'
+    networks:
+      - services
+  consul:
+    image: 'hashicorp/consul:latest'
+    ports:
+      - '8500:8500'
+    networks:
+      - services
+  rabbitMQ:
+    image: 'rabbitmq:3-management'
+    ports:
+      - '15672:15672'
+    networks:
+      - services
+  book:
+    image: 'book:0.0.1-SNAPSHOT'
+    ports:
+      - '8082:8082'
+    networks:
+      - services
+    depends_on:
+      - book_db
+      - manager
+  comment:
+    image: 'comment:0.0.1-SNAPSHOT'
+    ports:
+      - '8081:8081'
+    networks:
+      - services
+    depends_on:
+      - comment_db
+      - manager
+  manager:
+    image: 'manager:0.0.1-SNAPSHOT'
+    ports:
+      - '8080:8080'
+    networks:
+      - services
+    depends_on:
+      - rabbitMQ
+networks:
+  services:
+    driver: bridge

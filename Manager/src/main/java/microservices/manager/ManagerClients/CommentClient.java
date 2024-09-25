@@ -12,6 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class CommentClient {
 
     public CommentClient(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("http://localhost:8081") final String url
+            @Value("http://comment:8081") final String url
     ){
         this.restTemplate = restTemplateBuilder.build();
         this.restServiceUrl = url;
@@ -45,7 +46,16 @@ public class CommentClient {
                     new ParameterizedTypeReference<>() {
                     }
             );
-        } catch (Exception exception){
+        } catch (HttpClientErrorException clientErrorException){
+            log.debug("Entered exception handling block");
+
+            HttpStatus status = HttpStatus.valueOf(clientErrorException.getStatusCode().value());
+
+            ApiResponse apiResponse = clientErrorException.getResponseBodyAs(ApiResponse.Failure.class);
+
+            return apiResponse;
+        }
+        catch (Exception exception){
             log.error("An unexpected error occurred: ", exception);
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to comment service");
         }
@@ -75,7 +85,15 @@ public class CommentClient {
                     new ParameterizedTypeReference<>() {
                     }
             );
-        } catch (Exception exception){
+        }  catch (HttpClientErrorException clientErrorException){
+            log.debug("Entered exception handling block");
+
+            HttpStatus status = HttpStatus.valueOf(clientErrorException.getStatusCode().value());
+
+            ApiResponse apiResponse = clientErrorException.getResponseBodyAs(ApiResponse.Failure.class);
+
+            return apiResponse;
+        }catch (Exception exception){
             log.error("An unexpected error occurred: ", exception);
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to comment service");
         }
