@@ -30,14 +30,27 @@ services:
     image: 'hashicorp/consul:latest'
     ports:
       - '8500:8500'
+      - '8600:8600/udp'
     networks:
       - services
+    command: 'agent -dev -node=bookhub -client=0.0.0.0 -log-level=INFO'
   rabbitMQ:
     image: 'rabbitmq:3-management'
     ports:
       - '15672:15672'
     networks:
       - services
+  gateway:
+    image: 'gateway:0.0.1-SNAPSHOT'
+    ports:
+      - '8000:8000'
+    networks:
+      - services
+    depends_on:
+      - rabbitMQ
+      - consul
+    environment:
+      - SPRING_CLOUD_CONSUL_HOST=consul
   book:
     image: 'book:0.0.1-SNAPSHOT'
     ports:
@@ -47,6 +60,8 @@ services:
     depends_on:
       - book_db
       - manager
+    environment:
+      - SPRING_CLOUD_CONSUL_HOST=consul
   comment:
     image: 'comment:0.0.1-SNAPSHOT'
     ports:
@@ -56,6 +71,8 @@ services:
     depends_on:
       - comment_db
       - manager
+    environment:
+      - SPRING_CLOUD_CONSUL_HOST=consul
   manager:
     image: 'manager:0.0.1-SNAPSHOT'
     ports:
@@ -63,7 +80,9 @@ services:
     networks:
       - services
     depends_on:
-      - rabbitMQ
+      - gateway
+    environment:
+      - SPRING_CLOUD_CONSUL_HOST=consul
 networks:
   services:
     driver: bridge
