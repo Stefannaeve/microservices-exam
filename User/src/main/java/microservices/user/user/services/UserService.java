@@ -53,4 +53,15 @@ public class UserService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error " +
                                                                           "message", "User has no books").body(null);
     }
+
+    public ResponseEntity<User> addBookToUser(Long userId, BookId bookId){
+        User user = userRepo.findById(userId).orElse(null);
+        if (user == null){
+            log.info(user.getUsername());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error message", "No matching user found").body(null);
+        }
+        user.getBooks().add(bookId);
+        userRepo.save(user);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
 }
