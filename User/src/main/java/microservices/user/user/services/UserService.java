@@ -44,8 +44,9 @@ public class UserService {
 
         if(user.getBooks() != null){
 
-            List<Long> bookIdList =
-                    (List<Long>) user.getBooks().stream().toList().stream().mapToLong(BookId::getId);
+            List<Long> bookIdList = new ArrayList<>();
+
+            user.getBooks().forEach(bookId -> bookIdList.add(bookId.getId()));
 
             return ResponseEntity.status(HttpStatus.OK).body(bookIdList);
         }
@@ -57,7 +58,7 @@ public class UserService {
     public ResponseEntity<User> addBookToUser(Long userId, BookId bookId){
         User user = userRepo.findById(userId).orElse(null);
         if (user == null){
-            log.info(user.getUsername());
+            log.info(String.valueOf(user.getId()));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error message", "No matching user found").body(null);
         }
         user.getBooks().add(bookId);
