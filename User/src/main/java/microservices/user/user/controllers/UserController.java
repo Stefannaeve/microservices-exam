@@ -47,18 +47,9 @@ public class UserController {
     }
 
     @GetMapping("/fetchUserBooks/{userId}")
-    public ResponseEntity<List<BookId>> fetchUserBooks(@PathVariable Long userId){
+    public ResponseEntity<List<Long>> fetchUserBooks(@PathVariable Long userId){
 
-        User user = userService.fetchUserById(userId).orElse(null);
-        if (user == null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error message", "No matching user found").body(null);
-        }
-
-        if(user.getBooks() != null){
-            return ResponseEntity.status(HttpStatus.OK).body(user.getBooks());
-        }
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error message", "User has no books").body(user.getBooks());
+        return userService.fetchUserBooks(userId);
     }
 
     @PostMapping("/addBookToUser/{userId}")
