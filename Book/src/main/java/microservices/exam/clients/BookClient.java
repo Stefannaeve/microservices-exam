@@ -57,28 +57,4 @@ public class BookClient {
         log.info(String.valueOf(HttpStatus.valueOf(response.getStatusCode().value())));
         return new ApiResponseBuilder<List<CommentDTO>>().parseDto(response.getBody(), HttpStatus.valueOf(response.getStatusCode().value()));
     }
-//    public List<CommentDTO> externalComment() {
-//        String url = restServiceUrl + "/comment/fetchAll";
-//        ResponseEntity<List<CommentDTO>> response;
-//
-//        try {
-//            log.info("We are here");
-//            response = restTemplate.exchange(
-//                    url,
-//                    HttpMethod.GET,
-//                    null,
-//                    new ParameterizedTypeReference<>() {
-//                    }
-//            );
-//
-//        } catch (Exception exception) {
-//            log.error(exception.getMessage());
-//            exception.printStackTrace();
-//            return null;
-//        }
-//        return response.getBody();
-//    }
-//        return response.getBody();
-//    }
-
 }

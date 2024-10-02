@@ -13,4 +13,16 @@ public class BookDTO {
     private int pages;
     private Date publishDate;
     private String bookContent;
+
+    @Override
+    public String toString() {
+        return "BookDTO{" +
+                "id=" + id +
+                ", title='" + title +
+                ", author='" + author +
+                ", pages=" + pages +
+                ", publishDate=" + publishDate +
+                ", bookContent='" + bookContent +
+                '}';
+    }
 }
