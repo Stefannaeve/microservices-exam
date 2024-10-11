@@ -88,16 +88,7 @@ public class BookClient {
             log.debug("Entered exception handling block");
 
             ApiResponse apiResponse = clientException.getResponseBodyAs(ApiResponse.Failure.class);
-
-
-//            String regexPattern = "\\\"errorMessage\\\":\\\"(.*?)\\\"";
-//            Pattern compiledRegex = Pattern.compile(regexPattern);
-//            Matcher matcher = compiledRegex.matcher(messageToParse);
-
-//            if (matcher.find()) {
-//                String errorMessage = matcher.group(1);
-//                return apiResponseBuilder.failure(status, errorMessage);
-//            }
+          
             return apiResponse;
         } catch (Exception exception) {
             log.error("Error message: {}", exception.getMessage());
