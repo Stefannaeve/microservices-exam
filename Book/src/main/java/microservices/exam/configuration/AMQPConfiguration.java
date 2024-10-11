@@ -32,7 +32,7 @@ public class AMQPConfiguration {
     public Queue bookQueue(
             @Value("${amqp.queue.name}")
             final String queueName
-    ) {
+    ){
         return QueueBuilder
                 .durable(queueName)
                 .build();
@@ -42,7 +42,7 @@ public class AMQPConfiguration {
     public Binding bookBinding(
             final Queue bookQueue,
             final TopicExchange bookExchange
-    ) {
+    ){
         return BindingBuilder
                 .bind(bookQueue)
                 .to(bookExchange)
@@ -50,7 +50,7 @@ public class AMQPConfiguration {
     }
 
     @Bean
-    public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {
+    public Jackson2JsonMessageConverter jackson2JsonMessageConverter(){
         return new Jackson2JsonMessageConverter();
     }
 

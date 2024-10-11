@@ -90,7 +90,7 @@ public class CommentController {
     public ResponseEntity<ApiResponse<Comment>> saveOneComment(@RequestBody Comment comment) {
         ApiResponse<Comment> commentResponse = commentService.saveOneComment(comment);
 
-        switch (commentResponse) {
+        switch (commentResponse){
             case ApiResponse.Success<Comment> success -> {
                 if (success.value().isPresent()){
                     log.info("Success, comment with id: {}, added to the database", success.value().get().getId());
@@ -105,5 +105,4 @@ public class CommentController {
             }
         }
     }
-
 }

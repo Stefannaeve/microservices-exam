@@ -20,6 +20,5 @@ public class BookEventListener {
 
         log.info("Received Book Event: Title - {}, Author - {}, Pages - {}, PublishDate - {}, BookContent - {}",
                 bookEvent.getTitle(), bookEvent.getAuthor(), bookEvent.getPages(), bookEvent.getPublishDate(), bookEvent.getBookContent());
-
     }
 }
