@@ -23,7 +23,7 @@ public class BookClient {
 
     public BookClient(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("http://localhost:8082") final String url
+            @Value("http://localhost:8081") final String url
     ) {
         this.restServiceUrl = url;
         this.restTemplate = restTemplateBuilder.build();
@@ -43,7 +43,13 @@ public class BookClient {
                     new ParameterizedTypeReference<>() {
                     }
             );
-        } catch (Exception exception) {
+        } catch (HttpClientErrorException httpClientErrorException){
+            ApiResponse apiResponse = httpClientErrorException.getResponseBodyAs(ApiResponse.Failure.class);
+
+            return apiResponse;
+        }
+
+        catch (Exception exception) {
             log.error("An unexpected error occurred: ", exception);
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to book service");
         }
@@ -81,19 +87,8 @@ public class BookClient {
         } catch (HttpClientErrorException clientException) {
             log.debug("Entered exception handling block");
 
-            HttpStatus status = HttpStatus.valueOf(clientException.getStatusCode().value());
-
             ApiResponse apiResponse = clientException.getResponseBodyAs(ApiResponse.Failure.class);
-
-
-//            String regexPattern = "\\\"errorMessage\\\":\\\"(.*?)\\\"";
-//            Pattern compiledRegex = Pattern.compile(regexPattern);
-//            Matcher matcher = compiledRegex.matcher(messageToParse);
-
-//            if (matcher.find()) {
-//                String errorMessage = matcher.group(1);
-//                return apiResponseBuilder.failure(status, errorMessage);
-//            }
+          
             return apiResponse;
         } catch (Exception exception) {
             log.error("Error message: {}", exception.getMessage());

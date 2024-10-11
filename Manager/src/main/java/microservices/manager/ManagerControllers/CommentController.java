@@ -47,7 +47,7 @@ public class CommentController {
     public ResponseEntity<ApiResponse<CommentDTO>> fetchCommentById(@PathVariable long id){
         ApiResponse<CommentDTO> commentResponse = commentClient.fetchById(id);
 
-        switch (commentResponse) {
+        switch (commentResponse){
             case ApiResponse.Success<CommentDTO> success -> {
                 if (success.value().isPresent()){
                     log.info("Success, comment with id: {} fetched", success.value().get().getId());
@@ -61,7 +61,5 @@ public class CommentController {
                 return ResponseEntity.status(failure.status()).body(failure);
             }
         }
-
     }
-
 }
