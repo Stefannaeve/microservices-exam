@@ -7,7 +7,7 @@ services:
   book_db:
     image: 'mysql:latest'
     environment:
-      - 'MYSQL_ROOT_PASSWORD=12345678'
+      - 'MYSQL_ROOT_PASSWORD=Kakemann'
       - 'MYSQL_ROOT_USER=root'
     volumes:
       - ./mysql/book/init:/docker-entrypoint-initdb.d
@@ -17,8 +17,12 @@ services:
       - services
   comment_db:
     image: 'mysql:latest'
+    healthcheck:
+      test: ls
+      interval: 30s
+      start_period: 30s
     environment:
-      - 'MYSQL_ROOT_PASSWORD=12345678'
+      - 'MYSQL_ROOT_PASSWORD=Kakemann'
       - 'MYSQL_ROOT_USER=root'
     volumes:
       - ./mysql/comment/init:/docker-entrypoint-initdb.d
@@ -62,6 +66,7 @@ services:
       - manager
     environment:
       - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_DATASOURCE_URL=jdbc:mysql://book_db:3306/book
   comment:
     image: 'comment:0.0.1-SNAPSHOT'
     ports:
@@ -73,6 +78,7 @@ services:
       - manager
     environment:
       - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_DATASOURCE_URL=jdbc:mysql://comment_db:3306/comment
   manager:
     image: 'manager:0.0.1-SNAPSHOT'
     ports:
@@ -83,6 +89,7 @@ services:
       - gateway
     environment:
       - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_PROFILES_ACTIVE=docker
 networks:
   services:
     driver: bridge
