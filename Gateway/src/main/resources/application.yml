@@ -32,3 +32,7 @@ spring:
           args:
             retries: 3
             methods: GET, POST
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
