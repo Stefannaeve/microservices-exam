@@ -3,7 +3,6 @@ package microservices.exam.configuration;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import org.springframework.amqp.core.*;
-
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -19,38 +18,32 @@ import org.springframework.messaging.handler.annotation.support.MessageHandlerMe
 public class AMQPConfiguration {
 
     @Bean
-    public TopicExchange bookExchange(
-            @Value("${amqp.exchange.name}")
-            final String exchangeName) {
-        return ExchangeBuilder
-                .topicExchange(exchangeName)
-                .durable(true)
-                .build();
+    public TopicExchange bookExchange(@Value("${amqp.exchange.name}") String exchangeName) {
+        return ExchangeBuilder.topicExchange(exchangeName).durable(true).build();
     }
 
     @Bean
-    public Queue bookQueue(
-            @Value("${amqp.queue.name}")
-            final String queueName
-    ){
-        return QueueBuilder
-                .durable(queueName)
-                .build();
+    public Queue bookQueue(@Value("${amqp.queue.book}") String bookQueueName) {
+        return QueueBuilder.durable(bookQueueName).build();
     }
 
     @Bean
-    public Binding bookBinding(
-            final Queue bookQueue,
-            final TopicExchange bookExchange
-    ){
-        return BindingBuilder
-                .bind(bookQueue)
-                .to(bookExchange)
-                .with("manager.book.created");
+    public Queue commentQueue(@Value("${amqp.queue.comment}") String commentQueueName) {
+        return QueueBuilder.durable(commentQueueName).build();
     }
 
     @Bean
-    public Jackson2JsonMessageConverter jackson2JsonMessageConverter(){
+    public Binding bookCreatedBinding(Queue bookQueue, TopicExchange bookExchange) {
+        return BindingBuilder.bind(bookQueue).to(bookExchange).with("book.created");
+    }
+
+    @Bean
+    public Binding bookDeletedBinding(Queue commentQueue, TopicExchange bookExchange) {
+        return BindingBuilder.bind(commentQueue).to(bookExchange).with("book.deleted");
+    }
+
+    @Bean
+    public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
 

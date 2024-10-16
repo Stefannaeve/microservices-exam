@@ -1,5 +1,6 @@
 package microservices.comment.service;
 
+import lombok.extern.slf4j.Slf4j;
 import microservices.comment.models.Comment;
 import microservices.comment.repository.CommentRepository;
 import apiResponse.ApiResponse;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class CommentService {
 
     CommentRepository commentRepository;
@@ -42,5 +44,10 @@ public class CommentService {
         } catch (Exception e) {
             return new ApiResponse.Failure<>(Optional.empty(), HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save comment");
         }
+    }
+
+    public void deleteCommentsByBookId(Long bookId) {
+        commentRepository.deleteById(bookId);
+        log.info("Comments for bookId {} have been deleted.", bookId);
     }
 }

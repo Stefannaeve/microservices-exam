@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class BookEventListener {
 
-    @RabbitListener(queues = "${amqp.queue.name}")
+    @RabbitListener(queues = "${amqp.queue.book}")
     public void handleBookCreatedEvent(BookEvent bookEvent) {
         try {
             log.info("Processing message... Slowing down for demo purposes.");

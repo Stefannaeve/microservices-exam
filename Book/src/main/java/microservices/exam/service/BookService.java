@@ -39,21 +39,14 @@ public class BookService {
 
     public ApiResponse<Book> saveOneBook(Book book) {
         ApiResponseBuilder<Book> apiResponseBuilder = new ApiResponseBuilder<>();
-
         try {
-            Book bookFromDatabase = bookRepository.findBookByTitleAndAuthorAndPublishDate(
-                    book.getTitle(), book.getAuthor(), book.getPublishDate()
-            );
-
-            if (bookFromDatabase != null) {
-                log.warn("Attempted to save an existing book, book id: {}", bookFromDatabase.getId());
-                return apiResponseBuilder.failure(HttpStatus.CONFLICT, "Book already exists");
-            }
-
             Book savedBook = bookRepository.save(book);
-            log.info("Book saved with id: {} in the database", savedBook.getId());
+            log.info("Book saved with id: {}", savedBook.getId());
 
-            publishBookEvent(savedBook);
+            // Publish event after saving book
+            BookEvent bookEvent = new BookEvent(savedBook.getId(), savedBook.getTitle(), savedBook.getAuthor(),
+                    savedBook.getPages(), savedBook.getPublishDate(), savedBook.getBookContent());
+            bookEventPublisher.publishCreatedBookEvent(bookEvent);
 
             return apiResponseBuilder.success(savedBook);
         } catch (Exception exception) {
@@ -61,6 +54,23 @@ public class BookService {
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save book.");
         }
     }
+
+    public ApiResponse<Void> deleteBook(Long bookId) {
+        ApiResponseBuilder<Void> apiResponseBuilder = new ApiResponseBuilder<>();
+        try {
+            bookRepository.deleteById(bookId);
+            log.info("Book deleted with id: {}", bookId);
+
+            // Publish event after deleting book
+            bookEventPublisher.publishDeletedBookEvent(bookId);
+
+            return apiResponseBuilder.success(null);
+        } catch (Exception exception) {
+            log.error("Error deleting book: {}", exception.getMessage());
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete book.");
+        }
+    }
+
 
     private void publishBookEvent(Book savedBook) {
         BookEvent bookEvent = new BookEvent(
