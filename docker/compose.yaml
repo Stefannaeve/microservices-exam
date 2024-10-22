@@ -45,7 +45,10 @@ services:
     networks:
       - services
   gateway:
-    image: 'gateway:0.0.1-SNAPSHOT'
+    build:
+      context: ../Gateway
+      dockerfile: Dockerfile
+    image: gateway:latest
     ports:
       - '8000:8000'
     networks:
@@ -56,7 +59,10 @@ services:
     environment:
       - SPRING_CLOUD_CONSUL_HOST=consul
   book:
-    image: 'book:0.0.1-SNAPSHOT'
+    build:
+      context: ../Book
+      dockerfile: Dockerfile
+    image: book:latest
     ports:
       - '8082:8082'
     networks:
@@ -68,7 +74,10 @@ services:
       - SPRING_CLOUD_CONSUL_HOST=consul
       - SPRING_DATASOURCE_URL=jdbc:mysql://book_db:3306/book
   comment:
-    image: 'comment:0.0.1-SNAPSHOT'
+    build:
+      context: ../Comment
+      dockerfile: Dockerfile
+    image: comment:latest
     ports:
       - '8081:8081'
     networks:
@@ -80,7 +89,10 @@ services:
       - SPRING_CLOUD_CONSUL_HOST=consul
       - SPRING_DATASOURCE_URL=jdbc:mysql://comment_db:3306/comment
   manager:
-    image: 'manager:0.0.1-SNAPSHOT'
+    build:
+      context: ../Manager
+      dockerfile: Dockerfile
+    image: manager:latest
     ports:
       - '8080:8080'
     networks:
