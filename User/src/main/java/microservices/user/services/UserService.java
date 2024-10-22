@@ -1,10 +1,11 @@
-package microservices.user.user.services;
+package microservices.user.services;
 
 import lombok.extern.slf4j.Slf4j;
-import microservices.user.user.models.BookId;
-import microservices.user.user.models.User;
-import microservices.user.user.repositories.UserRepo;
+import microservices.user.models.BookId;
+import microservices.user.models.User;
+import microservices.user.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,12 +26,36 @@ public class UserService {
         this.userRepo = userRepo;
     }
 
-    public User saveOneUser(User userToSave){
-        return userRepo.save(userToSave);
+    public ResponseEntity saveOneUser(User userToSave){
+
+        try{
+            User savedUser = userRepo.save(userToSave);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+        }
+        catch (DataIntegrityViolationException exception){
+            String exceptionMessage = "Database exception: " + exception.getCause();
+            log.error("{} \n", exceptionMessage);
+            exception.printStackTrace();
+
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(exceptionMessage);
+        }
+        catch (Exception exception){
+            String exceptionMessage = "Internal server error" + exception.getCause();
+            log.error("{} \n", exceptionMessage);
+            exception.printStackTrace();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exceptionMessage);
+        }
+
     }
 
-    public Optional<User> fetchUserById(Long id){
-        return userRepo.findById(id);
+    public ResponseEntity fetchUserById(Long id){
+
+        User user = userRepo.findById(id).orElse(null);
+        if (user != null){
+            return ResponseEntity.status(HttpStatus.OK).body(user);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error message", "No matching user found").body(user);
     }
 
     public ResponseEntity<List<Long>> fetchUserBooks(Long userId){
