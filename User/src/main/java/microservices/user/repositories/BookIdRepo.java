@@ -1,6 +1,6 @@
-package microservices.user.user.repositories;
+package microservices.user.repositories;
 
-import microservices.user.user.models.BookId;
+import microservices.user.models.BookId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

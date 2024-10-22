@@ -11,7 +11,8 @@ CREATE TABLE user(
     id BIGINT NOT NULL AUTO_INCREMENT,
     username VARCHAR(255),
 
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE (username)
 );
 CREATE TABLE book_Id(
     id BIGINT NOT NULL AUTO_INCREMENT,

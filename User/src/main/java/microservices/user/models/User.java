@@ -1,4 +1,4 @@
-package microservices.user.user.models;
+package microservices.user.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -24,7 +24,7 @@ public class User {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String username;
 
     @ManyToMany(cascade = CascadeType.ALL)
