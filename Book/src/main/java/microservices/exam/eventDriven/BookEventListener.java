@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class BookEventListener {
 
+    /*
     @RabbitListener(queues = "${amqp.queue.name}")
     public void handleBookCreatedEvent(BookEvent bookEvent) {
         try {
@@ -21,4 +22,5 @@ public class BookEventListener {
         log.info("Received Book Event: Title - {}, Author - {}, Pages - {}, PublishDate - {}, BookContent - {}",
                 bookEvent.getTitle(), bookEvent.getAuthor(), bookEvent.getPages(), bookEvent.getPublishDate(), bookEvent.getBookContent());
     }
+     */
 }

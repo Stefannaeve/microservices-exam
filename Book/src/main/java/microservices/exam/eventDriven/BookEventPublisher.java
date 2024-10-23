@@ -9,6 +9,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 @Service
 public class BookEventPublisher {
 
+    /*
     private final RabbitTemplate rabbitTemplate;
     private final String exchangeName;
 
@@ -22,6 +23,8 @@ public class BookEventPublisher {
         rabbitTemplate.convertAndSend(exchangeName, routingKey, bookEvent);
         log.info("Published event to exchange '{}' with routing key '{}': {}", exchangeName, routingKey, bookEvent);
     }
+
+     */
 
 }
 
