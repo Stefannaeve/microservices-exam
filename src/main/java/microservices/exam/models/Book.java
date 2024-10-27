@@ -17,6 +17,7 @@ public class Book {
         this.author = author;
         this.pages = pages;
         this.bookContent = bookContent;
+        title.toLowerCase();
     }
 
     @Id
@@ -43,7 +44,4 @@ public class Book {
 
     // TODO: State management
     // Genres, International Standard Book Number
-
-
-
 }
