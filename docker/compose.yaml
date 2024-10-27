@@ -1,14 +1,18 @@
+version: '3.8'
+
 volumes:
   book_db:
     driver: local
   comment_db:
     driver: local
+
 services:
   book_db:
-    image: 'mysql:latest'
+    image: 'mysql:8.0'
     environment:
       - 'MYSQL_ROOT_PASSWORD=Kakemann'
       - 'MYSQL_ROOT_USER=root'
+      - 'MYSQL_DATABASE=book'
     volumes:
       - ./mysql/book/init:/docker-entrypoint-initdb.d
     ports:
@@ -16,26 +20,31 @@ services:
     networks:
       - services
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 30s  # Increase this to ensure MySQL is fully ready
+      start_period: 15s
+
   comment_db:
-    image: 'mysql:latest'
-    healthcheck:
-      test: ls
-      interval: 30s
-      start_period: 30s
+    image: 'mysql:8.0'
     environment:
       - 'MYSQL_ROOT_PASSWORD=Kakemann'
       - 'MYSQL_ROOT_USER=root'
+      - 'MYSQL_DATABASE=comment'
     volumes:
       - ./mysql/comment/init:/docker-entrypoint-initdb.d
     ports:
       - '3307:3306'
     networks:
       - services
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
   consul:
     image: 'hashicorp/consul:latest'
     ports:
@@ -44,12 +53,14 @@ services:
     networks:
       - services
     command: 'agent -dev -node=bookhub -client=0.0.0.0 -log-level=INFO'
+
   rabbitMQ:
     image: 'rabbitmq:3-management'
     ports:
       - '15672:15672'
     networks:
       - services
+
   gateway:
     build:
       context: ../Gateway
@@ -64,6 +75,7 @@ services:
       - consul
     environment:
       - SPRING_CLOUD_CONSUL_HOST=consul
+
   book:
     build:
       context: ../Book
@@ -74,11 +86,14 @@ services:
     networks:
       - services
     depends_on:
-      - book_db
-      - manager
+      book_db:
+        condition: service_healthy
+      manager:
+        condition: service_started
     environment:
       - SPRING_CLOUD_CONSUL_HOST=consul
       - SPRING_DATASOURCE_URL=jdbc:mysql://book_db:3306/book
+
   comment:
     build:
       context: ../Comment
@@ -89,11 +104,14 @@ services:
     networks:
       - services
     depends_on:
-      - comment_db
-      - manager
+      comment_db:
+        condition: service_healthy
+      manager:
+        condition: service_started
     environment:
       - SPRING_CLOUD_CONSUL_HOST=consul
       - SPRING_DATASOURCE_URL=jdbc:mysql://comment_db:3306/comment
+
   manager:
     build:
       context: ../Manager
@@ -108,6 +126,7 @@ services:
     environment:
       - SPRING_CLOUD_CONSUL_HOST=consul
       - SPRING_PROFILES_ACTIVE=docker
+
 networks:
   services:
     driver: bridge
