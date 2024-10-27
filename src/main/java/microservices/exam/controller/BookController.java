@@ -37,6 +37,7 @@ public class BookController {
             }
             case ApiResponse.Failure<List<Book>> failure -> {
                 log.error(failure.errorMessage());
+                System.out.println("Stefan begynner å bli slem");
                 return ResponseEntity.status(failure.status()).body(failure);
             }
         }
