@@ -4,27 +4,35 @@ import React, {useEffect, useState} from "react";
 import {getBooks} from "@/lib/talkToApi"
 import {ApiResponse} from "@/interfaces/ApiResponse";
 import clsx from 'clsx'
+import {Book} from "@/interfaces/Book";
 
 
 export default function Home() {
-    const [something, setSomething] = useState()
+    const [something, setSomething] = useState<Book>()
 
     const findBooks = async () => {
         try {
-            const response: ApiResponse = await getBooks()
+            const response: Array<Book> | null = await getBooks()
+            if (!response){
+                return
+            }
             console.log("Response", response)
-            setSomething(response.object)
-            console.log(something)
+                await addListOfBooks(response)
+            console.log("Object", something?.title)
         } catch (error) {
-            console.error("Error")
+            console.error("Something went wrong")
         }
+    }
+
+    const addListOfBooks = async (list: Array<Book>) => {
+        list.map((book) => setSomething(book))
     }
 
     useEffect(() => {
     }, [something])
 
     const printBooks = () => {
-        return <div>{something}</div>
+        return <div>{something?.title}</div>
     }
 
   return (

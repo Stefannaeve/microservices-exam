@@ -1,5 +1,5 @@
 ###
-POST localhost:8080/book/saveOneBook
+POST localhost:8082/book/saveOneBook
 Content-Type: application/json
 
 {
@@ -10,7 +10,7 @@ Content-Type: application/json
 }
 
 ###
-POST localhost:8080/book/saveOneBook
+POST localhost:8082/book/saveOneBook
 Content-Type: application/json
 
 {
@@ -21,7 +21,7 @@ Content-Type: application/json
 }
 
 ###
-POST localhost:8080/book/saveOneBook
+POST localhost:8082/book/saveOneBook
 Content-Type: application/json
 
 {

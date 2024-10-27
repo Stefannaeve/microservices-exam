@@ -1,0 +1,134 @@
+version: '3.8'
+
+volumes:
+  book_db:
+    driver: local
+  comment_db:
+    driver: local
+
+services:
+  book_db:
+    image: 'mysql:8.0'
+    environment:
+      - 'MYSQL_ROOT_PASSWORD=Kakemann'
+      - 'MYSQL_ROOT_USER=root'
+      - 'MYSQL_DATABASE=book'
+    volumes:
+      - ./mysql/book/init:/docker-entrypoint-initdb.d
+    ports:
+      - '3306:3306'
+    networks:
+      - services
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  comment_db:
+    image: 'mysql:8.0'
+    environment:
+      - 'MYSQL_ROOT_PASSWORD=Kakemann'
+      - 'MYSQL_ROOT_USER=root'
+      - 'MYSQL_DATABASE=comment'
+    volumes:
+      - ./mysql/comment/init:/docker-entrypoint-initdb.d
+    ports:
+      - '3307:3306'
+    networks:
+      - services
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  consul:
+    image: 'hashicorp/consul:latest'
+    ports:
+      - '8500:8500'
+      - '8600:8600/udp'
+    networks:
+      - services
+    command: 'agent -dev -node=bookhub -client=0.0.0.0 -log-level=INFO'
+
+  rabbitMQ:
+    image: 'rabbitmq:3-management'
+    ports:
+      - '15672:15672'
+    networks:
+      - services
+
+  gateway:
+    build:
+      context: ../Gateway
+      dockerfile: Dockerfile
+    image: gateway:latest
+    ports:
+      - '8000:8000'
+    networks:
+      - services
+    depends_on:
+      - rabbitMQ
+      - consul
+    environment:
+      - SPRING_CLOUD_CONSUL_HOST=consul
+
+  book:
+    build:
+      context: ../Book
+      dockerfile: Dockerfile
+    image: book:latest
+    #image: 'book:0.0.1-SNAPSHOT'
+    ports:
+      - '8082:8082'
+    networks:
+      - services
+    depends_on:
+      book_db:
+        condition: service_healthy
+      manager:
+        condition: service_started
+    environment:
+      - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_DATASOURCE_URL=jdbc:mysql://book_db:3306/book
+
+  comment:
+    build:
+      context: ../Comment
+      dockerfile: Dockerfile
+    image: comment:latest
+    #image: 'comment:0.0.1-SNAPSHOT'
+    ports:
+      - '8081:8081'
+    networks:
+      - services
+    depends_on:
+      comment_db:
+        condition: service_healthy
+      manager:
+        condition: service_started
+    environment:
+      - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_DATASOURCE_URL=jdbc:mysql://comment_db:3306/comment
+
+  manager:
+    build:
+      context: ../Manager
+      dockerfile: Dockerfile
+    image: manager:latest
+    ports:
+      - '8080:8080'
+    networks:
+      - services
+    depends_on:
+      - gateway
+    environment:
+      - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_PROFILES_ACTIVE=docker
+
+networks:
+  services:
+    driver: bridge

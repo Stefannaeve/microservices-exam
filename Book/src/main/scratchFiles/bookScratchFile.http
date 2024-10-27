@@ -1,8 +1,8 @@
 ###
-GET localhost:8080/book/fetchAll
+GET localhost:8082/book/fetchAll
 
 ###
-POST localhost:8080/book/saveOneBook
+POST localhost:8082/book/saveOneBook
 Content-Type: application/json
 
 {
