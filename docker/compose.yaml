@@ -24,7 +24,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 15s
+      start_period: 30s
 
   comment_db:
     image: 'mysql:8.0'
@@ -43,7 +43,26 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 15s
+      start_period: 30s
+
+  user_db:
+    image: 'mysql:8.0'
+    environment:
+      - 'MYSQL_ROOT_PASSWORD=Kakemann'
+      - 'MYSQL_ROOT_USER=root'
+      - 'MYSQL_DATABASE=user'
+    volumes:
+      - ./mysql/user/init:/docker-entrypoint-initdb.d
+    ports:
+      - '3308:3306'
+    networks:
+      - services
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   consul:
     image: 'hashicorp/consul:latest'
@@ -113,6 +132,24 @@ services:
     environment:
       - SPRING_CLOUD_CONSUL_HOST=consul
       - SPRING_DATASOURCE_URL=jdbc:mysql://comment_db:3306/comment
+
+  user:
+    build:
+      context: ../User
+      dockerfile: Dockerfile
+    image: user:latest
+    ports:
+      - '8083:8083'
+    networks:
+      - services
+    depends_on:
+      user_db:
+        condition: service_healthy
+      manager:
+        condition: service_started
+    environment:
+      - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_DATASOURCE_URL=jdbc:mysql://user_db:3306/user
 
   manager:
     build:
