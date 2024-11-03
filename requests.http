@@ -1,0 +1,6 @@
+POST localhost:8083/user/saveOneUser
+Content-Type: application/json
+
+{
+  "username": "John"
+}
