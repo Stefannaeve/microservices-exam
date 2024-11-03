@@ -5,8 +5,6 @@ CREATE SCHEMA user;
 
 USE user;
 
-
-
 CREATE TABLE user(
     id BIGINT NOT NULL AUTO_INCREMENT,
     username VARCHAR(255),
@@ -14,10 +12,12 @@ CREATE TABLE user(
     PRIMARY KEY (id),
     UNIQUE (username)
 );
+
 CREATE TABLE book_Id(
     id BIGINT NOT NULL AUTO_INCREMENT,
-#     user_id BIGINT,
+    pages int,
+    readingProgress VARCHAR(20),
+    readingStatus ENUM('NotYetStarted', 'InProgress', 'Finished', 'DidNotFinish', 'ToBeRead'),
 
     PRIMARY KEY(id)
-
 );

@@ -1,8 +1,8 @@
 package microservices.user.services;
 
 import lombok.extern.slf4j.Slf4j;
-import microservices.user.models.BookId;
 import microservices.user.models.User;
+import microservices.user.models.UserBook;
 import microservices.user.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -76,17 +76,16 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.OK).body(bookIdList);
         }
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error " +
-                                                                          "message", "User has no books").body(null);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error " + "message", "User has no books").body(null);
     }
 
-    public ResponseEntity<User> addBookToUser(Long userId, BookId bookId){
+    public ResponseEntity<User> addBookToUser(Long userId, UserBook userBook){
         User user = userRepo.findById(userId).orElse(null);
         if (user == null){
             log.info(String.valueOf(user.getId()));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error message", "No matching user found").body(null);
         }
-        user.getBooks().add(bookId);
+        user.getBooks().add(userBook);
         userRepo.save(user);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }

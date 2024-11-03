@@ -1,8 +1,8 @@
 package microservices.user.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import microservices.user.models.BookId;
 import microservices.user.models.User;
+import microservices.user.models.UserBook;
 import microservices.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -43,8 +43,8 @@ public class UserController {
         return userService.fetchUserBooks(userId);
     }
     @PostMapping("/addBookToUser/{userId}")
-    public ResponseEntity addBookToUser(@PathVariable Long userId, @RequestBody BookId bookId){
+    public ResponseEntity addBookToUser(@PathVariable Long userId, @RequestBody UserBook userBook){
 
-        return userService.addBookToUser(userId, bookId);
+        return userService.addBookToUser(userId, userBook);
     }
 }

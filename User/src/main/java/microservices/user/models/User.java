@@ -27,7 +27,7 @@ public class User {
     @Column(name = "username", unique = true)
     private String username;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnoreProperties("userIds")
-    private List<BookId> books;
+    private List<UserBook> books;
 }
