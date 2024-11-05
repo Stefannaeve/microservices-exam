@@ -1,6 +1,13 @@
+
+@baseUser = localhost:8083/manager/user
+
+GET {{baseUser}}/fetchById/{55}
+
+###
 POST localhost:8083/user/saveOneUser
 Content-Type: application/json
 
 {
-  "username": "John"
+  "username": "Johnny"
 }
+
