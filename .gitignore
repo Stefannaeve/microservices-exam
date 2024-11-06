@@ -34,3 +34,6 @@ build/
 Book/src/main/resources/application.properties
 Comment/src/main/resources/application.properties
 User/src/main/resources/application.properties
+
+### Rabbit MQ ###
+erl_crash.dump

@@ -52,7 +52,7 @@ services:
       - 'MYSQL_ROOT_USER=root'
       - 'MYSQL_DATABASE=user'
     volumes:
-      - ./mysql/comment/init:/docker-entrypoint-initdb.d
+      - ./mysql/user/init:/docker-entrypoint-initdb.d
     ports:
       - '3308:3306'
     networks:

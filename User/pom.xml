@@ -11,7 +11,7 @@
     <groupId>microservice</groupId>
     <artifactId>user</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>User</name>
+    <name>user</name>
     <description>User</description>
 
     <properties>
