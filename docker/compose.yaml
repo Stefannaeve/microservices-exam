@@ -138,7 +138,6 @@ services:
       context: ../User
       dockerfile: Dockerfile
     image: user:latest
-    #image: 'comment:0.0.1-SNAPSHOT'
     ports:
       - '8083:8083'
     networks:
