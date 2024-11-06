@@ -1,7 +1,6 @@
 package microservices.user.services;
 
 import lombok.extern.slf4j.Slf4j;
-
 import microservices.user.models.User;
 import microservices.user.models.UserBook;
 import microservices.user.repositories.UserRepo;
@@ -82,6 +81,7 @@ public class UserService {
     }
 
     public ResponseEntity addBookToUser(Long userId, UserBook userBook){
+
         User user = userRepo.findById(userId).orElse(null);
         if (user == null){
             log.info(String.valueOf(user.getId()));
