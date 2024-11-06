@@ -1,6 +1,7 @@
 package microservices.user.services;
 
 import lombok.extern.slf4j.Slf4j;
+
 import microservices.user.models.User;
 import microservices.user.models.UserBook;
 import microservices.user.repositories.UserRepo;
@@ -55,16 +56,16 @@ public class UserService {
         if (user != null){
             return ResponseEntity.status(HttpStatus.OK).body(user);
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error message", "No matching user found").body(user);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error message", "No matching user found").body("No matching user");
     }
 
-    public ResponseEntity<List<Long>> fetchUserBooks(Long userId){
+    public ResponseEntity fetchUserBooks(Long userId){
 
         User user = userRepo.findById(userId).orElse(null);
 
         if (user == null){
             return ResponseEntity.status(
-                    HttpStatus.NOT_FOUND).header("Error message", "No matching user found").body(null);
+                    HttpStatus.NOT_FOUND).header("Error message", "No matching user found").body("No user found");
         }
 
         if(user.getBooks() != null){
@@ -76,14 +77,15 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.OK).body(bookIdList);
         }
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error " + "message", "User has no books").body(null);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error " +
+                                                                          "message", "User has no books").body("User has no books");
     }
 
-    public ResponseEntity<User> addBookToUser(Long userId, UserBook userBook){
+    public ResponseEntity addBookToUser(Long userId, UserBook userBook){
         User user = userRepo.findById(userId).orElse(null);
         if (user == null){
             log.info(String.valueOf(user.getId()));
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error message", "No matching user found").body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error message", "No matching user found").body("No user found");
         }
         user.getBooks().add(userBook);
         userRepo.save(user);
