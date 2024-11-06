@@ -1,5 +1,4 @@
 package microservices.exam.models;
-
 import jakarta.persistence.*;
 import lombok.*;
 
