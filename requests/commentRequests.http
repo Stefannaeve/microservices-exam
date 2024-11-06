@@ -1,0 +1,8 @@
+
+@baseComment = localhost:8080/manager/comment
+
+GET {{baseComment}}/fetchAll
+
+###
+GET {{baseComment}}/fetchById/1
+

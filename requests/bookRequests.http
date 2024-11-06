@@ -1,0 +1,17 @@
+
+@baseBook = localhost:8080/manager/book
+
+GET {{baseBook}}/fetchAll
+
+###
+POST {{baseBook}}/saveBook
+Content-Type: application/json
+
+{
+  "title": "Mistbftyftounujytyguhiji",
+  "author": "Brandon Sanderso",
+  "pages": 354,
+  "publishDate": 20240823,
+  "bookContent": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla pretium purus eget vehicula porta. Sed lobortis tincidunt leo, nec cursus nibh cursus quis. Maecenas ut erat ut lacus blandit congue. Duis bibendum urna auctor eros rhoncus, ac vestibulum risus fringilla. Vivamus vitae venenatis velit. Sed mattis leo vitae lorem semper facilisis. Morbi finibus nulla ac turpis auctor, pulvinar molestie ligula rutrum. Praesent ultricies purus eu elementum pellentesque. In gravida, neque a fringilla efficitur, dui sapien ultricies ex, non hendrerit urna diam in neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla pretium purus eget vehicula porta. Sed lobortis tincidunt leo, nec cursus nibh cursus quis. Maecenas ut erat ut lacus blandit congue. Duis bibendum urna auctor eros rhoncus, ac vestibulum risus fringilla. Vivamus vitae venenatis velit. Sed mattis leo vitae lorem semper facilisis. Morbi finibus nulla"
+}
+
