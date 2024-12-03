@@ -41,4 +41,14 @@ public class UserController {
     public ResponseEntity addBookToUser(@PathVariable Long userId, @RequestBody UserBook userBook){
         return userService.addBookToUser(userId, userBook);
     }
+
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity deleteUser(@PathVariable Long userId) {
+        return userService.deleteUserById(userId);
+    }
+
+    @DeleteMapping("/{userId}/deleteBook/{bookId}")
+    public ResponseEntity deleteBookFromUser(@PathVariable Long userId, @PathVariable Long bookId) {
+        return userService.deleteBookFromUser(userId, bookId);
+    }
 }
