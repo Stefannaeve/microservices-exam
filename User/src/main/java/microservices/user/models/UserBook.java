@@ -17,6 +17,12 @@ public class UserBook {
     @Id
     private Long id;
 
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "author")
+    private String author;
+
     @Column(name = "pages")
     private int pages;
 

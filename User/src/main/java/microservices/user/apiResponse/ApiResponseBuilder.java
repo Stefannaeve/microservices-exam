@@ -1,6 +1,6 @@
-package microservices.exam.apiResponse;
+package microservices.user.apiResponse;
 
-import microservices.exam.dtos.ApiResponseDTO;
+import microservices.user.dtos.ApiResponseDTO;
 import org.springframework.http.HttpStatus;
 
 import java.util.*;

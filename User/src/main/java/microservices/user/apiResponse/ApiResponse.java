@@ -1,4 +1,5 @@
-package microservices.exam.apiResponse;
+package microservices.user.apiResponse;
+
 import org.springframework.http.HttpStatus;
 import java.util.Optional;
 

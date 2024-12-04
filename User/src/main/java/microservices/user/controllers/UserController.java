@@ -1,10 +1,12 @@
 package microservices.user.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import microservices.user.apiResponse.ApiResponse;
 import microservices.user.models.User;
 import microservices.user.models.UserBook;
 import microservices.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,8 +31,18 @@ public class UserController {
     }
 
     @PostMapping("/saveOneUser")
-    public ResponseEntity<User> saveOneUser(@RequestBody User userToSave){
-        return userService.saveOneUser(userToSave);
+    public ResponseEntity<ApiResponse<User>> saveOneUser(@RequestBody User userToSave){
+        ApiResponse<User> savedOneUser = userService.saveOneUser(userToSave);
+
+        switch (savedOneUser) {
+            case ApiResponse.Success<User> success -> {
+                return ResponseEntity.status(HttpStatus.CREATED).body(success);
+            }
+            case ApiResponse.Failure<User> failure -> {
+                System.out.println("Something went wrong: " + failure.errorMessage());
+                return new ResponseEntity<>(failure, failure.status());
+            }
+        }
     }
 
     @GetMapping("/fetchUserBooks/{userId}")
@@ -38,7 +50,48 @@ public class UserController {
         return userService.fetchUserBooks(userId);
     }
     @PostMapping("/addBookToUser/{userId}")
-    public ResponseEntity addBookToUser(@PathVariable Long userId, @RequestBody UserBook userBook){
-        return userService.addBookToUser(userId, userBook);
+    public ResponseEntity<ApiResponse<User>> addBookToUser(@PathVariable Long userId, @RequestBody UserBook userBook){
+        ApiResponse<User> addBookToUser = userService.addBookToUser(userId, userBook);
+
+        switch (addBookToUser){
+            case ApiResponse.Success<User> success -> {
+                return ResponseEntity.status(HttpStatus.CREATED).body(success);
+            }
+            case ApiResponse.Failure<User> failure -> {
+                System.out.println("Something went wrong: " + failure.errorMessage());
+                return new ResponseEntity<>(failure,failure.status());
+            }
+        }
+    }
+
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<ApiResponse<User>> deleteUser(@PathVariable Long userId) {
+        ApiResponse<User> deleteUser = userService.deleteUserById(userId);
+
+        switch (deleteUser){
+            case ApiResponse.Success<User> success -> {
+                return ResponseEntity.status(HttpStatus.OK).body(success);
+            }
+            case ApiResponse.Failure<User> failure -> {
+                System.out.println("Something went wrong: " + failure.errorMessage());
+                return new ResponseEntity<>(failure, failure.status());
+            }
+        }
+    }
+
+    @DeleteMapping("/{userId}/deleteBook/{bookId}")
+    public ResponseEntity<ApiResponse<User>> deleteBookFromUser(@PathVariable Long userId, @PathVariable Long bookId) {
+        ApiResponse<User> deleteBookFromUser = userService.deleteBookFromUser(userId, bookId);
+
+        switch (deleteBookFromUser){
+            case ApiResponse.Success<User> success -> {
+                return ResponseEntity.status(HttpStatus.OK).body(success);
+            }
+            case ApiResponse.Failure<User> failure -> {
+                System.out.println("Something went wrong: " + failure.errorMessage());
+                return new ResponseEntity<>(failure, failure.status());
+            }
+        }
+
     }
 }
