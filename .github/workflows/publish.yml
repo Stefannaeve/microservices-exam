@@ -8,6 +8,8 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -33,7 +35,7 @@ jobs:
 
       - name: Debug Environment Variables
         run: |
-          echo "DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}"
+          echo "DOCKERHUB_USERNAME=${DOCKERHUB_USERNAME}"
           echo "IMAGE_TAG=${IMAGE_TAG}"
 
 
@@ -46,7 +48,7 @@ jobs:
         run: |
           services=(gateway book comment user manager)
           for service in "${services[@]}"; do
-            docker tag "${{ secrets.DOCKERHUB_USERNAME }}/microservices:${IMAGE_TAG}-${service}" "${{ secrets.DOCKERHUB_USERNAME }}/microservices:latest-${service}"
+            docker tag "${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-${service}" "${DOCKERHUB_USERNAME}/microservices:latest-${service}"
           done
 
       - name: Push Docker images
@@ -54,6 +56,6 @@ jobs:
         run: |
           services=(gateway book comment user manager)
           for service in "${services[@]}"; do
-            docker push "${{ secrets.DOCKERHUB_USERNAME }}/microservices:${IMAGE_TAG}-${service}"
-            docker push "${{ secrets.DOCKERHUB_USERNAME }}/microservices:latest-${service}"
+            docker push "${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-${service}"
+            docker push "${DOCKERHUB_USERNAME}/microservices:latest-${service}"
           done
