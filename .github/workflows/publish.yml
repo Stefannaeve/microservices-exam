@@ -46,7 +46,7 @@ jobs:
         run: |
           services=(gateway book comment user manager)
           for service in "${services[@]}"; do
-            docker tag "${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-${service}" "${DOCKERHUB_USERNAME}/microservices:latest-${service}"
+            docker tag "${{ secrets.DOCKERHUB_USERNAME }}/microservices:${IMAGE_TAG}-${service}" "${{ secrets.DOCKERHUB_USERNAME }}/microservices:latest-${service}"
           done
 
       - name: Push Docker images
@@ -54,6 +54,6 @@ jobs:
         run: |
           services=(gateway book comment user manager)
           for service in "${services[@]}"; do
-            docker push "${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-${service}"
-            docker push "${DOCKERHUB_USERNAME}/microservices:latest-${service}"
+            docker push "${{ secrets.DOCKERHUB_USERNAME }}/microservices:${IMAGE_TAG}-${service}"
+            docker push "${{ secrets.DOCKERHUB_USERNAME }}/microservices:latest-${service}"
           done
