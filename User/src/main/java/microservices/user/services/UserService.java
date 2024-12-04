@@ -121,6 +121,16 @@ public class UserService {
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error " +
+                                                                          "message", "User has no books").body("User has no books");
+    }
+
+    public ResponseEntity addBookToUser(Long userId, UserBook userBook){
+
+        User user = userRepo.findById(userId).orElse(null);
+        if (user == null){
+            log.info(String.valueOf(user.getId()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error message", "No matching user found").body("No user found");
         }
     }
 }
