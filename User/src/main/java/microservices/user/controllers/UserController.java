@@ -50,8 +50,18 @@ public class UserController {
         return userService.fetchUserBooks(userId);
     }
     @PostMapping("/addBookToUser/{userId}")
-    public ResponseEntity addBookToUser(@PathVariable Long userId, @RequestBody UserBook userBook){
-        return userService.addBookToUser(userId, userBook);
+    public ResponseEntity<ApiResponse<User>> addBookToUser(@PathVariable Long userId, @RequestBody UserBook userBook){
+        ApiResponse<User> addBookToUser = userService.addBookToUser(userId, userBook);
+
+        switch (addBookToUser){
+            case ApiResponse.Success<User> success -> {
+                return ResponseEntity.status(HttpStatus.CREATED).body(success);
+            }
+            case ApiResponse.Failure<User> failure -> {
+                System.out.println("Something went wrong: " + failure.errorMessage());
+                return new ResponseEntity<>(failure,failure.status());
+            }
+        }
     }
 
     @DeleteMapping("/delete/{userId}")

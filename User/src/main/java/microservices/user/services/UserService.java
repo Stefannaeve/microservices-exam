@@ -68,21 +68,25 @@ public class UserService {
                 "message", "User has no books").body("User has no books");
     }
 
-    public ResponseEntity addBookToUser(Long userId, UserBook userBook){
-        User user = userRepo.findById(userId).orElse(null);
-        if (user == null){
-            log.info(String.valueOf(user.getId()));
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).header("Error message", "No matching user found")
-                    .body("No user found");
+    public ApiResponse<User> addBookToUser(Long userId, UserBook userBook){
+        ApiResponseBuilder<User> apiResponseBuilder = new ApiResponseBuilder<>();
+
+        try {
+            User user = userRepo.findById(userId).orElse(null);
+            if (user == null){
+                log.info(String.valueOf(user.getId()));
+                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "No matching user found");
+            }
+            user.getBooks().add(userBook);
+            userRepo.save(user);
+            return apiResponseBuilder.success(user);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        user.getBooks().add(userBook);
-        userRepo.save(user);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     public ApiResponse<User> deleteUserById(Long userId) {
         ApiResponseBuilder<User> apiResponseBuilder = new ApiResponseBuilder<>();
-
         try {
             User user = userRepo.findById(userId).orElse(null);
             if (user == null) {
