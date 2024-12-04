@@ -37,3 +37,4 @@ User/src/main/resources/application.properties
 
 ### Rabbit MQ ###
 erl_crash.dump
+/docker/.env
