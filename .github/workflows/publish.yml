@@ -28,9 +28,12 @@ jobs:
       - name: Set environment variables
         run: echo "IMAGE_TAG=${{ env.SHORT_SHA }}" >> $GITHUB_ENV
 
+      - name: Check Docker version
+        run: docker version
+
       - name: Build Docker images with docker-compose
         working-directory: ./docker
-        run: docker-compose build
+        run: docker compose build
 
       - name: Tag images with 'latest'
         working-directory: ./docker
