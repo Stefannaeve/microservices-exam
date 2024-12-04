@@ -43,6 +43,7 @@ public class BookService {
     }
 
     public ApiResponse<Book> saveOneBook(Book book) {
+        ApiResponseBuilder<Book> apiResponseBuilder = new ApiResponseBuilder<>();
         try {
             // Save the book and publish an event if successful
             Book savedBook = bookRepository.save(book);
@@ -57,7 +58,7 @@ public class BookService {
                     savedBook.getPublishDate(),
                     savedBook.getBookContent()
             ));
-            return new ApiResponse.Success<>(Optional.of(savedBook), HttpStatus.OK);
+            return apiResponseBuilder.success(savedBook);
         }
         catch (Exception e){
             return new ApiResponse.Failure<>(Optional.empty(), HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save book");

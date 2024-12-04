@@ -1,6 +1,8 @@
 package microservices.user.services;
 
 import lombok.extern.slf4j.Slf4j;
+import microservices.user.apiResponse.ApiResponse;
+import microservices.user.apiResponse.ApiResponseBuilder;
 import microservices.user.eventDriven.UserEvent;
 import microservices.user.eventDriven.UserEventPublisher;
 import microservices.user.models.User;
@@ -30,15 +32,16 @@ public class UserService {
         ;
     }
 
-    public ResponseEntity saveOneUser(User userToSave){
+    public ApiResponse<User> saveOneUser(User userToSave){
+        ApiResponseBuilder<User> apiResponseBuilder = new ApiResponseBuilder<>();
         try {
             User savedUser = userRepo.save(userToSave);
             UserEvent createEvent = new UserEvent(savedUser.getId(), "CREATE");
             userEventPublisher.publishCreateEvent(createEvent);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+            return apiResponseBuilder.success(savedUser);
         } catch (Exception e) {
             log.error("Error saving user: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return new ApiResponse.Failure<>(Optional.empty(), HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save user");
         }
     }
 
@@ -77,32 +80,43 @@ public class UserService {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
-    public ResponseEntity deleteUserById(Long userId) {
-        User user = userRepo.findById(userId).orElse(null);
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+    public ApiResponse<User> deleteUserById(Long userId) {
+        ApiResponseBuilder<User> apiResponseBuilder = new ApiResponseBuilder<>();
+
+        try {
+            User user = userRepo.findById(userId).orElse(null);
+            if (user == null) {
+                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "User not found");
+            }
+            userEventPublisher.publishDeleteEvent(userId);
+            return apiResponseBuilder.success(user);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        userEventPublisher.publishDeleteEvent(userId);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body("User deletion request sent to queue");
     }
 
-    public ResponseEntity deleteBookFromUser(Long userId, Long bookId) {
-        User user = userRepo.findById(userId).orElse(null);
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }
-        Optional<UserBook> userBook = user.getBooks()
-                .stream()
-                .filter(book -> book.getId().equals(bookId))
-                .findFirst();
+    public ApiResponse<User> deleteBookFromUser(Long userId, Long bookId) {
+        ApiResponseBuilder<User> apiResponseBuilder = new ApiResponseBuilder<>();
+        try {
+            User user = userRepo.findById(userId).orElse(null);
+            if (user == null) {
+                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "User not found");
+            }
+            Optional<UserBook> userBook = user.getBooks()
+                    .stream()
+                    .filter(book -> book.getId().equals(bookId))
+                    .findFirst();
 
-        if (userBook.isPresent()) {
-            user.getBooks().remove(userBook.get());
-            userRepo.save(user);
-            userEventPublisher.publishBookDeletionEvent(userId, bookId);
-            return ResponseEntity.status(HttpStatus.OK).body("Removed book from user");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Book not found in user's book list");
+            if (userBook.isPresent()) {
+                user.getBooks().remove(userBook.get());
+                userRepo.save(user);
+                userEventPublisher.publishBookDeletionEvent(userId, bookId);
+                return apiResponseBuilder.success(user);
+            } else {
+                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Book not found in user's book list");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }
