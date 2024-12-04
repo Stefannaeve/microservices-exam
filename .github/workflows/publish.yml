@@ -31,6 +31,12 @@ jobs:
       - name: Check Docker version
         run: docker version
 
+      - name: Debug Environment Variables
+        run: |
+          echo "DOCKERHUB_USERNAME=${DOCKERHUB_USERNAME}"
+          echo "IMAGE_TAG=${IMAGE_TAG}"
+
+
       - name: Build Docker images with docker-compose
         working-directory: ./docker
         run: docker compose build
