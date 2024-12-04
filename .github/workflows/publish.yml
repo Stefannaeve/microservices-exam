@@ -25,11 +25,26 @@ jobs:
         id: vars
         run: echo "SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
 
-      - name: Build and push Docker image with hash
-        uses: docker/build-push-action@v6
-        with:
-          context: ./docker
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/microservices:${{ env.SHORT_SHA }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/microservices:latest
+      - name: Set environment variables
+        run: echo "IMAGE_TAG=${{ env.SHORT_SHA }}" >> $GITHUB_ENV
+
+      - name: Build Docker images with docker-compose
+        working-directory: ./docker
+        run: docker-compose build
+
+      - name: Tag images with 'latest'
+        working-directory: ./docker
+        run: |
+          services=(gateway book comment user manager)
+          for service in "${services[@]}"; do
+            docker tag "${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-${service}" "${DOCKERHUB_USERNAME}/microservices:latest-${service}"
+          done
+
+      - name: Push Docker images
+        working-directory: ./docker
+        run: |
+          services=(gateway book comment user manager)
+          for service in "${services[@]}"; do
+            docker push "${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-${service}"
+            docker push "${DOCKERHUB_USERNAME}/microservices:latest-${service}"
+          done
