@@ -31,12 +31,11 @@ public class UserService {
         this.userEventPublisher = userEventPublisher;
     }
 
-    public ApiResponse<User> saveOneUser(User userToSave){
+    public ApiResponse<User> saveOneUser(User userToSave) {
         ApiResponseBuilder<User> apiResponseBuilder = new ApiResponseBuilder<>();
         try {
             User savedUser = userRepo.save(userToSave);
-            UserEvent createEvent = new UserEvent(savedUser.getId(), "CREATE");
-            userEventPublisher.publishCreateEvent(createEvent);
+            userEventPublisher.publishCreateEvent(savedUser.getId());
             return apiResponseBuilder.success(savedUser);
         } catch (Exception e) {
             log.error("Error saving user: {}", e.getMessage(), e);
