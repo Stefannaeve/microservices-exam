@@ -32,16 +32,16 @@ public class UserEventPublisher {
         log.info("Published create event for userId: {}", userId);
     }
 
-
     public void publishBookDeletionEvent(Long userId, Long bookId) {
         UserEvent userEvent = new UserEvent(userId, "DELETE_BOOK", bookId);
         rabbitTemplate.convertAndSend(exchangeName, "", userEvent);
         log.info("Published book deletion event for userId: {} and bookId: {}", userId, bookId);
     }
 
-    public void publishProgressUpdateEvent(Long userId, Long bookId, String newProgress) {
-        UserEvent userEvent = new UserEvent(userId, "UPDATE_PROGRESS", bookId, newProgress);
+    public void publishProgressUpdateEvent(Long userId, Long bookId, String newProgress, String newStatus) {
+        UserEvent userEvent = new UserEvent(userId, "UPDATE_PROGRESS", bookId, newProgress, newStatus);
         rabbitTemplate.convertAndSend(exchangeName, "", userEvent);
-        log.info("Published progress update event for userId: {}, bookId: {}, and newProgress: {}", userId, bookId, newProgress);
+        log.info("Published progress update event for userId: {}, bookId: {}, newProgress: {}, newStatus: {}", userId, bookId, newProgress, newStatus);
     }
+
 }

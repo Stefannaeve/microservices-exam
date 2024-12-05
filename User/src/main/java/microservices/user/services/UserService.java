@@ -3,7 +3,6 @@ package microservices.user.services;
 import lombok.extern.slf4j.Slf4j;
 import microservices.user.apiResponse.ApiResponse;
 import microservices.user.apiResponse.ApiResponseBuilder;
-import microservices.user.eventDriven.UserEvent;
 import microservices.user.eventDriven.UserEventPublisher;
 import microservices.user.models.ReadingStatus;
 import microservices.user.models.User;
@@ -14,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -134,8 +134,9 @@ public class UserService {
         }
     }
 
-    public ApiResponse<User> updateReadingProgress(Long userId, Long bookId, String newProgress) {
+    public ApiResponse<User> updateReadingProgress(Long userId, Long bookId, String newProgress, String newStatus) {
         ApiResponseBuilder<User> apiResponseBuilder = new ApiResponseBuilder<>();
+
         try {
             User user = userRepo.findById(userId).orElse(null);
             if (user == null) {
@@ -148,18 +149,27 @@ public class UserService {
             if (optionalBook.isEmpty()) {
                 return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Book not found in user's list");
             }
+
+            ReadingStatus readingStatus;
+            try {
+                readingStatus = ReadingStatus.valueOf(newStatus);
+            } catch (IllegalArgumentException e) {
+                String validStatuses = Arrays.toString(ReadingStatus.values());
+                return apiResponseBuilder.failure(HttpStatus.BAD_REQUEST,
+                        "Not valid reading status. Valid options are: " + validStatuses);
+            }
+
             UserBook book = optionalBook.get();
             book.setReadingProgress(newProgress);
-
-            if ("100%".equals(newProgress)) {
-                book.setReadingStatus(ReadingStatus.Finished);
-            }
+            book.setReadingStatus(readingStatus);
             userRepo.save(user);
-            userEventPublisher.publishProgressUpdateEvent(userId, bookId, newProgress);
+
+            userEventPublisher.publishProgressUpdateEvent(userId, bookId, newProgress, newStatus);
             return apiResponseBuilder.success(user);
         } catch (Exception e) {
             log.error("Error updating reading progress for userId: {} and bookId: {}", userId, bookId, e);
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Error, reading progress did not update");
         }
     }
+
 }
