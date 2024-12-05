@@ -24,15 +24,21 @@ public class UserEventListener {
     public void handleUserEvent(UserEvent userEvent) {
         log.info("Received event: {}", userEvent);
         try {
-            Thread.sleep(5000);
-            if ("DELETE".equals(userEvent.getEventType())) {
+            Thread.sleep(5000); // Simulated delay for testing purposes
+
+            String eventType = userEvent.getEventType();
+            if ("DELETE".equals(eventType)) {
                 handleUserDeletion(userEvent.getUserId());
-            }
-            else if ("DELETE_BOOK".equals(userEvent.getEventType())) {
+            } else if ("DELETE_BOOK".equals(eventType)) {
                 handleBookDeletion(userEvent.getUserId(), userEvent.getBookId());
+            } else if ("UPDATE_PROGRESS".equals(eventType)) {
+                handleProgressUpdate(userEvent);
+            } else {
+                log.warn("Unknown event type: {}", eventType);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            log.error("Error processing event: {}", e.getMessage(), e);
         }
     }
 
@@ -48,7 +54,6 @@ public class UserEventListener {
 
     private void handleBookDeletion(Long userId, Long bookId) {
         User user = userRepo.findById(userId).orElse(null);
-
         if (user != null) {
             Optional<UserBook> userBook = user.getBooks()
                     .stream()
@@ -66,11 +71,14 @@ public class UserEventListener {
         }
     }
 
-    private void handleReadingProgressUpdate(Long userId, Long bookId, String newProgress) {
-        User user = userRepo.findById(userId).orElse(null);
+    private void handleProgressUpdate(UserEvent userEvent) {
+        Long userId = userEvent.getUserId();
+        Long bookId = userEvent.getBookId();
+        String newProgress = userEvent.getReadingProgress();
 
+        User user = userRepo.findById(userId).orElse(null);
         if (user == null) {
-            log.warn("User with id {} not found during reading progress update", userId);
+            log.warn("User with id {} not found while handling UPDATE_PROGRESS event", userId);
             return;
         }
 
@@ -79,21 +87,18 @@ public class UserEventListener {
                 .filter(book -> book.getId().equals(bookId))
                 .findFirst();
 
-        if (optionalBook.isEmpty()) {
-            log.warn("Book with id {} not found in user's collection during progress update", bookId);
-            return;
+        if (optionalBook.isPresent()) {
+            UserBook book = optionalBook.get();
+            book.setReadingProgress(newProgress);
+
+            if ("100%".equals(newProgress)) {
+                book.setReadingStatus(ReadingStatus.Finished);
+            }
+
+            userRepo.save(user);
+            log.info("Updated progress for userId: {}, bookId: {} to {}", userId, bookId, newProgress);
+        } else {
+            log.warn("Book with id {} not found in user {}'s collection", bookId, userId);
         }
-
-        UserBook book = optionalBook.get();
-        book.setReadingProgress(newProgress);
-
-        if ("100%".equals(newProgress)) {
-            book.setReadingStatus(ReadingStatus.Finished);
-        }
-
-        userRepo.save(user);
-        log.info("Updated reading progress to {} for bookId: {} and userId: {}", newProgress, bookId, userId);
     }
-
-
 }

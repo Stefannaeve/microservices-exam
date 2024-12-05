@@ -147,9 +147,8 @@ public class UserService {
                     .filter(book -> book.getId().equals(bookId))
                     .findFirst();
             if (optionalBook.isEmpty()) {
-                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Book not found in user's lost");
+                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Book not found in user's list");
             }
-
             UserBook book = optionalBook.get();
             book.setReadingProgress(newProgress);
 
@@ -157,11 +156,10 @@ public class UserService {
                 book.setReadingStatus(ReadingStatus.Finished);
             }
             userRepo.save(user);
-
-            UserEvent userEvent = new UserEvent(userId, "UPDATE_PROGRESS", bookId, newProgress);
-            userEventPublisher.publishProgressUpdateEvent(userEvent);
+            userEventPublisher.publishProgressUpdateEvent(userId, bookId, newProgress);
             return apiResponseBuilder.success(user);
         } catch (Exception e) {
+            log.error("Error updating reading progress for userId: {} and bookId: {}", userId, bookId, e);
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Error, reading progress did not update");
         }
     }
