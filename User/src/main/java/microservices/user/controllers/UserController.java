@@ -26,8 +26,18 @@ public class UserController {
     }
 
     @GetMapping("/fetchById/{userId}")
-    public ResponseEntity<User> fetchById(@PathVariable Long userId){
-        return userService.fetchUserById(userId);
+    public ResponseEntity<ApiResponse<User>> fetchById(@PathVariable Long userId){
+        ApiResponse<User> fetchById = userService.fetchUserById(userId);
+
+        switch (fetchById){
+            case ApiResponse.Success<User> success -> {
+                return ResponseEntity.status(HttpStatus.OK).body(success);
+            }
+            case ApiResponse.Failure<User> failure -> {
+                System.out.println("Something went wrong");
+                return new ResponseEntity<>(failure, failure.status());
+            }
+        }
     }
 
     @PostMapping("/saveOneUser")
@@ -46,9 +56,20 @@ public class UserController {
     }
 
     @GetMapping("/fetchUserBooks/{userId}")
-    public ResponseEntity<List<Long>> fetchUserBooks(@PathVariable Long userId){
-        return userService.fetchUserBooks(userId);
+    public ApiResponse<List<Long>> fetchUserBooks(@PathVariable Long userId){
+        ApiResponse<List<Long>> fetchUserBook = userService.fetchUserBooks(userId);
+
+        switch (fetchUserBook){
+            case ApiResponse.Success<List<Long>> success -> {
+                return ResponseEntity.status(HttpStatus.OK).body(success).getBody();
+            }
+            case ApiResponse.Failure<List<Long>> failure -> {
+                System.out.println("Something went wrong");
+                return new ResponseEntity<>(failure, failure.status()).getBody();
+            }
+        }
     }
+
     @PostMapping("/addBookToUser/{userId}")
     public ResponseEntity<ApiResponse<User>> addBookToUser(@PathVariable Long userId, @RequestBody UserBook userBook){
         ApiResponse<User> addBookToUser = userService.addBookToUser(userId, userBook);
