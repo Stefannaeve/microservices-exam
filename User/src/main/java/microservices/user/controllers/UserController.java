@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
@@ -113,6 +114,23 @@ public class UserController {
                 return new ResponseEntity<>(failure, failure.status());
             }
         }
+    }
 
+    @PatchMapping("/{userId}/books/{bookId}/progress")
+    public ResponseEntity<ApiResponse<User>> updateReadingProgress(@PathVariable Long userId, @PathVariable Long bookId, @RequestBody Map<String, String> requestBody) {
+
+        String newReadingProgress = requestBody.get("newReadingProgress");
+
+        ApiResponse<User> updateReadingProgress = userService.updateReadingProgress(userId, bookId, newReadingProgress);
+
+        switch (updateReadingProgress) {
+            case ApiResponse.Success<User> success -> {
+                return ResponseEntity.status(HttpStatus.OK).body(success);
+            }
+            case ApiResponse.Failure<User> failure -> {
+                System.out.println("Something went wrong: " + failure.errorMessage());
+                return new ResponseEntity<>(failure, failure.status());
+            }
+        }
     }
 }

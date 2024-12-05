@@ -37,4 +37,10 @@ public class UserEventPublisher {
         log.info("Published book deletion event for userId: {} and bookId: {}", userId, bookId);
     }
 
+    public void publishProgressUpdateEvent(UserEvent userEvent) {
+        rabbitTemplate.convertAndSend(exchangeName, "", userEvent);
+        log.info("Published progress update event for userId: {} and bookId: {}", userEvent.getUserId(), userEvent.getBookId());
+    }
+
+
 }

@@ -5,6 +5,7 @@ import microservices.user.apiResponse.ApiResponse;
 import microservices.user.apiResponse.ApiResponseBuilder;
 import microservices.user.eventDriven.UserEvent;
 import microservices.user.eventDriven.UserEventPublisher;
+import microservices.user.models.ReadingStatus;
 import microservices.user.models.User;
 import microservices.user.models.UserBook;
 import microservices.user.repositories.UserRepo;
@@ -134,4 +135,34 @@ public class UserService {
         }
     }
 
+    public ApiResponse<User> updateReadingProgress(Long userId, Long bookId, String newProgress) {
+        ApiResponseBuilder<User> apiResponseBuilder = new ApiResponseBuilder<>();
+        try {
+            User user = userRepo.findById(userId).orElse(null);
+            if (user == null) {
+                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "User not found");
+            }
+            Optional<UserBook> optionalBook = user.getBooks()
+                    .stream()
+                    .filter(book -> book.getId().equals(bookId))
+                    .findFirst();
+            if (optionalBook.isEmpty()) {
+                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Book not found in user's lost");
+            }
+
+            UserBook book = optionalBook.get();
+            book.setReadingProgress(newProgress);
+
+            if ("100%".equals(newProgress)) {
+                book.setReadingStatus(ReadingStatus.Finished);
+            }
+            userRepo.save(user);
+
+            UserEvent userEvent = new UserEvent(userId, "UPDATE_PROGRESS", bookId, newProgress);
+            userEventPublisher.publishProgressUpdateEvent(userEvent);
+            return apiResponseBuilder.success(user);
+        } catch (Exception e) {
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Error, reading progress did not update");
+        }
+    }
 }

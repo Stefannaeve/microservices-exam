@@ -1,6 +1,7 @@
 package microservices.user.eventDriven;
 
 import lombok.extern.slf4j.Slf4j;
+import microservices.user.models.ReadingStatus;
 import microservices.user.models.User;
 import microservices.user.models.UserBook;
 import microservices.user.repositories.UserRepo;
@@ -64,5 +65,35 @@ public class UserEventListener {
             log.warn("User with id {} not found during book deletion", userId);
         }
     }
+
+    private void handleReadingProgressUpdate(Long userId, Long bookId, String newProgress) {
+        User user = userRepo.findById(userId).orElse(null);
+
+        if (user == null) {
+            log.warn("User with id {} not found during reading progress update", userId);
+            return;
+        }
+
+        Optional<UserBook> optionalBook = user.getBooks()
+                .stream()
+                .filter(book -> book.getId().equals(bookId))
+                .findFirst();
+
+        if (optionalBook.isEmpty()) {
+            log.warn("Book with id {} not found in user's collection during progress update", bookId);
+            return;
+        }
+
+        UserBook book = optionalBook.get();
+        book.setReadingProgress(newProgress);
+
+        if ("100%".equals(newProgress)) {
+            book.setReadingStatus(ReadingStatus.Finished);
+        }
+
+        userRepo.save(user);
+        log.info("Updated reading progress to {} for bookId: {} and userId: {}", newProgress, bookId, userId);
+    }
+
 
 }
