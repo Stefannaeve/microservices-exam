@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-// Message payload
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,7 +15,7 @@ public class UserEvent {
     private Long bookId;       // The book associated with the event (if applicable)
     private String readingProgress; // Optional: For update progress events
     private String readingStatus; // Add this field for the status
-
+   
     public UserEvent(Long userId, String eventType) {
         this.userId = userId;
         this.eventType = eventType;

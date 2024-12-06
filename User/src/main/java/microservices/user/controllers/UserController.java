@@ -99,7 +99,6 @@ public class UserController {
                 return new ResponseEntity<>(failure, failure.status());
             }
         }
-    }
 
     @DeleteMapping("/{userId}/deleteBook/{bookId}")
     public ResponseEntity<ApiResponse<User>> deleteBookFromUser(@PathVariable Long userId, @PathVariable Long bookId) {
