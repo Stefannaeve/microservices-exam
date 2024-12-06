@@ -49,22 +49,6 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.OK).body(comments);
     }
 
-//    @GetMapping("/fetchAllComments")
-//    public ResponseEntity<List<CommentDTO>> fetchAllComments(){
-//        List<CommentDTO> comments = bookClient.externalComment();
-//        return ResponseEntity.status(HttpStatus.OK).body(comments);
-//    }
-
-    /*
-    @GetMapping("/fetchAll")
-    public ResponseEntity<List<Book>> fetchAll() {
-        List<Book> books = bookService.fetchAll();
-
-        return ResponseEntity.status(HttpStatus.OK).body(books);
-    }
-     */
-
-
     @PostMapping("/saveOneBook")
     public ResponseEntity<ApiResponse<Book>> saveOneBook(@RequestBody Book book) {
         ApiResponse<Book> savedBook = bookService.saveOneBook(book);

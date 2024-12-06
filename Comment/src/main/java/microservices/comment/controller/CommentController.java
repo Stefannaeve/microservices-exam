@@ -23,20 +23,6 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    //    @GetMapping("/fetchAll")
-//    public ResponseEntity<ApiResponse<List<Comment>>> fetchAll() {
-//        ApiResponse<List<Comment>> comments = commentService.fetchAll();
-//
-//        switch (comments) {
-//            case ApiResponse.Success<List<Comment>> success -> {
-//                return ResponseEntity.status(HttpStatus.OK).body(comments);
-//            }
-//            case ApiResponse.Failure<List<Comment>> failure -> {
-//                log.error(failure.errorMessage());
-//                return ResponseEntity.status(failure.status()).body(comments);
-//            }
-//        }
-//    }
     @GetMapping("/fetchAll")
     public ResponseEntity<ApiResponse<List<Comment>>> fetchAll() {
         ApiResponse<List<Comment>> commentResponse = commentService.fetchAll();
@@ -76,15 +62,6 @@ public class CommentController {
             }
         }
     }
-
-    /*
-    @GetMapping("/fetchAll")
-    public ResponseEntity<List<Book>> fetchAll() {
-        List<Book> books = bookService.fetchAll();
-
-        return ResponseEntity.status(HttpStatus.OK).body(books);
-    }
-     */
 
     @PostMapping("/saveOneComment")
     public ResponseEntity<ApiResponse<Comment>> saveOneComment(@RequestBody Comment comment) {
