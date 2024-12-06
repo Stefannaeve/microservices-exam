@@ -4,7 +4,22 @@ server:
 spring:
   application:
     name: gateway
+  config:
+    import: "optional:consul:"
   cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+    consul:
+      enabled: true
+      discovery:
+        query-passing: true
+        instance-id: ${spring.application.name}:${spring.cloud.client.hostname}:${random.value}
+      config:
+        data-key: application.yml
+        format: yaml
+        default-context: defaults
+        prefixes:
     gateway:
       routes:
         - id: book
@@ -16,17 +31,27 @@ spring:
           uri: lb://manager
           predicates:
             - Path=/manager/**
-      globalcors:
-        cors-configurations:
-          '[/**]':
-            allowed-origins:
-              - "http://localhost:3000"
-            allowed-headers:
-              - "*"
-            allowed-methods:
-              - "GET"
-              - "POST"
-              - "OPTIONS"
+
+        - id: comment
+          uri: lb://comment
+          predicates:
+            - Path=/comment/**
+
+        - id: user
+          uri: lb://user
+          predicates:
+            - Path=/user/**
+    globalcors:
+      cors-configurations:
+        '[/**]':
+          allowed-origins:
+            - "http://localhost:3000"
+          allowed-headers:
+            - "*"
+          allowed-methods:
+            - "GET"
+            - "POST"
+            - "OPTIONS"
       default-filters:
         - name: Retry
           args:
