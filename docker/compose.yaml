@@ -136,7 +136,7 @@ services:
       dockerfile: Dockerfile
     image: ${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-user
     ports:
-      - '8083:8083'
+      - '8083'
     networks:
       - services
     depends_on:
