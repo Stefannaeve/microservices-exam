@@ -27,10 +27,10 @@ public class UserController {
     }
 
     @GetMapping("/fetchById/{userId}")
-    public ResponseEntity<ApiResponse<User>> fetchById(@PathVariable Long userId){
+    public ResponseEntity<ApiResponse<User>> fetchById(@PathVariable Long userId) {
         ApiResponse<User> fetchById = userService.fetchUserById(userId);
 
-        switch (fetchById){
+        switch (fetchById) {
             case ApiResponse.Success<User> success -> {
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @PostMapping("/saveOneUser")
-    public ResponseEntity<ApiResponse<User>> saveOneUser(@RequestBody User userToSave){
+    public ResponseEntity<ApiResponse<User>> saveOneUser(@RequestBody User userToSave) {
         ApiResponse<User> savedOneUser = userService.saveOneUser(userToSave);
 
         switch (savedOneUser) {
@@ -57,10 +57,10 @@ public class UserController {
     }
 
     @GetMapping("/fetchUserBooks/{userId}")
-    public ApiResponse<List<Long>> fetchUserBooks(@PathVariable Long userId){
+    public ApiResponse<List<Long>> fetchUserBooks(@PathVariable Long userId) {
         ApiResponse<List<Long>> fetchUserBook = userService.fetchUserBooks(userId);
 
-        switch (fetchUserBook){
+        switch (fetchUserBook) {
             case ApiResponse.Success<List<Long>> success -> {
                 return ResponseEntity.status(HttpStatus.OK).body(success).getBody();
             }
@@ -72,16 +72,16 @@ public class UserController {
     }
 
     @PostMapping("/addBookToUser/{userId}")
-    public ResponseEntity<ApiResponse<User>> addBookToUser(@PathVariable Long userId, @RequestBody UserBook userBook){
+    public ResponseEntity<ApiResponse<User>> addBookToUser(@PathVariable Long userId, @RequestBody UserBook userBook) {
         ApiResponse<User> addBookToUser = userService.addBookToUser(userId, userBook);
 
-        switch (addBookToUser){
+        switch (addBookToUser) {
             case ApiResponse.Success<User> success -> {
                 return ResponseEntity.status(HttpStatus.CREATED).body(success);
             }
             case ApiResponse.Failure<User> failure -> {
                 System.out.println("Something went wrong: " + failure.errorMessage());
-                return new ResponseEntity<>(failure,failure.status());
+                return new ResponseEntity<>(failure, failure.status());
             }
         }
     }
@@ -90,7 +90,7 @@ public class UserController {
     public ResponseEntity<ApiResponse<User>> deleteUser(@PathVariable Long userId) {
         ApiResponse<User> deleteUser = userService.deleteUserById(userId);
 
-        switch (deleteUser){
+        switch (deleteUser) {
             case ApiResponse.Success<User> success -> {
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
@@ -99,12 +99,14 @@ public class UserController {
                 return new ResponseEntity<>(failure, failure.status());
             }
         }
+    }
 
     @DeleteMapping("/{userId}/deleteBook/{bookId}")
-    public ResponseEntity<ApiResponse<User>> deleteBookFromUser(@PathVariable Long userId, @PathVariable Long bookId) {
+    public ResponseEntity<ApiResponse<User>> deleteBookFromUser (@PathVariable Long userId, @PathVariable Long
+            bookId){
         ApiResponse<User> deleteBookFromUser = userService.deleteBookFromUser(userId, bookId);
 
-        switch (deleteBookFromUser){
+        switch (deleteBookFromUser) {
             case ApiResponse.Success<User> success -> {
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
@@ -116,7 +118,8 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}/books/{bookId}/progress")
-    public ResponseEntity<ApiResponse<User>> updateReadingProgress(@PathVariable Long userId, @PathVariable Long bookId, @RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<ApiResponse<User>> updateReadingProgress (@PathVariable Long userId, @PathVariable Long
+            bookId, @RequestBody Map < String, String > requestBody){
         String newReadingProgress = requestBody.get("newReadingProgress");
         String newReadingStatus = requestBody.get("newReadingStatus");
         ApiResponse<User> updateReadingProgress = userService.updateReadingProgress(userId, bookId, newReadingProgress, newReadingStatus);

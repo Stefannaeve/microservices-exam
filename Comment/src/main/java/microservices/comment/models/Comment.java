@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Comment {
 
-    public Comment(int page, String text){
+    public Comment(int page, String text) {
         this.page = page;
         this.text = text;
     }
@@ -26,6 +26,9 @@ public class Comment {
 
     @Column(name = "page")
     private int page;
+
+    @Column(name = "opinion")
+    private String opintion;
 
     @Lob
     @Column(name = "comment_text", columnDefinition = "VARCHAR(1000)")

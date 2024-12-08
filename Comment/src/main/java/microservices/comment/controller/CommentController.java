@@ -1,6 +1,6 @@
 package microservices.comment.controller;
 
-import apiResponse.ApiResponse;
+import microservices.comment.apiResponse.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import microservices.comment.models.Comment;
 import microservices.comment.service.CommentService;
