@@ -28,6 +28,12 @@ public class Comment {
     @Column(name = "page")
     private int page;
 
+    @Column(name = "positive")
+    private boolean positive;
+
+    @Column(name = "negative")
+    private boolean negative;
+
     @Lob
     @Column(name = "comment_text", columnDefinition = "VARCHAR(1000)")
     private String text;
