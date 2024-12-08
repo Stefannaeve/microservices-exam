@@ -11,7 +11,7 @@ public class CommentEvent {
     private Long userId;
     private Long bookId;
     private int page;
-    private String opinion;
+    private boolean positive;
+    private boolean negative;
     private String text;
 }
-
