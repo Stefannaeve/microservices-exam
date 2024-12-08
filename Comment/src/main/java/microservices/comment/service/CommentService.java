@@ -33,6 +33,7 @@ public class CommentService {
             }
             return apiResponseBuilder.success(comments);
         } catch (Exception e) {
+            log.error("Error fetching all comments: {}", e.getMessage(), e);
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch comments");
         }
     }
@@ -50,7 +51,6 @@ public class CommentService {
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch comment");
         }
     }
-
 
     public ApiResponse<Comment> saveOneComment(Comment comment) {
         ApiResponseBuilder<Comment> apiResponseBuilder = new ApiResponseBuilder<>();
@@ -85,7 +85,6 @@ public class CommentService {
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete comment");
         }
     }
-
 
     public ApiResponse<List<Comment>> fetchCommentsByUserAndBook(Long userId, Long bookId) {
         ApiResponseBuilder<List<Comment>> apiResponseBuilder = new ApiResponseBuilder<>();

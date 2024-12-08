@@ -29,6 +29,11 @@ public class CommentController {
 
         switch (commentResponse) {
             case ApiResponse.Success<List<Comment>> success -> {
+                if (success.value().isPresent()){
+                    log.info("Success, returning {} comments", success.value().get().size());
+                } else {
+                    log.info("Success");
+                }
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<List<Comment>> failure -> {
@@ -51,6 +56,25 @@ public class CommentController {
         }
     }
 
+    @PostMapping("/saveOneComment")
+    public ResponseEntity<ApiResponse<Comment>> saveOneComment(@RequestBody Comment comment) {
+        ApiResponse<Comment> commentResponse = commentService.saveOneComment(comment);
+
+        switch (commentResponse){
+            case ApiResponse.Success<Comment> success -> {
+                if (success.value().isPresent()){
+                    log.info("Success, comment with id: {}, added to the database", success.value().get().getId());
+                } else {
+                    log.info("Success");
+                }
+                return ResponseEntity.status(HttpStatus.CREATED).body(success);
+            }
+            case ApiResponse.Failure<Comment> failure -> {
+                return new ResponseEntity<>(failure, failure.status());
+            }
+        }
+    }
+
     @GetMapping("/user/{userId}/book/{bookId}")
     public ResponseEntity<ApiResponse<List<Comment>>> fetchCommentsByUserAndBook(@PathVariable Long userId, @PathVariable Long bookId) {
         ApiResponse<List<Comment>> commentResponse = commentService.fetchCommentsByUserAndBook(userId, bookId);
@@ -64,4 +88,6 @@ public class CommentController {
             }
         }
     }
+
+
 }
