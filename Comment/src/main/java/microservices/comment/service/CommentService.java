@@ -6,10 +6,9 @@ import microservices.comment.apiResponse.ApiResponseBuilder;
 import microservices.comment.eventDriven.CommentEventPublisher;
 import microservices.comment.models.Comment;
 import microservices.comment.repository.CommentRepository;
-import microservices.comment.apiResponse.ApiResponse;
-import microservices.comment.apiResponse.ApiResponseBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -51,8 +50,6 @@ public class CommentService {
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch comment");
         }
     }
-
-
 
     public ApiResponse<Comment> deleteCommentById(Long id) {
         ApiResponseBuilder<Comment> apiResponseBuilder = new ApiResponseBuilder<>();
