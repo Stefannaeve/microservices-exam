@@ -110,16 +110,6 @@ services:
         condition: service_healthy
       manager:
         condition: service_started
-    environment:
-      - SPRING_APPLICATION_NAME=book
-      - SPRING_CLOUD_CONSUL_HOST=consul
-      - SPRING_DATASOURCE_URL=jdbc:mysql://book_db:3306/book
-      - spring.datasource.password=Kakemann
-      - spring.datasource.username=root
-      - amqp.exchange.name=bookExchange
-      - amqp.queue.book=bookQueue
-      - spring.rabbitmq.host=rabbitmq
-      - spring.rabbitmq.port=5672
 
   comment:
     build:
@@ -135,16 +125,16 @@ services:
         condition: service_healthy
       manager:
         condition: service_started
-    environment:
-      - SPRING_APPLICATION_NAME=comment
-      - SPRING_CLOUD_CONSUL_HOST=consul
-      - SPRING_DATASOURCE_URL=jdbc:mysql://comment_db:3306/comment
-      - spring.datasource.password=Kakemann
-      - spring.datasource.username=root
-      - amqp.exchange.comment=commentExchange
-      - amqp.queue.comment=commentQueue
-      - spring.rabbitmq.host=rabbitmq
-      - spring.rabbitmq.port=5672
+    #environment:
+      #- SPRING_APPLICATION_NAME=comment
+      #- SPRING_CLOUD_CONSUL_HOST=consul
+      #- SPRING_DATASOURCE_URL=jdbc:mysql://comment_db:3306/comment
+      #- spring.datasource.password=Kakemann
+      #- spring.datasource.username=root
+      #- amqp.exchange.comment=commentExchange
+      #- amqp.queue.comment=commentQueue
+      #- spring.rabbitmq.host=rabbitmq
+      #- spring.rabbitmq.port=5672
 
   user:
     build:
@@ -160,16 +150,16 @@ services:
         condition: service_healthy
       manager:
         condition: service_started
-    environment:
-      - SPRING_APPLICATION_NAME=user
-      - SPRING_CLOUD_CONSUL_HOST=consul
-      - SPRING_DATASOURCE_URL=jdbc:mysql://user_db:3306/user
-      - spring.datasource.password=Kakemann
-      - spring.datasource.username=root
-      - amqp.exchange.name=userExchange
-      - amqp.queue.user=userQueue
-      - spring.rabbitmq.host=rabbitmq
-      - spring.rabbitmq.port=5672
+    #environment:
+      #- SPRING_APPLICATION_NAME=user
+      #- SPRING_CLOUD_CONSUL_HOST=consul
+      #- SPRING_DATASOURCE_URL=jdbc:mysql://user_db:3306/user
+      #- spring.datasource.password=Kakemann
+      #- spring.datasource.username=root
+      #- amqp.exchange.name=userExchange
+      #- amqp.queue.user=userQueue
+      #- spring.rabbitmq.host=rabbitmq
+      #- spring.rabbitmq.port=5672
 
   manager:
     build:
