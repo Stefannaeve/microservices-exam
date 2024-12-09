@@ -71,7 +71,20 @@ services:
       - '8600:8600/udp'
     networks:
       - services
-    command: 'agent -dev -node=bookhub -client=0.0.0.0 -log-level=INFO'
+    volumes:
+      # Copies the key value pairs from ./consul/consul_kv_docker.json
+      - ./consul/consul_kv_docker.json:/kv_import/consul_kv_docker.json
+    #command: 'agent -dev -node=bookhub -client=0.0.0.0 -log-level=INFO'
+    # Starts consul, then imports key value pairs
+    entrypoint: consul agent -dev -node=bookhub -client=0.0.0.0 -log-level=INFO && consul kv import & @/kv_import/consul_kv_docker.json
+    post_start:
+      - command: sh -c "consul kv import @/kv_import/consul_kv_docker.json"
+    healthcheck:
+      test: [ "CMD", "/bin/sh", "-c", "consul kv get -keys | grep -q ." ]
+      interval: 10s
+      retries: 3
+      start_period: 10s
+      timeout: 5s
 
   rabbitMQ:
     image: 'rabbitmq:3-management'
@@ -110,6 +123,8 @@ services:
         condition: service_healthy
       manager:
         condition: service_started
+      consul:
+        condition: service_healthy
     environment:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
 
@@ -127,6 +142,8 @@ services:
         condition: service_healthy
       manager:
         condition: service_started
+      consul:
+        condition: service_healthy
     environment:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
 
@@ -144,6 +161,8 @@ services:
         condition: service_healthy
       manager:
         condition: service_started
+      consul:
+        condition: service_healthy
     environment:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
 
@@ -157,10 +176,13 @@ services:
     networks:
       - services
     depends_on:
-      - gateway
+      consul:
+        condition: service_healthy
+      gateway:
+        condition: service_started
     environment:
       - SPRING_CLOUD_CONSUL_HOST=consul
-      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_PROFILES_ACTIVE=dev
 
 networks:
   services:

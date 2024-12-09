@@ -14,7 +14,6 @@ spring:
       enabled: true
       discovery:
         query-passing: true
-        instance-id: ${spring.application.name}:${spring.cloud.client.hostname}:${random.value}
       config:
         data-key: application.yml
         format: yaml
