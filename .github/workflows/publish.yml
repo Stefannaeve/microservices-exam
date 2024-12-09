@@ -5,6 +5,7 @@ on:
     branches:
       - WorkflowRabbitMQ
 
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
