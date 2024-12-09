@@ -8,7 +8,7 @@ volumes:
 
 services:
   book_db:
-    image: 'mysql:8.0'
+    image: 'mysql:8.0.33'
     environment:
       - 'MYSQL_ROOT_PASSWORD=Kakemann'
       - 'MYSQL_ROOT_USER=root'
@@ -27,7 +27,7 @@ services:
       start_period: 30s
 
   comment_db:
-    image: 'mysql:8.0'
+    image: 'mysql:8.0.33'
     environment:
       - 'MYSQL_ROOT_PASSWORD=Kakemann'
       - 'MYSQL_ROOT_USER=root'
@@ -46,7 +46,7 @@ services:
       start_period: 30s
 
   user_db:
-    image: 'mysql:8.0'
+    image: 'mysql:8.0.33'
     environment:
       - 'MYSQL_ROOT_PASSWORD=Kakemann'
       - 'MYSQL_ROOT_USER=root'
