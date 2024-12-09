@@ -72,7 +72,7 @@ public class UserService {
             }
             return apiResponseBuilder.success(bookId);
         } catch (Exception e) {
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred");
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected error occurred");
         }
     }
 

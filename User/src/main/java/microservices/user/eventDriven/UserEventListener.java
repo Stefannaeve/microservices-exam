@@ -24,7 +24,7 @@ public class UserEventListener {
     public void handleUserEvent(UserEvent userEvent) {
         log.info("Received event: {}", userEvent);
         try {
-            Thread.sleep(5000); // Simulated delay for testing purposes
+            Thread.sleep(5000); // for testing purposes
 
             String eventType = userEvent.getEventType();
             if ("DELETE".equals(eventType)) {
