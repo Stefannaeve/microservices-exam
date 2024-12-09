@@ -20,18 +20,12 @@ public class CommentEventListener {
 
     @RabbitListener(queues = "${amqp.queue.comment}")
     public void handleCommentEvent(CommentEvent commentEvent) {
-        try {
-            Comment comment = new Comment();
-            comment.setUserId(commentEvent.getUserId());
-            comment.setBookId(commentEvent.getBookId());
-            comment.setPage(commentEvent.getPage());
-            comment.setText(commentEvent.getText());
-            comment.setPositive(commentEvent.isPositive());
-            comment.setNegative(commentEvent.isNegative());
-
-            commentRepository.save(comment);
-        } catch (Exception e) {
-            log.error("Failed to processing comment event: {}", e.getMessage(), e);
-        }
+        log.info("Received comment event: userId={}, bookId={}, page={}, positive={}, negative={}, text={}",
+                commentEvent.getUserId(),
+                commentEvent.getBookId(),
+                commentEvent.getPage(),
+                commentEvent.isPositive(),
+                commentEvent.isNegative(),
+                commentEvent.getText());
     }
 }
