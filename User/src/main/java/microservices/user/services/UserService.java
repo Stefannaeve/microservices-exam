@@ -38,7 +38,6 @@ public class UserService {
             userEventPublisher.publishCreateEvent(savedUser.getId());
             return apiResponseBuilder.success(savedUser);
         } catch (Exception e) {
-            log.error("Error saving user: {}", e.getMessage(), e);
             return new ApiResponse.Failure<>(Optional.empty(), HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save user");
         }
     }
@@ -57,26 +56,25 @@ public class UserService {
     }
 
     public ApiResponse<List<Long>> fetchUserBooks(Long userId) {
-        ApiResponseBuilder<List<Long>> responseBuilder = new ApiResponseBuilder<>();
+        ApiResponseBuilder<List<Long>> apiResponseBuilder = new ApiResponseBuilder<>();
         try {
             User user = userRepo.findById(userId).orElse(null);
 
             if (user == null) {
-                return responseBuilder.failure(HttpStatus.NOT_FOUND, "User not found");
+                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "User not found");
             }
             else if (user.getBooks() == null || user.getBooks().isEmpty()) {
-                return responseBuilder.failure(HttpStatus.NOT_FOUND, "User has no books");
+                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "User has no books");
             }
-            List<Long> bookIds = new ArrayList<>();
+            List<Long> bookId = new ArrayList<>();
             for (UserBook book : user.getBooks()) {
-                bookIds.add(book.getId());
+                bookId.add(book.getId());
             }
-            return responseBuilder.success(bookIds);
+            return apiResponseBuilder.success(bookId);
         } catch (Exception e) {
-            return responseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred");
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected error occurred");
         }
     }
-
 
     public ApiResponse<User> addBookToUser(Long userId, UserBook userBook){
         ApiResponseBuilder<User> apiResponseBuilder = new ApiResponseBuilder<>();
@@ -142,11 +140,11 @@ public class UserService {
             if (user == null) {
                 return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "User not found");
             }
-            Optional<UserBook> optionalBook = user.getBooks()
+            Optional<UserBook> userBook = user.getBooks()
                     .stream()
                     .filter(book -> book.getId().equals(bookId))
                     .findFirst();
-            if (optionalBook.isEmpty()) {
+            if (userBook.isEmpty()) {
                 return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Book not found in user's list");
             }
 
@@ -158,8 +156,7 @@ public class UserService {
                 return apiResponseBuilder.failure(HttpStatus.BAD_REQUEST,
                         "Not valid reading status. Valid options are: " + validStatuses);
             }
-
-            UserBook book = optionalBook.get();
+            UserBook book = userBook.get();
             book.setReadingProgress(newProgress);
             book.setReadingStatus(readingStatus);
             userRepo.save(user);
@@ -167,7 +164,6 @@ public class UserService {
             userEventPublisher.publishProgressUpdateEvent(userId, bookId, newProgress, newStatus);
             return apiResponseBuilder.success(user);
         } catch (Exception e) {
-            log.error("Error updating reading progress for userId: {} and bookId: {}", userId, bookId, e);
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Error, reading progress did not update");
         }
     }

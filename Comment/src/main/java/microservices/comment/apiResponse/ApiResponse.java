@@ -1,7 +1,6 @@
-package apiResponse;
+package microservices.comment.apiResponse;
 
 import org.springframework.http.HttpStatus;
-
 import java.util.Optional;
 
 public sealed interface ApiResponse<T> {

@@ -37,8 +37,6 @@ jobs:
         run: |
           echo "DOCKERHUB_USERNAME=${DOCKERHUB_USERNAME}"
           echo "IMAGE_TAG=${IMAGE_TAG}"
-
-
       - name: Build Docker images with docker-compose
         working-directory: ./docker
         run: docker compose build
@@ -50,7 +48,6 @@ jobs:
           for service in "${services[@]}"; do
             docker tag "${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-${service}" "${DOCKERHUB_USERNAME}/microservices:latest-${service}"
           done
-
       - name: Push Docker images
         working-directory: ./docker
         run: |

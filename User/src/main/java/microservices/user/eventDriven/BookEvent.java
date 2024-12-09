@@ -9,10 +9,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class BookEvent {
-    private Long bookId;        // Which book is this event about?
-    private String eventType;   // What action? ("CREATE", "UPDATE", "DELETE")
-    private String title;       // (Optional) Book title
-    private String author;      // (Optional) Book author
-    private Integer pages;      // (Optional) Number of pages
-    private String otherDetails; // (Optional) Extra details about the book
+    private Long bookId;
+    private String eventType;
+    private String title;
+    private String author;
+    private Integer pages;
+    private String otherDetails;
 }

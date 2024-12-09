@@ -13,19 +13,26 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Comment {
 
-    public Comment(int page, String text){
-        this.page = page;
-        this.text = text;
-    }
-
     @Id
     @GeneratedValue(generator = "comment_id_generator")
     @SequenceGenerator(name = "comment_id_generator", sequenceName = "comment_id_seq", initialValue = 1, allocationSize = 1)
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "book_id")
+    private Long bookId;
+
     @Column(name = "page")
     private int page;
+
+    @Column(name = "positive")
+    private boolean positive;
+
+    @Column(name = "negative")
+    private boolean negative;
 
     @Lob
     @Column(name = "comment_text", columnDefinition = "VARCHAR(1000)")
