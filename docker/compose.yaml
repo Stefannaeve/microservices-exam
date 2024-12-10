@@ -10,9 +10,9 @@ services:
   book_db:
     image: 'mysql:8.0.33'
     environment:
-      - 'MYSQL_ROOT_PASSWORD=Kakemann'
-      - 'MYSQL_ROOT_USER=root'
-      - 'MYSQL_DATABASE=book'
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_ROOT_USER: root
+      MYSQL_DATABASE: book
     volumes:
       - ./mysql/book/init:/docker-entrypoint-initdb.d
     ports:
@@ -29,9 +29,9 @@ services:
   comment_db:
     image: 'mysql:8.0.33'
     environment:
-      - 'MYSQL_ROOT_PASSWORD=Kakemann'
-      - 'MYSQL_ROOT_USER=root'
-      - 'MYSQL_DATABASE=comment'
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_ROOT_USER: root
+      MYSQL_DATABASE: comment
     volumes:
       - ./mysql/comment/init:/docker-entrypoint-initdb.d
     ports:
@@ -48,9 +48,9 @@ services:
   user_db:
     image: 'mysql:8.0.33'
     environment:
-      - 'MYSQL_ROOT_PASSWORD=Kakemann'
-      - 'MYSQL_ROOT_USER=root'
-      - 'MYSQL_DATABASE=user'
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_ROOT_USER: root
+      MYSQL_DATABASE: user
     volumes:
       - ./mysql/user/init:/docker-entrypoint-initdb.d
     ports:
