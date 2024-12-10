@@ -25,9 +25,9 @@ public class CommentController {
 
     @GetMapping("/fetchAll")
     public ResponseEntity<ApiResponse<List<Comment>>> fetchAll() {
-        ApiResponse<List<Comment>> commentResponse = commentService.fetchAll();
+        ApiResponse<List<Comment>> apiResponse = commentService.fetchAll();
 
-        switch (commentResponse) {
+        switch (apiResponse) {
             case ApiResponse.Success<List<Comment>> success -> {
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
@@ -39,9 +39,9 @@ public class CommentController {
 
     @GetMapping("/fetchCommentById/{id}")
     public ResponseEntity<ApiResponse<Comment>> fetchCommentById(@PathVariable long id) {
-        ApiResponse<Comment> commentResponse = commentService.fetchById(id);
+        ApiResponse<Comment> apiResponse = commentService.fetchById(id);
 
-        switch (commentResponse) {
+        switch (apiResponse) {
             case ApiResponse.Success<Comment> success -> {
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
@@ -53,9 +53,9 @@ public class CommentController {
 
     @PostMapping("/saveOneComment")
     public ResponseEntity<ApiResponse<Comment>> saveOneComment(@RequestBody Comment comment) {
-        ApiResponse<Comment> commentResponse = commentService.saveOneComment(comment);
+        ApiResponse<Comment> apiResponse = commentService.saveOneComment(comment);
 
-        switch (commentResponse) {
+        switch (apiResponse) {
             case ApiResponse.Success<Comment> success -> {
                 return ResponseEntity.status(HttpStatus.CREATED).body(success);
             }
@@ -67,13 +67,27 @@ public class CommentController {
 
     @GetMapping("/user/{userId}/book/{bookId}")
     public ResponseEntity<ApiResponse<List<Comment>>> fetchCommentsByUserAndBook(@PathVariable Long userId, @PathVariable Long bookId) {
-        ApiResponse<List<Comment>> commentResponse = commentService.fetchCommentsByUserAndBook(userId, bookId);
+        ApiResponse<List<Comment>> apiResponse = commentService.fetchCommentsByUserAndBook(userId, bookId);
 
-        switch (commentResponse) {
+        switch (apiResponse) {
             case ApiResponse.Success<List<Comment>> success -> {
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<List<Comment>> failure -> {
+                return new ResponseEntity<>(failure, failure.status());
+            }
+        }
+    }
+
+    @PutMapping("/updateComment/{bookId}")
+    public ResponseEntity<ApiResponse<Comment>> updateComment(@PathVariable Long bookId, @PathVariable Comment updateComment){
+        ApiResponse<Comment> apiResponse = commentService.updateComment(bookId, updateComment);
+
+        switch (apiResponse){
+            case ApiResponse.Success<Comment> success -> {
+                return ResponseEntity.status(HttpStatus.OK).body(success);
+            }
+            case ApiResponse.Failure<Comment> failure -> {
                 return new ResponseEntity<>(failure, failure.status());
             }
         }

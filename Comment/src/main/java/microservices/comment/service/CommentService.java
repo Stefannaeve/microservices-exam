@@ -98,4 +98,22 @@ public class CommentService {
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch comments");
         }
     }
+
+    public ApiResponse<Comment> updateComment(Long bookId, Comment updateCOmment){
+        ApiResponseBuilder<Comment> apiResponseBuilder = new ApiResponseBuilder<>();
+        try {
+            Optional<Comment> findComment = commentRepository.findById(bookId);
+            if(findComment.isEmpty()){
+                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Comment not found");
+            }
+
+            Comment comment = findComment.get();
+            comment.setText(updateCOmment.getText());
+
+            Comment saveComment = commentRepository.save(comment);
+            return apiResponseBuilder.success(saveComment);
+        } catch (Exception e){
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update comment");
+        }
+    }
 }
