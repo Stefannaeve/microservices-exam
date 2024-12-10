@@ -78,7 +78,7 @@ services:
     # Starts consul, then imports key value pairs
     entrypoint: consul agent -dev -node=bookhub -client=0.0.0.0 -log-level=INFO && consul kv import & @/kv_import/consul_kv_docker.json
     post_start:
-      - command: sh -c "consul kv import @/kv_import/consul_kv_docker.json"
+      - command: sh -c "sleep 5 && consul kv import @/kv_import/consul_kv_docker.json"
     healthcheck:
       test: [ "CMD", "/bin/sh", "-c", "consul kv get -keys | grep -q ." ]
       interval: 10s
@@ -128,6 +128,7 @@ services:
     environment:
       - SPRING_CLOUD_CONSUL_HOST=consul
       - SPRING_DATASOURCE_URL=jdbc:mysql://book_db:3306/book
+      - SPRING_PROFILES_ACTIVE=dev
 
   comment:
     build:
@@ -148,6 +149,7 @@ services:
     environment:
       - SPRING_CLOUD_CONSUL_HOST=consul
       - SPRING_DATASOURCE_URL=jdbc:mysql://comment_db:3306/comment
+      - SPRING_PROFILES_ACTIVE=dev
 
   user:
     build:

@@ -18,7 +18,7 @@ spring:
         data-key: application.yml
         format: yaml
         default-context: defaults
-        prefixes:
+        prefixes: config
     gateway:
       routes:
         - id: book
