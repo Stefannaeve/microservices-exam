@@ -31,8 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
-Comment/src/main/resources/application.properties
-User/src/main/resources/application.properties
 
 ### Rabbit MQ ###
 erl_crash.dump
