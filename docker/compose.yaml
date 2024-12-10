@@ -110,6 +110,8 @@ services:
         condition: service_healthy
       manager:
         condition: service_started
+    environment:
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
 
   comment:
     build:
@@ -125,16 +127,8 @@ services:
         condition: service_healthy
       manager:
         condition: service_started
-    #environment:
-      #- SPRING_APPLICATION_NAME=comment
-      #- SPRING_CLOUD_CONSUL_HOST=consul
-      #- SPRING_DATASOURCE_URL=jdbc:mysql://comment_db:3306/comment
-      #- spring.datasource.password=Kakemann
-      #- spring.datasource.username=root
-      #- amqp.exchange.comment=commentExchange
-      #- amqp.queue.comment=commentQueue
-      #- spring.rabbitmq.host=rabbitmq
-      #- spring.rabbitmq.port=5672
+    environment:
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
 
   user:
     build:
@@ -150,16 +144,8 @@ services:
         condition: service_healthy
       manager:
         condition: service_started
-    #environment:
-      #- SPRING_APPLICATION_NAME=user
-      #- SPRING_CLOUD_CONSUL_HOST=consul
-      #- SPRING_DATASOURCE_URL=jdbc:mysql://user_db:3306/user
-      #- spring.datasource.password=Kakemann
-      #- spring.datasource.username=root
-      #- amqp.exchange.name=userExchange
-      #- amqp.queue.user=userQueue
-      #- spring.rabbitmq.host=rabbitmq
-      #- spring.rabbitmq.port=5672
+    environment:
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
 
   manager:
     build:
