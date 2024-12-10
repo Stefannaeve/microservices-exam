@@ -6,10 +6,8 @@ import microservices.comment.apiResponse.ApiResponseBuilder;
 import microservices.comment.eventDriven.CommentEventPublisher;
 import microservices.comment.models.Comment;
 import microservices.comment.repository.CommentRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
