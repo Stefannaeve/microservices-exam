@@ -1,17 +1,24 @@
 package microservices.exam.eventDriven;
 
-import lombok.Value;
-import java.time.LocalDate;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import java.util.Date;
 
-@Value
+@Getter
+@Setter
+@ToString
 public class BookEvent {
-    Long bookId;
-    String eventType;
-    String title;
-    String author;
-    int pages;
-    LocalDate publishDate;
-    String bookContent;
+    private Long bookId;
+    private String eventType;
+    private String title;
+    private String author;
+    private int pages;
+    private Date publishDate;
+    private String bookContent;
+
+    public BookEvent() {
+    }
 
     // Constructor for delete events
     public BookEvent(Long bookId, String eventType) {

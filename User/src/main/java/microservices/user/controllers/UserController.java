@@ -118,8 +118,7 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}/books/{bookId}/progress")
-    public ResponseEntity<ApiResponse<User>> updateReadingProgress (@PathVariable Long userId, @PathVariable Long
-            bookId, @RequestBody Map < String, String > requestBody){
+    public ResponseEntity<ApiResponse<User>> updateReadingProgress (@PathVariable Long userId, @PathVariable Long bookId, @RequestBody Map < String, String > requestBody){
         String newReadingProgress = requestBody.get("newReadingProgress");
         String newReadingStatus = requestBody.get("newReadingStatus");
         ApiResponse<User> updateReadingProgress = userService.updateReadingProgress(userId, bookId, newReadingProgress, newReadingStatus);

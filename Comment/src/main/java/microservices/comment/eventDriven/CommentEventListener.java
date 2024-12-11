@@ -23,23 +23,36 @@ public class CommentEventListener {
     @RabbitListener(queues = "${amqp.queue.comment}")
     public void handleCommentEvent(CommentEvent commentEvent) {
         log.info("Received comment event: {}", commentEvent);
-        String eventType = commentEvent.getEventType();
 
-        switch (eventType) {
-            case "CREATE" -> handleCommentCreation(commentEvent);
-            case "DELETE" -> handleCommentDeletion(commentEvent.getId());
-            case "UPDATE" -> handleCommentUpdate(commentEvent.getId(), commentEvent.getText());
-            default -> log.warn("Unknown event type: {}", eventType);
+        try {
+            Thread.sleep(5000); // Simulating processing delay for testing
+
+            String eventType = commentEvent.getEventType();
+            log.info("Processing event type: {}", eventType);
+
+            if ("CREATE".equals(eventType)) {
+                handleCommentCreation(commentEvent);
+            } else if ("DELETE".equals(eventType)) {
+                handleCommentDeletion(commentEvent.getId());
+            } else if ("UPDATE".equals(eventType)) {
+                handleCommentUpdate(commentEvent.getId(), commentEvent.getText());
+            } else {
+                log.warn("Unknown event type: {}", eventType);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.error("Error processing comment event: {}", e.getMessage(), e);
         }
     }
 
     private void handleCommentCreation(CommentEvent commentEvent) {
-        log.info("Handling comment creation for commentId: {}, userId: {}, bookId: {}",
+        log.info("Handling comment creation: commentId={}, userId={}, bookId={}",
                 commentEvent.getId(), commentEvent.getUserId(), commentEvent.getBookId());
         // Additional logic if needed
     }
 
     private void handleCommentDeletion(Long commentId) {
+        log.info("Handling comment deletion for commentId: {}", commentId);
         Optional<Comment> comment = commentRepository.findById(commentId);
         if (comment.isPresent()) {
             commentRepository.delete(comment.get());
@@ -50,6 +63,7 @@ public class CommentEventListener {
     }
 
     private void handleCommentUpdate(Long commentId, String newText) {
+        log.info("Handling comment update for commentId: {}, newText: {}", commentId, newText);
         Optional<Comment> comment = commentRepository.findById(commentId);
         if (comment.isPresent()) {
             Comment existingComment = comment.get();
