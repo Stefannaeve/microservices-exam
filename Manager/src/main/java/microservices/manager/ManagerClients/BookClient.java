@@ -136,6 +136,8 @@ public class BookClient {
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to book service");
         }
 
+        log.info("Finished sending api call to book service");
+
         if (response.getBody() == null) {
             log.error("Response body is null");
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Empty response from book service");

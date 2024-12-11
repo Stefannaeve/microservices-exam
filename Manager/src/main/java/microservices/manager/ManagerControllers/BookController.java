@@ -43,7 +43,12 @@ public class BookController {
 
     @GetMapping("/fetchBookById/{id}")
     public ResponseEntity<ApiResponse<BookDTO>> fetchBookById(@PathVariable long id) {
+        log.info("The id: {}", id);
+
         ApiResponse<BookDTO> book = bookClient.externalGetBookById(id);
+
+        log.info("Finished with book client");
+
 
         switch (book) {
             case ApiResponse.Success<BookDTO> success -> {

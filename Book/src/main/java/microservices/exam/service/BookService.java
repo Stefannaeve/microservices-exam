@@ -72,7 +72,7 @@ public class BookService {
         try {
             book = bookRepository.findById(id);
         } catch (Exception exception) {
-            log.error(exception.getMessage());
+            log.error("Book service, service, error: {}", exception.getMessage());
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong...");
         }
         if (book.isEmpty()){
