@@ -76,7 +76,7 @@ services:
       - ./consul/consul_kv_docker.json:/kv_import/consul_kv_docker.json
     #command: 'agent -dev -node=bookhub -client=0.0.0.0 -log-level=INFO'
     # Starts consul, then imports key value pairs
-    entrypoint: consul agent -dev -node=bookhub -client=0.0.0.0 -log-level=INFO && consul kv import & @/kv_import/consul_kv_docker.json
+    entrypoint: consul agent -dev -node=bookhub -client=0.0.0.0 -log-level=INFO
     post_start:
       - command: sh -c "sleep 5 && consul kv import @/kv_import/consul_kv_docker.json"
     healthcheck:
@@ -153,7 +153,7 @@ services:
       dockerfile: Dockerfile
     image: ${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-user
     ports:
-      - '8083'
+      - '8083:8083'
     networks:
       - services
     depends_on:
