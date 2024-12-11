@@ -127,6 +127,7 @@ services:
         condition: service_healthy
     environment:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      SPRING_PROFILES_ACTIVE: dev
 
   comment:
     build:
@@ -146,6 +147,7 @@ services:
         condition: service_healthy
     environment:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      SPRING_PROFILES_ACTIVE: dev
 
   user:
     build:
@@ -165,6 +167,7 @@ services:
         condition: service_healthy
     environment:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      SPRING_PROFILES_ACTIVE: dev
 
   manager:
     build:
