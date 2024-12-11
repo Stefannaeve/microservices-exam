@@ -1,10 +1,13 @@
 package microservices.manager.ManagerClients;
 
 import lombok.extern.slf4j.Slf4j;
+import microservices.manager.apiResponse.ApiResponse;
+import microservices.manager.apiResponse.ApiResponseBuilder;
 import microservices.manager.dtos.UserDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.View;
@@ -27,8 +30,9 @@ public class UserClient {
         this.error = error;
     }
 
-    public UserDTO externalGetUserById(String userId){
-        String url = restServiceUrl + "/fetchUserById/{userId}";
+    public ApiResponse<UserDTO> externalGetUserById(long userId){
+        ApiResponseBuilder<UserDTO> apiResponseBuilder = new ApiResponseBuilder<>();
+        String url = restServiceUrl + "/fetchUserById/" + userId;
         log.error(url);
         UserDTO response;
         try {
@@ -42,6 +46,6 @@ public class UserClient {
             e.printStackTrace();
             return null;
         }
-        return response;
+        return apiResponseBuilder.success(response);
     }
 }

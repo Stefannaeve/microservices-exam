@@ -41,6 +41,22 @@ public class BookController {
         }
     }
 
+    @GetMapping("/fetchBookById/{id}")
+    public ResponseEntity<ApiResponse<BookDTO>> fetchBookById(@PathVariable long id) {
+        ApiResponse<BookDTO> book = bookClient.externalGetBookById(id);
+
+        switch (book) {
+            case ApiResponse.Success<BookDTO> success -> {
+                return ResponseEntity.status(HttpStatus.OK).body(success);
+            }
+            case ApiResponse.Failure<BookDTO> failure -> {
+                log.error("This is the error:", failure.errorMessage());
+                return ResponseEntity.status(failure.status()).body(failure);
+            }
+        }
+    }
+
+
     @PostMapping("/saveBook")
     public ResponseEntity<ApiResponse<BookDTO>> saveBook(@RequestBody BookDTO bookDTO) {
         ApiResponse<BookDTO> savedBook = bookClient.externalSaveBook(bookDTO);

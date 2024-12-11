@@ -109,4 +109,41 @@ public class BookClient {
         log.debug("Received response with status: {}", statusCode);
         return apiResponseBuilder.parseDto(response.getBody(), statusCode);
     }
+
+    public ApiResponse<BookDTO> externalGetBookById(long id) {
+        String url = restServiceUrl + "/book/fetchBookById" + id;
+        ResponseEntity<ApiResponseDTO<BookDTO>> response;
+        ApiResponseBuilder<BookDTO> apiResponseBuilder = new ApiResponseBuilder<>();
+
+        try {
+            response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<>() {
+                    }
+            );
+        }  catch (HttpClientErrorException clientErrorException){
+            log.debug("Entered exception handling block");
+
+            HttpStatus status = HttpStatus.valueOf(clientErrorException.getStatusCode().value());
+
+            ApiResponse apiResponse = clientErrorException.getResponseBodyAs(ApiResponse.Failure.class);
+
+            return apiResponse;
+        }catch (Exception exception) {
+            log.error("An unexpected error occurred: ", exception);
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to book service");
+        }
+
+        if (response.getBody() == null) {
+            log.error("Response body is null");
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Empty response from book service");
+        }
+
+        HttpStatus statusCode = HttpStatus.valueOf(response.getStatusCode().value());
+
+        log.debug("Received response with status: {}", statusCode);
+        return apiResponseBuilder.parseDto(response.getBody(), statusCode);
+    }
 }
