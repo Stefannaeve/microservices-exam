@@ -44,6 +44,7 @@ public class BookService {
                     savedBook.getTitle(),
                     savedBook.getAuthor(),
                     savedBook.getPages(),
+                    savedBook.getPublishDate(),
                     savedBook.getBookContent()
             );
 

@@ -28,27 +28,55 @@ public class BookController {
 
         switch (apiResponse) {
             case ApiResponse.Success<List<Book>> success -> {
-
+                return ResponseEntity.status(HttpStatus.OK).body(success);
+            }
+            case ApiResponse.Failure<List<Book>> failure -> {
+                return new ResponseEntity<>(failure, failure.status());
             }
         }
-        return ResponseEntity.status(books.status()).body(books);
     }
 
     @GetMapping("/fetchAllComments")
     public ResponseEntity<ApiResponse<List<CommentDTO>>> fetchAllComments() {
-        ApiResponse<List<CommentDTO>> comments = bookClient.externalComment();
-        return ResponseEntity.status(comments.status()).body(comments);
+        ApiResponse<List<CommentDTO>> externalComment = bookClient.externalComment();
+
+        switch (externalComment){
+            case ApiResponse.Success<List<CommentDTO>> success -> {
+                return ResponseEntity.status(HttpStatus.OK).body(success);
+            }
+            case ApiResponse.Failure<List<CommentDTO>> failure -> {
+                return new ResponseEntity<>(failure, failure.status());
+            }
+        }
     }
 
     @PostMapping("/saveOneBook")
     public ResponseEntity<ApiResponse<Book>> saveOneBook(@RequestBody Book book) {
-        ApiResponse<Book> savedBook = bookService.saveOneBook(book);
-        return ResponseEntity.status(savedBook.status()).body(savedBook);
+        ApiResponse<Book> apiResponse = bookService.saveOneBook(book);
+
+        switch (apiResponse){
+            case ApiResponse.Success<Book> success -> {
+                return ResponseEntity.status(HttpStatus.OK).body(success);
+            }
+            case ApiResponse.Failure<Book> failure -> {
+                return new ResponseEntity<>(failure, failure.status());
+            }
+        }
+
     }
 
     @DeleteMapping("/delete/{bookId}")
     public ResponseEntity<ApiResponse<Void>> deleteBook(@PathVariable Long bookId) {
-        ApiResponse<Void> response = bookService.deleteBookById(bookId);
-        return ResponseEntity.status(response.status()).body(response);
+        ApiResponse<Void> apiResponse = bookService.deleteBookById(bookId);
+
+        switch (apiResponse){
+            case ApiResponse.Success<Void> success -> {
+                return ResponseEntity.status(HttpStatus.OK).body(success);
+            }
+            case ApiResponse.Failure<Void> failure -> {
+                return new ResponseEntity<>(failure, failure.status());
+            }
+        }
+
     }
 }

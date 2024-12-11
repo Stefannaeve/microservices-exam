@@ -2,11 +2,13 @@ package microservices.comment.eventDriven;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class CommentEvent {
     private Long id;
     private String eventType;
@@ -14,24 +16,35 @@ public class CommentEvent {
     private Long bookId;
     private String text;
 
-    // Constructor for CREATE event
-    public CommentEvent(Long commentId, String eventType, Long userId, Long bookId) {
-        this.id = commentId;
+    // Constructor for delete events
+    public CommentEvent(Long id, String eventType) {
+        this.id = id;
+        this.eventType = eventType;
+    }
+
+    // Constructor for create events
+    public CommentEvent(Long id, String eventType, Long userId, Long bookId) {
+        this.id = id;
         this.eventType = eventType;
         this.userId = userId;
         this.bookId = bookId;
     }
 
-    // Constructor for DELETE event
-    public CommentEvent(Long commentId, String eventType) {
-        this.id = commentId;
-        this.eventType = eventType;
-    }
-
-    // Constructor for UPDATE event
-    public CommentEvent(Long commentId, String eventType, String text) {
-        this.id = commentId;
+    // Constructor for update events
+    public CommentEvent(Long id, String eventType, String text) {
+        this.id = id;
         this.eventType = eventType;
         this.text = text;
+    }
+
+    @Override
+    public String toString() {
+        return "CommentEvent{" +
+                "id=" + id +
+                ", eventType='" + eventType + '\'' +
+                ", userId=" + userId +
+                ", bookId=" + bookId +
+                ", text='" + text + '\'' +
+                '}';
     }
 }

@@ -23,23 +23,31 @@ public class BookEventListener {
     @RabbitListener(queues = "${amqp.queue.book}")
     public void handleBookEvent(BookEvent bookEvent) {
         log.info("Received book event: {}", bookEvent);
-        String eventType = bookEvent.getEventType();
 
-        switch (eventType) {
-            case "CREATE" -> handleBookCreation(bookEvent);
-            case "DELETE" -> handleBookDeletion(bookEvent.getBookId());
-            case "UPDATE" -> handleBookUpdate(bookEvent);
-            default -> log.warn("Unknown event type: {}", eventType);
+        try {
+            Thread.sleep(5000); // Simulating processing delay for testing
+            String eventType = bookEvent.getEventType();
+            log.info("Processing event type: {}", eventType);
+
+            switch (eventType) {
+                case "CREATE" -> handleBookCreation(bookEvent);
+                case "DELETE" -> handleBookDeletion(bookEvent.getBookId());
+                case "UPDATE" -> handleBookUpdate(bookEvent);
+                default -> log.warn("Unknown event type: {}", eventType);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.error("Error processing book event: {}", e.getMessage(), e);
         }
     }
 
     private void handleBookCreation(BookEvent bookEvent) {
         log.info("Handling book creation for bookId: {}, title: {}, author: {}",
                 bookEvent.getBookId(), bookEvent.getTitle(), bookEvent.getAuthor());
-        // Additional logic if needed
     }
 
     private void handleBookDeletion(Long bookId) {
+        log.info("Handling book deletion for bookId: {}", bookId);
         Optional<Book> book = bookRepository.findById(bookId);
         if (book.isPresent()) {
             bookRepository.delete(book.get());
@@ -50,6 +58,7 @@ public class BookEventListener {
     }
 
     private void handleBookUpdate(BookEvent bookEvent) {
+        log.info("Handling book update for bookId: {}", bookEvent.getBookId());
         Optional<Book> book = bookRepository.findById(bookEvent.getBookId());
         if (book.isPresent()) {
             Book existingBook = book.get();
