@@ -20,12 +20,5 @@ public class CommentEventListener {
 
     @RabbitListener(queues = "${amqp.queue.comment}")
     public void handleCommentEvent(CommentEvent commentEvent) {
-        log.info("Received comment event: userId={}, bookId={}, page={}, positive={}, negative={}, text={}",
-                commentEvent.getUserId(),
-                commentEvent.getBookId(),
-                commentEvent.getPage(),
-                commentEvent.isPositive(),
-                commentEvent.isNegative(),
-                commentEvent.getText());
     }
 }

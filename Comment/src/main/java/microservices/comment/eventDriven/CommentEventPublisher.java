@@ -17,16 +17,4 @@ public class CommentEventPublisher {
         this.rabbitTemplate = rabbitTemplate;
         this.exchangeName = exchangeName;
     }
-
-    public void publishCommentCreatedEvent(Comment comment) {
-        CommentEvent commentEvent = new CommentEvent(
-                comment.getUserId(),
-                comment.getBookId(),
-                comment.getPage(),
-                comment.isPositive(),
-                comment.isNegative(),
-                comment.getText()
-        );
-        rabbitTemplate.convertAndSend(exchangeName, "", commentEvent);
-    }
 }
