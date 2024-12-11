@@ -16,7 +16,6 @@ public class Book {
         this.author = author;
         this.pages = pages;
         this.bookContent = bookContent;
-        title.toLowerCase();
     }
 
     @Id
@@ -34,6 +33,7 @@ public class Book {
     @Column(name = "Pages")
     private int pages;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "publish_date")
     private Date publishDate;
 
