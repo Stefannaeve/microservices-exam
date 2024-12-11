@@ -72,7 +72,7 @@ public class BookController {
                 return ResponseEntity.status(HttpStatus.CREATED).body(success);
             }
             case ApiResponse.Failure<BookDTO> failure -> {
-                log.error("This is the error:", failure.errorMessage());
+                log.error("This is the error:  {}", failure.errorMessage());
                 return ResponseEntity.status(failure.status()).body(failure);
             }
         }

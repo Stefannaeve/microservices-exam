@@ -23,14 +23,14 @@ public class UserClient {
     private final View error;
 
     public UserClient(RestTemplateBuilder restTemplateBuilder,
-                      @Value("http://localhost:8082/user") final String url,
-                      View error){
+                      @Value("http://user:8082/user") final String url,
+                      View error) {
         this.restServiceUrl = url;
         this.restTemplate = restTemplateBuilder.build();
         this.error = error;
     }
 
-    public ApiResponse<UserDTO> externalGetUserById(long userId){
+    public ApiResponse<UserDTO> externalGetUserById(long userId) {
         ApiResponseBuilder<UserDTO> apiResponseBuilder = new ApiResponseBuilder<>();
         String url = restServiceUrl + "/fetchUserById/" + userId;
         log.error(url);
@@ -38,10 +38,9 @@ public class UserClient {
         try {
 
             response = restTemplate.getForObject(
-                     restServiceUrl + "/fetchUserById/{userId}", UserDTO.class, userId);
+                    restServiceUrl + "/fetchUserById/{userId}", UserDTO.class, userId);
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
             e.printStackTrace();
             return null;
