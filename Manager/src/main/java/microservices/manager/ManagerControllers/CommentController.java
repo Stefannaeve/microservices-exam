@@ -67,6 +67,19 @@ public class CommentController {
     public ResponseEntity<ApiResponse<CommentDTO>> saveOneComment(@RequestBody CommentDTO commentDTO){
         ApiResponse<CommentDTO> commentResponse = commentService.saveById(commentDTO);
 
-        return null;
+        switch (commentResponse){
+            case ApiResponse.Success<CommentDTO> success -> {
+                if (success.value().isPresent()){
+                    log.info("Success, comment with id: {} saved", success.value().get().getId());
+                } else {
+                    log.info("Success");
+                }
+                return ResponseEntity.status(HttpStatus.OK).body(success);
+            }
+            case ApiResponse.Failure<CommentDTO> failure -> {
+                log.error(failure.errorMessage());
+                return ResponseEntity.status(failure.status()).body(failure);
+            }
+        }
     }
 }
