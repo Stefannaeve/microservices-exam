@@ -85,7 +85,7 @@ services:
     build:
       context: ../Gateway
       dockerfile: Dockerfile
-    image: ${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-gateway
+    image: gateway:latest
     ports:
       - '8000:8000'
     networks:
@@ -100,7 +100,7 @@ services:
     build:
       context: ../Book
       dockerfile: Dockerfile
-    image: ${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-book
+    image: book:latest
     ports:
       - '8082:8082'
     networks:
@@ -125,7 +125,7 @@ services:
     build:
       context: ../Comment
       dockerfile: Dockerfile
-    image: ${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-comment
+    image: comment:latest
     ports:
       - '8081:8081'
     networks:
@@ -150,7 +150,7 @@ services:
     build:
       context: ../User
       dockerfile: Dockerfile
-    image: ${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-user
+    image: user:latest
     ports:
       - '8083:8083'
     networks:
@@ -175,7 +175,7 @@ services:
     build:
       context: ../Manager
       dockerfile: Dockerfile
-    image: ${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-manager
+    image: manager:latest
     ports:
       - '8080:8080'
     networks:

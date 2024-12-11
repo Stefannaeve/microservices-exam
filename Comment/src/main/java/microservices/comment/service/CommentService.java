@@ -6,11 +6,10 @@ import microservices.comment.apiResponse.ApiResponseBuilder;
 import microservices.comment.eventDriven.CommentEventPublisher;
 import microservices.comment.models.Comment;
 import microservices.comment.repository.CommentRepository;
-import org.springframework.beans.factory.annotation.Value;
+import microservices.comment.apiResponse.ApiResponse;
+import microservices.comment.apiResponse.ApiResponseBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -50,24 +49,6 @@ public class CommentService {
             }
         } catch (Exception e) {
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch comment");
-        }
-    }
-
-    public ApiResponse<Comment> saveOneComment(Comment comment) {
-        ApiResponseBuilder<Comment> apiResponseBuilder = new ApiResponseBuilder<>();
-        try {
-            if (comment.getUserId() == null || comment.getUserId() <= 0) {
-                return apiResponseBuilder.failure(HttpStatus.BAD_REQUEST, "Invalid userId");
-            }
-            if (comment.getBookId() == null || comment.getBookId() <= 0) {
-                return apiResponseBuilder.failure(HttpStatus.BAD_REQUEST, "Invalid bookId");
-            }
-            Comment savedComment = commentRepository.save(comment);
-            commentEventPublisher.publishCommentCreatedEvent(savedComment);
-            return apiResponseBuilder.success(savedComment, HttpStatus.CREATED);
-        } catch (Exception e) {
-            log.error("Error saving comment: {}", e.getMessage(), e);
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save comment");
         }
     }
 
