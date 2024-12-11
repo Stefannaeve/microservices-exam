@@ -56,7 +56,7 @@ public class BookController {
             }
             case ApiResponse.Failure<BookDTO> failure -> {
                 log.error("This is the error:", failure.errorMessage());
-                return ResponseEntity.status(500).body(failure);
+                return ResponseEntity.status(failure.status()).body(failure);
             }
         }
     }
