@@ -56,7 +56,7 @@ public class BookController {
             }
             case ApiResponse.Failure<BookDTO> failure -> {
                 log.error("This is the error:", failure.errorMessage());
-                return ResponseEntity.status(failure.status()).body(failure);
+                return ResponseEntity.status(500).body(failure);
             }
         }
     }
@@ -70,7 +70,6 @@ public class BookController {
             case ApiResponse.Success<BookDTO> success -> {
                 if (success.value().isPresent()) {
                     log.info("Success, saved book with id: {}", success.value().get().getId());
-                    bookClient.externalSaveBook(bookDTO);
                 } else {
                     log.info("Success");
                 }
