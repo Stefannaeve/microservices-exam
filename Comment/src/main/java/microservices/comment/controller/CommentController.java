@@ -51,6 +51,19 @@ public class CommentController {
         }
     }
 
+    @PostMapping("/saveOneComment")
+    public ResponseEntity<ApiResponse<Comment>> saveOneComment(@RequestBody Comment comment) {
+        ApiResponse<Comment> commentResponse = commentService.saveOneComment(comment);
+
+        switch (commentResponse) {
+            case ApiResponse.Success<Comment> success -> {
+                return ResponseEntity.status(HttpStatus.CREATED).body(success);
+            }
+            case ApiResponse.Failure<Comment> failure -> {
+                return new ResponseEntity<>(failure, failure.status());
+            }
+        }
+    }
 
     @GetMapping("/user/{userId}/book/{bookId}")
     public ResponseEntity<ApiResponse<List<Comment>>> fetchCommentsByUserAndBook(@PathVariable Long userId, @PathVariable Long bookId) {
