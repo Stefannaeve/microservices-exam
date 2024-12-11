@@ -18,15 +18,21 @@ public class CommentEventPublisher {
         this.exchangeName = exchangeName;
     }
 
-    public void publishCommentCreatedEvent(Comment comment) {
-        CommentEvent commentEvent = new CommentEvent(
-                comment.getUserId(),
-                comment.getBookId(),
-                comment.getPage(),
-                comment.isPositive(),
-                comment.isNegative(),
-                comment.getText()
-        );
+    public void publishCommentCreatedEvent(Long commentId, Long userId, Long bookId) {
+        CommentEvent commentEvent = new CommentEvent(commentId, "CREATE", userId, bookId);
         rabbitTemplate.convertAndSend(exchangeName, "", commentEvent);
+        log.info("Published comment created event for commentId: {}, userId: {}, bookId: {}", commentId, userId, bookId);
+    }
+
+    public void publishCommentDeletedEvent(Long commentId) {
+        CommentEvent commentEvent = new CommentEvent(commentId, "DELETE");
+        rabbitTemplate.convertAndSend(exchangeName, "", commentEvent);
+        log.info("Published comment deleted event for commentId: {}", commentId);
+    }
+
+    public void publishCommentUpdatedEvent(Long commentId, String newText) {
+        CommentEvent commentEvent = new CommentEvent(commentId, "UPDATE", newText);
+        rabbitTemplate.convertAndSend(exchangeName, "", commentEvent);
+        log.info("Published comment updated event for commentId: {}, newText: {}", commentId, newText);
     }
 }

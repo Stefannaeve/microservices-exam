@@ -63,7 +63,7 @@ public class CommentService {
                 return apiResponseBuilder.failure(HttpStatus.BAD_REQUEST, "Invalid bookId");
             }
             Comment savedComment = commentRepository.save(comment);
-            commentEventPublisher.publishCommentCreatedEvent(savedComment);
+            commentEventPublisher.publishCommentCreatedEvent(savedComment.getId(), savedComment.getUserId(), savedComment.getBookId());
             return apiResponseBuilder.success(savedComment, HttpStatus.CREATED);
         } catch (Exception e) {
             log.error("Error saving comment: {}", e.getMessage(), e);
@@ -77,6 +77,7 @@ public class CommentService {
             Optional<Comment> comment = commentRepository.findById(id);
             if (comment.isPresent()) {
                 commentRepository.delete(comment.get());
+                commentEventPublisher.publishCommentDeletedEvent(id);
                 return apiResponseBuilder.success();
             } else {
                 return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Comment with id " + id + " not found");
@@ -85,6 +86,7 @@ public class CommentService {
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete comment");
         }
     }
+
 
     public ApiResponse<List<Comment>> fetchCommentsByUserAndBook(Long userId, Long bookId) {
         ApiResponseBuilder<List<Comment>> apiResponseBuilder = new ApiResponseBuilder<>();
