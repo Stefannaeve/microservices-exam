@@ -1,7 +1,7 @@
 package microservices.exam.eventDriven;
 
 import lombok.Value;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Value
 public class BookEvent {
@@ -9,6 +9,6 @@ public class BookEvent {
     String title;
     String author;
     int pages;
-    Date publishDate;
+    LocalDate publishDate;
     String bookContent;
 }
