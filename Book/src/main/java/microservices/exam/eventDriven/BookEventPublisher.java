@@ -1,4 +1,3 @@
-
 package microservices.exam.eventDriven;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,10 +33,10 @@ public class BookEventPublisher {
         log.info("Published book deleted event for bookId: {}", bookId);
     }
 
-    public void publishBookUpdatedEvent(Long bookId, String title, String author, int pages, Date publishDate, String bookContent) {
-        log.info("Preparing to publish book updated event for bookId: {}", bookId);
-        BookEvent bookEvent = new BookEvent(bookId, "UPDATE", title, author, pages, publishDate, bookContent);
+    public void publishBookFetchEvent(String title) {
+        log.info("Preparing to publish book fetch event for title: {}", title);
+        BookEvent bookEvent = new BookEvent(null, "FETCH_TITLE", title, null, 0, null, null);
         rabbitTemplate.convertAndSend(exchangeName, "", bookEvent);
-        log.info("Published book updated event for bookId: {}", bookId);
+        log.info("Published book fetch event for title: {}", title);
     }
 }

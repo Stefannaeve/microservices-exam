@@ -113,4 +113,21 @@ public class BookController {
             }
         }
     }
+
+    @GetMapping("/fetchByTitle/{title}")
+    public ResponseEntity<ApiResponse<List<Book>>> fetchBooksByTitle(@PathVariable String title) {
+        log.info("Received request to fetch books with title containing: {}", title);
+        ApiResponse<List<Book>> apiResponse = bookService.fetchBooksByTitle(title);
+
+        switch (apiResponse) {
+            case ApiResponse.Success<List<Book>> success -> {
+                log.info("Successfully fetched books with title containing: {}", title);
+                return ResponseEntity.status(HttpStatus.OK).body(success);
+            }
+            case ApiResponse.Failure<List<Book>> failure -> {
+                log.error("Failed to fetch books with title containing: {}: {}", title, failure.errorMessage());
+                return ResponseEntity.status(failure.status()).body(failure);
+            }
+        }
+    }
 }

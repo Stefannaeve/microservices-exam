@@ -7,6 +7,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -32,7 +33,7 @@ public class BookEventListener {
             switch (eventType) {
                 case "CREATE" -> handleBookCreation(bookEvent);
                 case "DELETE" -> handleBookDeletion(bookEvent.getBookId());
-                case "UPDATE" -> handleBookUpdate(bookEvent);
+                case "FETCH_TITLE" -> handleBookFetchByTitle(bookEvent.getTitle());
                 default -> log.warn("Unknown event type: {}", eventType);
             }
         } catch (InterruptedException e) {
@@ -57,20 +58,14 @@ public class BookEventListener {
         }
     }
 
-    private void handleBookUpdate(BookEvent bookEvent) {
-        log.info("Handling book update for bookId: {}", bookEvent.getBookId());
-        Optional<Book> book = bookRepository.findById(bookEvent.getBookId());
-        if (book.isPresent()) {
-            Book existingBook = book.get();
-            existingBook.setTitle(bookEvent.getTitle());
-            existingBook.setAuthor(bookEvent.getAuthor());
-            existingBook.setPages(bookEvent.getPages());
-            existingBook.setPublishDate(bookEvent.getPublishDate());
-            existingBook.setBookContent(bookEvent.getBookContent());
-            bookRepository.save(existingBook);
-            log.info("Updated book with id: {}", bookEvent.getBookId());
+    private void handleBookFetchByTitle(String title) {
+        log.info("Handling book fetch for title: {}", title);
+        List<Book> books = bookRepository.findByTitle(title);
+        if (!books.isEmpty()) {
+            log.info("Found {} books with title containing: {}", books.size(), title);
+            books.forEach(book -> log.info("Book ID: {}, Title: {}, Author: {}", book.getId(), book.getTitle(), book.getAuthor()));
         } else {
-            log.warn("Book with id {} not found for update", bookEvent.getBookId());
+            log.warn("No books found with title containing: {}", title);
         }
     }
 }
