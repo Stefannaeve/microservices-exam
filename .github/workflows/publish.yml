@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - saveComment
+      - updateAPI
 
 
 jobs:
@@ -41,6 +42,12 @@ jobs:
 
       - name: Set environment variables
         run: echo "IMAGE_TAG=${{ env.SHORT_SHA }}" >> $GITHUB_ENV
+
+      - name: Install latest Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.23.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose version
 
       - name: Check Docker version
         run: docker version
