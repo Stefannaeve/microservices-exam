@@ -28,10 +28,15 @@ public class BookEventPublisher {
 
     public void publishBookDeletedEvent(Long bookId) {
         log.info("Preparing to publish book deleted event for bookId: {}", bookId);
-        BookEvent bookEvent = new BookEvent(bookId, "DELETE");
-        rabbitTemplate.convertAndSend(exchangeName, "", bookEvent);
-        log.info("Published book deleted event for bookId: {}", bookId);
+        try {
+            BookEvent bookEvent = new BookEvent(bookId, "DELETE");
+            rabbitTemplate.convertAndSend(exchangeName, "", bookEvent);
+            log.info("Published book deleted event for bookId: {}", bookId);
+        } catch (Exception e) {
+            log.error("Error publishing book deleted event: {}", e.getMessage());
+        }
     }
+
 
     public void publishBookFetchEvent(String title) {
         log.info("Preparing to publish book fetch event for title: {}", title);

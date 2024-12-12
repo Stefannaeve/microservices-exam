@@ -81,9 +81,9 @@ public class BookService {
     public ApiResponse<Void> deleteBookById(Long bookId) {
         ApiResponseBuilder<Void> apiResponseBuilder = new ApiResponseBuilder<>();
         try {
-            Optional<Book> bookOptional = bookRepository.findById(bookId);
-            if (bookOptional.isPresent()) {
-                bookRepository.delete(bookOptional.get());
+            Optional<Book> book = bookRepository.findById(bookId);
+            if (book.isPresent()) {
+                bookRepository.delete(book.get());
                 log.info("Deleted book with id: {}", bookId);
 
                 bookEventPublisher.publishBookDeletedEvent(bookId);

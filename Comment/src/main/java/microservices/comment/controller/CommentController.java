@@ -3,6 +3,7 @@ package microservices.comment.controller;
 
 import microservices.comment.apiResponse.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
+import microservices.comment.apiResponse.ApiResponseBuilder;
 import microservices.comment.models.Comment;
 import microservices.comment.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,9 +105,10 @@ public class CommentController {
         }
     }
 
-    @PutMapping("/updateComment/{bookId}")
-    public ResponseEntity<ApiResponse<Comment>> updateComment(@PathVariable Long bookId, @RequestBody Comment updateComment) {
-        ApiResponse<Comment> apiResponse = commentService.updateComment(bookId, updateComment);
+    @PutMapping("/updateComment/user/{userId}/book/{bookId}/comment/{commentId}")
+    public ResponseEntity<ApiResponse<Comment>> updateComment(@PathVariable Long userId, @PathVariable Long bookId, @PathVariable Long commentId, @RequestBody Comment updateComment) {
+
+        ApiResponse<Comment> apiResponse = commentService.updateComment(userId, bookId, commentId, updateComment);
 
         switch (apiResponse) {
             case ApiResponse.Success<Comment> success -> {
@@ -118,7 +120,23 @@ public class CommentController {
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<Comment> failure -> {
-                log.error("Failed to update comment with bookId: {}. Error: {}", bookId, failure.errorMessage());
+                log.error("Failed to update comment with commentId: {}. Error: {}", commentId, failure.errorMessage());
+                return new ResponseEntity<>(failure, failure.status());
+            }
+        }
+    }
+
+    @DeleteMapping("/delete/user/{userId}/book/{bookId}/comment/{commentId}")
+    public ResponseEntity<ApiResponse<Void>> deleteComment(@PathVariable Long userId, @PathVariable Long bookId, @PathVariable Long commentId) {
+        ApiResponse<Void> apiResponse = commentService.deleteCommentById(userId, bookId, commentId);
+
+        switch (apiResponse) {
+            case ApiResponse.Success<Void> success -> {
+                log.info("Successfully deleted comment with id: {}", commentId);
+                return ResponseEntity.status(HttpStatus.OK).body(success);
+            }
+            case ApiResponse.Failure<Void> failure -> {
+                log.error("Failed to delete comment with id: {}. Error: {}", commentId, failure.errorMessage());
                 return new ResponseEntity<>(failure, failure.status());
             }
         }
