@@ -33,6 +33,8 @@ public class UserEventListener {
                 handleBookDeletion(userEvent.getUserId(), userEvent.getBookId());
             } else if ("UPDATE_PROGRESS".equals(eventType)) {
                 handleProgressUpdate(userEvent);
+            } else if ("CREATE".equals(eventType)) {
+                handleUserCreation(userEvent);
             } else {
                 log.warn("Unknown event type: {}", eventType);
             }
@@ -41,6 +43,15 @@ public class UserEventListener {
             log.error("Error processing event: {}", e.getMessage(), e);
         }
     }
+
+    private void handleUserCreation(UserEvent userEvent) {
+        log.info("Handling user creation event for userId: {}, username: {}",
+                userEvent.getUserId(), userEvent.getUsername());
+
+        // Additional logic for user creation can be added here
+    }
+
+
 
     private void handleUserDeletion(Long userId) {
         User user = userRepo.findById(userId).orElse(null);
