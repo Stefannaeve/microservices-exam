@@ -53,15 +53,11 @@ public class CommentService {
         }
     }
 
-
     public ApiResponse<Comment> saveOneComment(Comment comment) {
         ApiResponseBuilder<Comment> apiResponseBuilder = new ApiResponseBuilder<>();
         try {
             if (comment.getUserId() == null || comment.getUserId() <= 0) {
                 return apiResponseBuilder.failure(HttpStatus.BAD_REQUEST, "Invalid userId");
-            }
-            if (comment.getBookId() == null || comment.getBookId() <= 0) {
-                return apiResponseBuilder.failure(HttpStatus.BAD_REQUEST, "Invalid bookId");
             }
             Comment savedComment = commentRepository.save(comment);
             commentEventPublisher.publishCommentCreatedEvent(savedComment.getId(), savedComment.getUserId(), savedComment.getBookId());
