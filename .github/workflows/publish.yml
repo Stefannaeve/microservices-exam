@@ -4,12 +4,15 @@ on:
   push:
     branches:
       - master
+      - saveComment
+
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

@@ -49,6 +49,7 @@
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
+            <version>8.0.33</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -82,6 +83,14 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>
+                org.springframework.cloud
+            </groupId>
+            <artifactId>
+                spring-cloud-starter-consul-config
+            </artifactId>
         </dependency>
     </dependencies>
 
