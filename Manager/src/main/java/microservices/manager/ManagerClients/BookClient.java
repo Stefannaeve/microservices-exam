@@ -115,6 +115,8 @@ public class BookClient {
         ResponseEntity<ApiResponseDTO<BookDTO>> response;
         ApiResponseBuilder<BookDTO> apiResponseBuilder = new ApiResponseBuilder<>();
 
+        log.info("1000");
+
         try {
             response = restTemplate.exchange(
                     url,
@@ -123,18 +125,23 @@ public class BookClient {
                     new ParameterizedTypeReference<>() {
                     }
             );
+            log.info("2000");
         }  catch (HttpClientErrorException clientErrorException){
+            log.info("3000");
             log.debug("Entered exception handling block");
 
-            HttpStatus status = HttpStatus.valueOf(clientErrorException.getStatusCode().value());
+            //HttpStatus status = HttpStatus.valueOf(clientErrorException.getStatusCode().value());
 
             ApiResponse apiResponse = clientErrorException.getResponseBodyAs(ApiResponse.Failure.class);
-
+            log.info("4000");
             return apiResponse;
         }catch (Exception exception) {
             log.error("An unexpected error occurred: ", exception);
+            log.info("5000");
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to book service");
         }
+
+        log.info("6000");
 
         log.info("Finished sending api call to book service");
 
@@ -144,6 +151,8 @@ public class BookClient {
         }
 
         HttpStatus statusCode = HttpStatus.valueOf(response.getStatusCode().value());
+
+        log.info("7000");
 
         log.debug("Received response with status: {}", statusCode);
         return apiResponseBuilder.parseDto(response.getBody(), statusCode);
