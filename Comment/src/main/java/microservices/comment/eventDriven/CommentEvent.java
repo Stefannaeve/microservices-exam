@@ -14,15 +14,18 @@ public class CommentEvent {
     private String eventType;
     private Long userId;
     private Long bookId;
+    private int page;
+    private boolean positive;
+    private boolean negative;
     private String text;
 
-    // Constructor for delete events
+    // delete events
     public CommentEvent(Long id, String eventType) {
         this.id = id;
         this.eventType = eventType;
     }
 
-    // Constructor for create events
+    // create events
     public CommentEvent(Long id, String eventType, Long userId, Long bookId) {
         this.id = id;
         this.eventType = eventType;
@@ -30,7 +33,7 @@ public class CommentEvent {
         this.bookId = bookId;
     }
 
-    // Constructor for update events
+    // update events
     public CommentEvent(Long id, String eventType, String text) {
         this.id = id;
         this.eventType = eventType;

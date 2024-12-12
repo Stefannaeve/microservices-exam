@@ -7,6 +7,7 @@ import microservices.exam.clients.BookClient;
 import microservices.exam.dtos.CommentDTO;
 import microservices.exam.models.Book;
 import microservices.exam.service.BookService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +17,16 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/book")
-@RequiredArgsConstructor
 public class BookController {
 
     private final BookService bookService;
     private final BookClient bookClient;
+
+    @Autowired
+    public BookController(BookService bookService, BookClient bookClient) {
+        this.bookService = bookService;
+        this.bookClient = bookClient;
+    }
 
     @GetMapping("/fetchAll")
     public ResponseEntity<ApiResponse<List<Book>>> fetchAll() {

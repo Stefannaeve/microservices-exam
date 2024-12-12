@@ -28,9 +28,9 @@ public class UserController {
 
     @GetMapping("/fetchById/{userId}")
     public ResponseEntity<ApiResponse<User>> fetchById(@PathVariable Long userId) {
-        ApiResponse<User> fetchById = userService.fetchUserById(userId);
+        ApiResponse<User> apiResponse = userService.fetchUserById(userId);
 
-        switch (fetchById) {
+        switch (apiResponse) {
             case ApiResponse.Success<User> success -> {
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
@@ -58,9 +58,9 @@ public class UserController {
 
     @GetMapping("/fetchUserBooks/{userId}")
     public ApiResponse<List<Long>> fetchUserBooks(@PathVariable Long userId) {
-        ApiResponse<List<Long>> fetchUserBook = userService.fetchUserBooks(userId);
+        ApiResponse<List<Long>> apiResponse = userService.fetchUserBooks(userId);
 
-        switch (fetchUserBook) {
+        switch (apiResponse) {
             case ApiResponse.Success<List<Long>> success -> {
                 return ResponseEntity.status(HttpStatus.OK).body(success).getBody();
             }
@@ -73,9 +73,9 @@ public class UserController {
 
     @PostMapping("/addBookToUser/{userId}")
     public ResponseEntity<ApiResponse<User>> addBookToUser(@PathVariable Long userId, @RequestBody UserBook userBook) {
-        ApiResponse<User> addBookToUser = userService.addBookToUser(userId, userBook);
+        ApiResponse<User> apiResponse = userService.addBookToUser(userId, userBook);
 
-        switch (addBookToUser) {
+        switch (apiResponse) {
             case ApiResponse.Success<User> success -> {
                 return ResponseEntity.status(HttpStatus.CREATED).body(success);
             }
@@ -88,9 +88,9 @@ public class UserController {
 
     @DeleteMapping("/delete/{userId}")
     public ResponseEntity<ApiResponse<User>> deleteUser(@PathVariable Long userId) {
-        ApiResponse<User> deleteUser = userService.deleteUserById(userId);
+        ApiResponse<User> apiResponse = userService.deleteUserById(userId);
 
-        switch (deleteUser) {
+        switch (apiResponse) {
             case ApiResponse.Success<User> success -> {
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
@@ -104,9 +104,9 @@ public class UserController {
     @DeleteMapping("/{userId}/deleteBook/{bookId}")
     public ResponseEntity<ApiResponse<User>> deleteBookFromUser (@PathVariable Long userId, @PathVariable Long
             bookId){
-        ApiResponse<User> deleteBookFromUser = userService.deleteBookFromUser(userId, bookId);
+        ApiResponse<User> apiResponse = userService.deleteBookFromUser(userId, bookId);
 
-        switch (deleteBookFromUser) {
+        switch (apiResponse) {
             case ApiResponse.Success<User> success -> {
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
@@ -121,9 +121,9 @@ public class UserController {
     public ResponseEntity<ApiResponse<User>> updateReadingProgress (@PathVariable Long userId, @PathVariable Long bookId, @RequestBody Map < String, String > requestBody){
         String newReadingProgress = requestBody.get("newReadingProgress");
         String newReadingStatus = requestBody.get("newReadingStatus");
-        ApiResponse<User> updateReadingProgress = userService.updateReadingProgress(userId, bookId, newReadingProgress, newReadingStatus);
+        ApiResponse<User> apiResponse = userService.updateReadingProgress(userId, bookId, newReadingProgress, newReadingStatus);
 
-        switch (updateReadingProgress) {
+        switch (apiResponse) {
             case ApiResponse.Success<User> success -> {
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
