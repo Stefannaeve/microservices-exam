@@ -175,7 +175,7 @@ services:
       dockerfile: Dockerfile
     image: ${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-manager
     ports:
-      - '8080'
+      - '8080:8080'
     networks:
       - services
     depends_on:
