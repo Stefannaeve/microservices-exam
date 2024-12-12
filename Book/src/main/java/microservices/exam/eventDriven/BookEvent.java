@@ -4,7 +4,8 @@ package microservices.exam.eventDriven;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import java.util.Date;
+
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -15,7 +16,7 @@ public class BookEvent {
     private String title;
     private String author;
     private int pages;
-    private Date publishDate;
+    private LocalDate publishDate;
     private String bookContent;
 
     public BookEvent() {
@@ -33,7 +34,7 @@ public class BookEvent {
     }
 
     // create and update events
-    public BookEvent(Long bookId, String eventType, String title, String author, int pages, Date publishDate, String bookContent) {
+    public BookEvent(Long bookId, String eventType, String title, String author, int pages, LocalDate publishDate, String bookContent) {
         this.bookId = bookId;
         this.eventType = eventType;
         this.title = title;
