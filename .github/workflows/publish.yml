@@ -25,6 +25,15 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Update docker compose
+        run: curl -SL https://github.com/docker/compose/releases/download/v2.30.3/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+
+      - name: Set permission for docker-compose
+        run: chmod +x /usr/local/bin/docker-compose
+
+      - name: check docker-compose client version
+        run: docker-compose version
+
 
       - name: Extract short commit SHA
         id: vars
@@ -42,7 +51,7 @@ jobs:
           echo "IMAGE_TAG=${IMAGE_TAG}"
       - name: Build Docker images with docker-compose
         working-directory: ./docker
-        run: docker compose build
+        run: docker-compose build
 
       - name: Tag images with 'latest'
         working-directory: ./docker
