@@ -1,6 +1,5 @@
 package microservices.exam.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import microservices.exam.apiResponse.ApiResponse;
 import microservices.exam.apiResponse.ApiResponseBuilder;

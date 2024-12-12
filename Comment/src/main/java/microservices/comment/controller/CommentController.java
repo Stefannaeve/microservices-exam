@@ -29,9 +29,15 @@ public class CommentController {
 
         switch (apiResponse) {
             case ApiResponse.Success<List<Comment>> success -> {
+                if (success.value().isPresent()) {
+                    log.info("Fetched all comments successfully. Total comments: {}", success.value().get().size());
+                } else {
+                    log.info("Fetched all comments successfully, but no comments found.");
+                }
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<List<Comment>> failure -> {
+                log.error("Failed to fetch all comments. Error: {}", failure.errorMessage());
                 return new ResponseEntity<>(failure, failure.status());
             }
         }
@@ -43,9 +49,15 @@ public class CommentController {
 
         switch (apiResponse) {
             case ApiResponse.Success<Comment> success -> {
+                if (success.value().isPresent()) {
+                    log.info("Fetched comment with id: {}", success.value().get().getId());
+                } else {
+                    log.info("Fetched comment successfully, but no comment data found.");
+                }
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<Comment> failure -> {
+                log.error("Failed to fetch comment with id: {}. Error: {}", id, failure.errorMessage());
                 return new ResponseEntity<>(failure, failure.status());
             }
         }
@@ -57,9 +69,15 @@ public class CommentController {
 
         switch (apiResponse) {
             case ApiResponse.Success<Comment> success -> {
+                if (success.value().isPresent()) {
+                    log.info("Saved comment with id: {}", success.value().get().getId());
+                } else {
+                    log.info("Comment saved successfully.");
+                }
                 return ResponseEntity.status(HttpStatus.CREATED).body(success);
             }
             case ApiResponse.Failure<Comment> failure -> {
+                log.error("Failed to save comment. Error: {}", failure.errorMessage());
                 return new ResponseEntity<>(failure, failure.status());
             }
         }
@@ -71,23 +89,35 @@ public class CommentController {
 
         switch (apiResponse) {
             case ApiResponse.Success<List<Comment>> success -> {
+                if (success.value().isPresent()) {
+                    log.info("Fetched comments for userId: {} and bookId: {}. Total comments: {}", userId, bookId, success.value().get().size());
+                } else {
+                    log.info("Fetched comments for userId: {} and bookId: {}, but no comments found.", userId, bookId);
+                }
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<List<Comment>> failure -> {
+                log.error("Failed to fetch comments for userId: {} and bookId: {}. Error: {}", userId, bookId, failure.errorMessage());
                 return new ResponseEntity<>(failure, failure.status());
             }
         }
     }
 
     @PutMapping("/updateComment/{bookId}")
-    public ResponseEntity<ApiResponse<Comment>> updateComment(@PathVariable Long bookId, @PathVariable Comment updateComment){
+    public ResponseEntity<ApiResponse<Comment>> updateComment(@PathVariable Long bookId, @RequestBody Comment updateComment) {
         ApiResponse<Comment> apiResponse = commentService.updateComment(bookId, updateComment);
 
-        switch (apiResponse){
+        switch (apiResponse) {
             case ApiResponse.Success<Comment> success -> {
+                if (success.value().isPresent()) {
+                    log.info("Updated comment with id: {}", success.value().get().getId());
+                } else {
+                    log.info("Comment updated successfully.");
+                }
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<Comment> failure -> {
+                log.error("Failed to update comment with bookId: {}. Error: {}", bookId, failure.errorMessage());
                 return new ResponseEntity<>(failure, failure.status());
             }
         }

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-
 @Slf4j
 @RestController
 @RequestMapping("/user")
@@ -32,10 +31,15 @@ public class UserController {
 
         switch (apiResponse) {
             case ApiResponse.Success<User> success -> {
+                if (success.value().isPresent()) {
+                    log.info("Fetched user with id: {}", success.value().get().getId());
+                } else {
+                    log.info("Fetched user successfully, but no user data found.");
+                }
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<User> failure -> {
-                System.out.println("Something went wrong");
+                log.error("Failed to fetch user with id: {}. Error: {}", userId, failure.errorMessage());
                 return new ResponseEntity<>(failure, failure.status());
             }
         }
@@ -47,26 +51,36 @@ public class UserController {
 
         switch (savedOneUser) {
             case ApiResponse.Success<User> success -> {
+                if (success.value().isPresent()) {
+                    log.info("Saved user with id: {}", success.value().get().getId());
+                } else {
+                    log.info("User saved successfully.");
+                }
                 return ResponseEntity.status(HttpStatus.CREATED).body(success);
             }
             case ApiResponse.Failure<User> failure -> {
-                System.out.println("Something went wrong: " + failure.errorMessage());
+                log.error("Failed to save user. Error: {}", failure.errorMessage());
                 return new ResponseEntity<>(failure, failure.status());
             }
         }
     }
 
     @GetMapping("/fetchUserBooks/{userId}")
-    public ApiResponse<List<Long>> fetchUserBooks(@PathVariable Long userId) {
+    public ResponseEntity<ApiResponse<List<Long>>> fetchUserBooks(@PathVariable Long userId) {
         ApiResponse<List<Long>> apiResponse = userService.fetchUserBooks(userId);
 
         switch (apiResponse) {
             case ApiResponse.Success<List<Long>> success -> {
-                return ResponseEntity.status(HttpStatus.OK).body(success).getBody();
+                if (success.value().isPresent()) {
+                    log.info("Fetched books for userId: {}. Total books: {}", userId, success.value().get().size());
+                } else {
+                    log.info("Fetched books for userId: {}, but no books found.", userId);
+                }
+                return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<List<Long>> failure -> {
-                System.out.println("Something went wrong");
-                return new ResponseEntity<>(failure, failure.status()).getBody();
+                log.error("Failed to fetch books for userId: {}. Error: {}", userId, failure.errorMessage());
+                return new ResponseEntity<>(failure, failure.status());
             }
         }
     }
@@ -77,10 +91,11 @@ public class UserController {
 
         switch (apiResponse) {
             case ApiResponse.Success<User> success -> {
+                log.info("Added book to user with id: {}", userId);
                 return ResponseEntity.status(HttpStatus.CREATED).body(success);
             }
             case ApiResponse.Failure<User> failure -> {
-                System.out.println("Something went wrong: " + failure.errorMessage());
+                log.error("Failed to add book to user with id: {}. Error: {}", userId, failure.errorMessage());
                 return new ResponseEntity<>(failure, failure.status());
             }
         }
@@ -92,46 +107,47 @@ public class UserController {
 
         switch (apiResponse) {
             case ApiResponse.Success<User> success -> {
+                log.info("Deleted user with id: {}", userId);
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<User> failure -> {
-                System.out.println("Something went wrong: " + failure.errorMessage());
+                log.error("Failed to delete user with id: {}. Error: {}", userId, failure.errorMessage());
                 return new ResponseEntity<>(failure, failure.status());
             }
         }
     }
 
     @DeleteMapping("/{userId}/deleteBook/{bookId}")
-    public ResponseEntity<ApiResponse<User>> deleteBookFromUser (@PathVariable Long userId, @PathVariable Long
-            bookId){
+    public ResponseEntity<ApiResponse<User>> deleteBookFromUser(@PathVariable Long userId, @PathVariable Long bookId) {
         ApiResponse<User> apiResponse = userService.deleteBookFromUser(userId, bookId);
 
         switch (apiResponse) {
             case ApiResponse.Success<User> success -> {
+                log.info("Deleted book with id: {} from user with id: {}", bookId, userId);
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<User> failure -> {
-                System.out.println("Something went wrong: " + failure.errorMessage());
+                log.error("Failed to delete book with id: {} from user with id: {}. Error: {}", bookId, userId, failure.errorMessage());
                 return new ResponseEntity<>(failure, failure.status());
             }
         }
     }
 
     @PatchMapping("/{userId}/books/{bookId}/progress")
-    public ResponseEntity<ApiResponse<User>> updateReadingProgress (@PathVariable Long userId, @PathVariable Long bookId, @RequestBody Map < String, String > requestBody){
+    public ResponseEntity<ApiResponse<User>> updateReadingProgress(@PathVariable Long userId, @PathVariable Long bookId, @RequestBody Map<String, String> requestBody) {
         String newReadingProgress = requestBody.get("newReadingProgress");
         String newReadingStatus = requestBody.get("newReadingStatus");
         ApiResponse<User> apiResponse = userService.updateReadingProgress(userId, bookId, newReadingProgress, newReadingStatus);
 
         switch (apiResponse) {
             case ApiResponse.Success<User> success -> {
+                log.info("Updated reading progress for userId: {} and bookId: {}. New progress: {}, New status: {}", userId, bookId, newReadingProgress, newReadingStatus);
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<User> failure -> {
-                System.out.println("Something went wrong: " + failure.errorMessage());
+                log.error("Failed to update reading progress for userId: {} and bookId: {}. Error: {}", userId, bookId, failure.errorMessage());
                 return new ResponseEntity<>(failure, failure.status());
             }
         }
     }
-
 }

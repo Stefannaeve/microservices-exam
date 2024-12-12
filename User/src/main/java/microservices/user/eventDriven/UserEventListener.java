@@ -47,8 +47,6 @@ public class UserEventListener {
     private void handleUserCreation(UserEvent userEvent) {
         log.info("Handling user creation event for userId: {}, username: {}",
                 userEvent.getUserId(), userEvent.getUsername());
-
-        // Additional logic for user creation can be added here
     }
 
 
