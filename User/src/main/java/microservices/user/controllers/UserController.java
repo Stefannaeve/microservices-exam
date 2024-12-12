@@ -1,4 +1,3 @@
-
 package microservices.user.controllers;
 
 import lombok.extern.slf4j.Slf4j;
@@ -151,4 +150,20 @@ public class UserController {
             }
         }
     }
+
+    @GetMapping("/fetchUserWithBook/{userId}/{bookId}")
+    public ResponseEntity<ApiResponse<User>> fetchUserWithBook(@PathVariable Long userId, @PathVariable Long bookId){
+       ApiResponse<User> user = userService.fetchUserWithBook(userId, bookId);
+
+       switch (user) {
+           case ApiResponse.Success<User> success -> {
+               return ResponseEntity.status(HttpStatus.OK).body(success);
+           }
+           case ApiResponse.Failure<User> failure ->  {
+               System.out.println("Something went wrong: " + failure.errorMessage());
+               return new ResponseEntity<>(failure, failure.status());
+           }
+       }
+    }
+
 }
