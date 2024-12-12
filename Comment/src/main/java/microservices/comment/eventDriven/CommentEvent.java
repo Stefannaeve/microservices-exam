@@ -15,3 +15,4 @@ public class CommentEvent {
     private boolean negative;
     private String text;
 }
+
