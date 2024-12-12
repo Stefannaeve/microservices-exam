@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - workflow-fix
 
 
 jobs:
@@ -31,6 +32,9 @@ jobs:
 
       - name: Set environment variables
         run: echo "IMAGE_TAG=${{ env.SHORT_SHA }}" >> $GITHUB_ENV
+
+      - name: Update docker compose
+        run: curl -SL https://github.com/docker/compose/releases/download/v2.30.3/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
 
       - name: Check Docker version
         run: docker version
