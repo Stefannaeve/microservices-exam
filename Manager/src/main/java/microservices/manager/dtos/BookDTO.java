@@ -2,7 +2,7 @@ package microservices.manager.dtos;
 
 import lombok.Getter;
 import lombok.Setter;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -11,7 +11,7 @@ public class BookDTO {
     private String title;
     private String author;
     private int pages;
-    private Date publishDate;
+    private LocalDate publishDate;
     private String bookContent;
 
     @Override
