@@ -33,14 +33,11 @@ public class CommentEventListener {
             String eventType = commentEvent.getEventType();
             log.info("Processing event type: {}", eventType);
 
-            if ("CREATE".equals(eventType)) {
-                handleCommentCreation(commentEvent);
-            } else if ("DELETE".equals(eventType)) {
-                handleCommentDeletion(commentEvent.getId());
-            } else if ("UPDATE".equals(eventType)) {
-                handleCommentUpdate(commentEvent.getId(), commentEvent.getText());
-            } else {
-                log.warn("Unknown event type: {}", eventType);
+            switch (eventType){
+                case "CREATE" -> handleCommentCreation(commentEvent);
+                case "DELETE" -> handleCommentDeletion(commentEvent.getId());
+                case "UPDATE" -> handleCommentUpdate(commentEvent.getId(), commentEvent.getText());
+                default -> log.warn("Unknown event type: {}", eventType);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

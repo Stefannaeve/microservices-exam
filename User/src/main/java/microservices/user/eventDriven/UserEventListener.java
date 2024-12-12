@@ -26,18 +26,14 @@ public class UserEventListener {
         log.info("Received event: {}", userEvent);
         try {
             Thread.sleep(5000); // for testing purposes
-
             String eventType = userEvent.getEventType();
-            if ("DELETE".equals(eventType)) {
-                handleUserDeletion(userEvent.getUserId());
-            } else if ("DELETE_BOOK".equals(eventType)) {
-                handleBookDeletion(userEvent.getUserId(), userEvent.getBookId());
-            } else if ("UPDATE_PROGRESS".equals(eventType)) {
-                handleProgressUpdate(userEvent);
-            } else if ("CREATE".equals(eventType)) {
-                handleUserCreation(userEvent);
-            } else {
-                log.warn("Unknown event type: {}", eventType);
+
+            switch (eventType){
+                case "DELETE" -> handleUserDeletion(userEvent.getUserId());
+                case "DELETE_BOOK" -> handleBookDeletion(userEvent.getUserId(), userEvent.getBookId());
+                case "UPDATE_PROGRESS" -> handleProgressUpdate(userEvent);
+                case "CREATE" -> handleUserCreation(userEvent);
+                default -> log.warn("Unknown event type: {}", eventType);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
