@@ -18,8 +18,8 @@ import java.util.List;
 @RequestMapping("/book")
 public class BookController {
 
-    BookService bookService;
-    BookClient bookClient;
+    private final BookService bookService;
+    private final BookClient bookClient;
 
     @Autowired
     public BookController(BookService bookService, BookClient bookClient) {
@@ -48,11 +48,12 @@ public class BookController {
 
         switch (apiResponse) {
             case ApiResponse.Success<List<Book>> success -> {
+                log.info("Fetched all books successfully.");
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<List<Book>> failure -> {
-                log.error(failure.errorMessage());
-                return ResponseEntity.status(failure.status()).body(failure);
+                log.error("Failed to fetch books: {}", failure.errorMessage());
+                return new ResponseEntity<>(failure, failure.status());
             }
         }
     }
@@ -61,11 +62,17 @@ public class BookController {
     public ResponseEntity<ApiResponse<List<CommentDTO>>> fetchAllComments() {
         ApiResponse<List<CommentDTO>> externalComment = bookClient.externalComment();
 
-        switch (externalComment){
+        switch (externalComment) {
             case ApiResponse.Success<List<CommentDTO>> success -> {
+                if (success.value().isPresent()) {
+                    log.info("Fetched all comments successfully. Total comments: {}", success.value().get().size());
+                } else {
+                    log.info("Fetched all comments successfully, but no comments were found.");
+                }
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<List<CommentDTO>> failure -> {
+                log.error("Failed to fetch comments: {}", failure.errorMessage());
                 return new ResponseEntity<>(failure, failure.status());
             }
         }
@@ -75,29 +82,35 @@ public class BookController {
     public ResponseEntity<ApiResponse<Book>> saveOneBook(@RequestBody Book book) {
         ApiResponse<Book> apiResponse = bookService.saveOneBook(book);
 
-        switch (apiResponse){
+        switch (apiResponse) {
             case ApiResponse.Success<Book> success -> {
+                if (success.value().isPresent()) {
+                    log.info("Saved book with id: {}", success.value().get().getId());
+                } else {
+                    log.info("Book saved successfully.");
+                }
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<Book> failure -> {
+                log.error("Failed to save book: {}", failure.errorMessage());
                 return new ResponseEntity<>(failure, failure.status());
             }
         }
-
     }
 
     @DeleteMapping("/delete/{bookId}")
     public ResponseEntity<ApiResponse<Void>> deleteBook(@PathVariable Long bookId) {
         ApiResponse<Void> apiResponse = bookService.deleteBookById(bookId);
 
-        switch (apiResponse){
+        switch (apiResponse) {
             case ApiResponse.Success<Void> success -> {
+                log.info("Deleted book with id: {}", bookId);
                 return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<Void> failure -> {
+                log.error("Failed to delete book with id: {}: {}", bookId, failure.errorMessage());
                 return new ResponseEntity<>(failure, failure.status());
             }
         }
-
     }
 }
