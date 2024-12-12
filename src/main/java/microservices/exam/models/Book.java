@@ -3,7 +3,7 @@ package microservices.exam.models;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -36,7 +36,7 @@ public class Book {
     private int pages;
 
     @Column(name = "publish_date")
-    private Date publishDate;
+    private LocalDate publishDate;
 
     @Lob
     @Column(name = "book_content", columnDefinition = "LONGTEXT")

@@ -73,5 +73,4 @@ public class CommentEventListener {
         } else {
             log.warn("Comment with id {} not found for update", commentId);
         }
-    }
 }

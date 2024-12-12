@@ -27,6 +27,21 @@ public class BookController {
         this.bookClient = bookClient;
     }
 
+    @GetMapping("/fetchBookById/{id}")
+    public ResponseEntity<ApiResponse<Book>> fetchBookById(@PathVariable Long id) {
+        ApiResponse<Book> book = bookService.fetchById(id);
+
+        switch (book) {
+            case ApiResponse.Success<Book> success -> {
+                return ResponseEntity.status(HttpStatus.OK).body(success);
+            }
+            case ApiResponse.Failure<Book> failure -> {
+                log.error(failure.errorMessage());
+                return ResponseEntity.status(failure.status()).body(failure);
+            }
+        }
+    }
+
     @GetMapping("/fetchAll")
     public ResponseEntity<ApiResponse<List<Book>>> fetchAll() {
         ApiResponse<List<Book>> apiResponse = bookService.fetchAll();

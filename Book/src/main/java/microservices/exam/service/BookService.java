@@ -73,4 +73,21 @@ public class BookService {
             return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Book not found");
         }
     }
+
+    public ApiResponse<Book> fetchById(long id) {
+        ApiResponseBuilder<Book> apiResponseBuilder = new ApiResponseBuilder<>();
+        Optional<Book> book;
+
+        try {
+            book = bookRepository.findById(id);
+        } catch (Exception exception) {
+            log.error("Book service, service, error: {}", exception.getMessage());
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong...");
+        }
+        if (book.isEmpty()){
+            return apiResponseBuilder.failure(HttpStatus.NO_CONTENT, "Book not found");
+        }
+        log.info("Book found in database");
+        return apiResponseBuilder.success(book.get());
+    }
 }
