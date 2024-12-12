@@ -20,7 +20,7 @@ public class BookEvent {
     public BookEvent() {
     }
 
-    // Constructor for delete events
+    // delete events
     public BookEvent(Long bookId, String eventType) {
         this.bookId = bookId;
         this.eventType = eventType;
@@ -31,7 +31,7 @@ public class BookEvent {
         this.bookContent = null;
     }
 
-    // Constructor for create and update events
+    // create and update events
     public BookEvent(Long bookId, String eventType, String title, String author, int pages, Date publishDate, String bookContent) {
         this.bookId = bookId;
         this.eventType = eventType;
