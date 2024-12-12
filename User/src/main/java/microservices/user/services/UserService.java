@@ -35,7 +35,7 @@ public class UserService {
         ApiResponseBuilder<User> apiResponseBuilder = new ApiResponseBuilder<>();
         try {
             User savedUser = userRepo.save(userToSave);
-            userEventPublisher.publishCreateEvent(savedUser.getId());
+            userEventPublisher.publishCreateEvent(savedUser.getId(), savedUser.getUsername());
             return apiResponseBuilder.success(savedUser);
         } catch (Exception e) {
             return new ApiResponse.Failure<>(Optional.empty(), HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save user");

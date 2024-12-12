@@ -42,4 +42,17 @@ public class BookEvent {
         this.publishDate = publishDate;
         this.bookContent = bookContent;
     }
+
+    @Override
+    public String toString() {
+        return "BookEvent{" +
+                "bookId=" + bookId +
+                ", eventType='" + eventType + '\'' +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", pages=" + pages +
+                ", publishDate=" + publishDate +
+                ", bookContent='" + bookContent + '\'' +
+                '}';
+    }
 }
