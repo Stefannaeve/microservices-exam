@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -34,7 +35,7 @@ public class Book {
     private int pages;
 
     @Column(name = "publish_date")
-    private LocalDate publishDate;
+    private Date publishDate;
 
     @Lob
     @Column(name = "book_content", columnDefinition = "LONGTEXT")

@@ -1,3 +1,4 @@
+
 package microservices.user.eventDriven;
 
 import lombok.extern.slf4j.Slf4j;
@@ -25,22 +26,27 @@ public class UserEventListener {
         log.info("Received event: {}", userEvent);
         try {
             Thread.sleep(5000); // for testing purposes
-
             String eventType = userEvent.getEventType();
-            if ("DELETE".equals(eventType)) {
-                handleUserDeletion(userEvent.getUserId());
-            } else if ("DELETE_BOOK".equals(eventType)) {
-                handleBookDeletion(userEvent.getUserId(), userEvent.getBookId());
-            } else if ("UPDATE_PROGRESS".equals(eventType)) {
-                handleProgressUpdate(userEvent);
-            } else {
-                log.warn("Unknown event type: {}", eventType);
+
+            switch (eventType){
+                case "DELETE" -> handleUserDeletion(userEvent.getUserId());
+                case "DELETE_BOOK" -> handleBookDeletion(userEvent.getUserId(), userEvent.getBookId());
+                case "UPDATE_PROGRESS" -> handleProgressUpdate(userEvent);
+                case "CREATE" -> handleUserCreation(userEvent);
+                default -> log.warn("Unknown event type: {}", eventType);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             log.error("Error processing event: {}", e.getMessage(), e);
         }
     }
+
+    private void handleUserCreation(UserEvent userEvent) {
+        log.info("Handling user creation event for userId: {}, username: {}",
+                userEvent.getUserId(), userEvent.getUsername());
+    }
+
+
 
     private void handleUserDeletion(Long userId) {
         User user = userRepo.findById(userId).orElse(null);

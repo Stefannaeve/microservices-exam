@@ -1,14 +1,58 @@
+
 package microservices.exam.eventDriven;
 
-import lombok.Value;
-import java.time.LocalDate;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import java.util.Date;
 
-@Value
+@Getter
+@Setter
+@ToString
 public class BookEvent {
-    Long bookId;
-    String title;
-    String author;
-    int pages;
-    LocalDate publishDate;
-    String bookContent;
+    private Long bookId;
+    private String eventType;
+    private String title;
+    private String author;
+    private int pages;
+    private Date publishDate;
+    private String bookContent;
+
+    public BookEvent() {
+    }
+
+    // delete events
+    public BookEvent(Long bookId, String eventType) {
+        this.bookId = bookId;
+        this.eventType = eventType;
+        this.title = null;
+        this.author = null;
+        this.pages = 0;
+        this.publishDate = null;
+        this.bookContent = null;
+    }
+
+    // create and update events
+    public BookEvent(Long bookId, String eventType, String title, String author, int pages, Date publishDate, String bookContent) {
+        this.bookId = bookId;
+        this.eventType = eventType;
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.publishDate = publishDate;
+        this.bookContent = bookContent;
+    }
+
+    @Override
+    public String toString() {
+        return "BookEvent{" +
+                "bookId=" + bookId +
+                ", eventType='" + eventType + '\'' +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", pages=" + pages +
+                ", publishDate=" + publishDate +
+                ", bookContent='" + bookContent + '\'' +
+                '}';
+    }
 }

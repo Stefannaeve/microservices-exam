@@ -2,34 +2,42 @@
 package microservices.exam.eventDriven;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+import java.util.Date;
+
 @Slf4j
+@Component
 public class BookEventPublisher {
 
     private final RabbitTemplate rabbitTemplate;
     private final String exchangeName;
 
-    public BookEventPublisher(
-            RabbitTemplate rabbitTemplate,
-            @Value("${amqp.exchange.name}") String exchangeName) {
+    public BookEventPublisher(RabbitTemplate rabbitTemplate, @Value("${amqp.exchange.name}") String exchangeName) {
         this.rabbitTemplate = rabbitTemplate;
         this.exchangeName = exchangeName;
     }
 
-    public void publishCreatedBookEvent(BookEvent bookEvent) {
+    public void publishBookCreatedEvent(Long bookId, String title, String author, int pages, Date publishDate, String bookContent) {
+        log.info("Preparing to publish book created event for bookId: {}", bookId);
+        BookEvent bookEvent = new BookEvent(bookId, "CREATE", title, author, pages, publishDate, bookContent);
         rabbitTemplate.convertAndSend(exchangeName, "", bookEvent);
-        log.info("Published 'book.created' event to exchange '{}': {}", exchangeName, bookEvent);
+        log.info("Published book created event for bookId: {}", bookId);
     }
 
-    public void publishDeletedBookEvent(Long bookId) {
-        rabbitTemplate.convertAndSend(exchangeName, "", bookId);
-        log.info("Published 'book.deleted' event for bookId: {}", bookId);
+    public void publishBookDeletedEvent(Long bookId) {
+        log.info("Preparing to publish book deleted event for bookId: {}", bookId);
+        BookEvent bookEvent = new BookEvent(bookId, "DELETE");
+        rabbitTemplate.convertAndSend(exchangeName, "", bookEvent);
+        log.info("Published book deleted event for bookId: {}", bookId);
+    }
+
+    public void publishBookUpdatedEvent(Long bookId, String title, String author, int pages, Date publishDate, String bookContent) {
+        log.info("Preparing to publish book updated event for bookId: {}", bookId);
+        BookEvent bookEvent = new BookEvent(bookId, "UPDATE", title, author, pages, publishDate, bookContent);
+        rabbitTemplate.convertAndSend(exchangeName, "", bookEvent);
+        log.info("Published book updated event for bookId: {}", bookId);
     }
 }
-
