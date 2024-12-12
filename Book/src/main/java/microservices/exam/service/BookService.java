@@ -15,11 +15,15 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class BookService {
 
     private final BookRepository bookRepository;
     private final BookEventPublisher bookEventPublisher;
+
+    public BookService(BookRepository bookRepository, BookEventPublisher bookEventPublisher) {
+        this.bookRepository = bookRepository;
+        this.bookEventPublisher = bookEventPublisher;
+    }
 
     public ApiResponse<List<Book>> fetchAll() {
         ApiResponseBuilder<List<Book>> apiResponseBuilder = new ApiResponseBuilder<>();
