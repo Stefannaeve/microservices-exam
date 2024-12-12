@@ -14,7 +14,6 @@ public class BookEvent {
     private String title;
     private String author;
     private Integer pages;
-    private String otherDetails;
 
     @Override
     public String toString() {
@@ -24,7 +23,7 @@ public class BookEvent {
                 ", title='" + title + '\'' +
                 ", author='" + author + '\'' +
                 ", pages=" + pages +
-                ", otherDetails='" + otherDetails + '\'' +
                 '}';
     }
+
 }

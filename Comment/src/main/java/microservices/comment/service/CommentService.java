@@ -52,6 +52,7 @@ public class CommentService {
         }
     }
 
+
     public ApiResponse<Comment> saveOneComment(Comment comment) {
         ApiResponseBuilder<Comment> apiResponseBuilder = new ApiResponseBuilder<>();
         try {
@@ -85,7 +86,6 @@ public class CommentService {
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete comment");
         }
     }
-
 
     public ApiResponse<List<Comment>> fetchCommentsByUserAndBook(Long userId, Long bookId) {
         ApiResponseBuilder<List<Comment>> apiResponseBuilder = new ApiResponseBuilder<>();

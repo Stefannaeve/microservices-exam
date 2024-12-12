@@ -1,6 +1,8 @@
 package microservices.comment.eventDriven;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Component;
 import microservices.comment.models.Comment;
 import microservices.comment.repository.CommentRepository;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -73,5 +75,5 @@ public class CommentEventListener {
         } else {
             log.warn("Comment with id {} not found for update", commentId);
         }
-    }
+}
 }
