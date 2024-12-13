@@ -28,23 +28,9 @@ public class BookController {
     }
 
     @GetMapping("/fetchBookById/{id}")
-    public ResponseEntity<ApiResponse<BookDTO>> fetchBookById(@PathVariable long id) {
-        log.info("The id: {}", id);
-
-        ApiResponse<BookDTO> book = bookClient.externalGetBookById(id);
-
-        log.info("Finished with book client");
-
-
-        switch (book) {
-            case ApiResponse.Success<BookDTO> success -> {
-                return ResponseEntity.status(HttpStatus.OK).body(success);
-            }
-            case ApiResponse.Failure<BookDTO> failure -> {
-                log.error("This is the error:", failure.errorMessage());
-                return ResponseEntity.status(failure.status()).body(failure);
-            }
-        }
+    public ResponseEntity<Optional<BookDTO>> fetchBookById(@PathVariable long id) {
+        ResponseEntity<Optional<BookDTO>> book = bookClient.externalGetBookById(id);
+        return book;
     }
 
 
