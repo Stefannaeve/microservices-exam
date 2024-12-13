@@ -105,11 +105,11 @@ public class CommentController {
         }
     }
 
+
     @PutMapping("/updateComment/user/{userId}/book/{bookId}/comment/{commentId}")
     public ResponseEntity<ApiResponse<Comment>> updateComment(@PathVariable Long userId, @PathVariable Long bookId, @PathVariable Long commentId, @RequestBody Comment updateComment) {
-
         ApiResponse<Comment> apiResponse = commentService.updateComment(userId, bookId, commentId, updateComment);
-
+  
         switch (apiResponse) {
             case ApiResponse.Success<Comment> success -> {
                 if (success.value().isPresent()) {

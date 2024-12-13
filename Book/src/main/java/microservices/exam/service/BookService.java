@@ -60,8 +60,8 @@ public class BookService {
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save book");
         }
     }
-
-    public ApiResponse<Book> fetchById(long id) {
+  
+  public ApiResponse<Book> fetchById(long id) {
         ApiResponseBuilder<Book> apiResponseBuilder = new ApiResponseBuilder<>();
         try {
             Optional<Book> book = bookRepository.findById(id);
@@ -115,5 +115,4 @@ public class BookService {
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch books by title");
         }
     }
-
 }

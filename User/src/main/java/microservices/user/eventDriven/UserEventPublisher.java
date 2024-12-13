@@ -1,3 +1,4 @@
+
 package microservices.user.eventDriven;
 
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,7 @@ public class UserEventPublisher {
         log.info("Published create event for userId: {}", userId);
     }
 
+
     public void publishBookDeletionEvent(Long userId, Long bookId) {
         UserEvent userEvent = new UserEvent(userId, "DELETE_BOOK");
         userEvent.setBookId(bookId);
@@ -45,5 +47,4 @@ public class UserEventPublisher {
         rabbitTemplate.convertAndSend(exchangeName, "", userEvent);
         log.info("Published add book event for userId: {} and book: {}", userId, userBook.getId());
     }
-
 }

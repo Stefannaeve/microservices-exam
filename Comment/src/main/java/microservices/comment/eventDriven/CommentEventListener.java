@@ -29,7 +29,6 @@ public class CommentEventListener {
 
         try {
             Thread.sleep(5000); // For testing purposes to imitate large message payloads
-
             String eventType = commentEvent.getEventType();
             log.info("Processing event type: {}", eventType);
 

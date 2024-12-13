@@ -5,7 +5,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Slf4j
 @Component
@@ -19,7 +19,7 @@ public class BookEventPublisher {
         this.exchangeName = exchangeName;
     }
 
-    public void publishBookCreatedEvent(Long bookId, String title, String author, int pages, Date publishDate, String bookContent) {
+    public void publishBookCreatedEvent(Long bookId, String title, String author, int pages, LocalDate publishDate, String bookContent) {
         log.info("Preparing to publish book created event for bookId: {}", bookId);
         BookEvent bookEvent = new BookEvent(bookId, "CREATE", title, author, pages, publishDate, bookContent);
         rabbitTemplate.convertAndSend(exchangeName, "", bookEvent);
