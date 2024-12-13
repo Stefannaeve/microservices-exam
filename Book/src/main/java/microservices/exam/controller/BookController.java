@@ -30,9 +30,18 @@ public class BookController {
     }
 
     @GetMapping("/fetchBookById/{id}")
-    public ResponseEntity<Optional<Book>> fetchBookById(@PathVariable Long id) {
-        ResponseEntity<Optional<Book>> response = bookService.fetchById(id);
-        return response;
+    public ResponseEntity<ApiResponse<Book>> fetchBookById(@PathVariable Long id) {
+        ApiResponse<Book> book = bookService.fetchById(id);
+
+        switch (book) {
+            case ApiResponse.Success<Book> success -> {
+                return ResponseEntity.status(HttpStatus.OK).body(success);
+            }
+            case ApiResponse.Failure<Book> failure -> {
+                log.error(failure.errorMessage());
+                return ResponseEntity.status(failure.status()).body(failure);
+            }
+        }
     }
 
     @GetMapping("/fetchAll")
@@ -62,19 +71,40 @@ public class BookController {
 
     @PostMapping("/saveOneBook")
     public ResponseEntity<Optional<Book>> saveOneBook(@RequestBody Book book) {
-        ResponseEntity<Optional<Book>> response = bookService.saveOneBook(book);
-        return response;
+        ResponseEntity<Optional<Book>> apiResponse = bookService.saveOneBook(book);
+        return apiResponse;
     }
 
     @DeleteMapping("/delete/{bookId}")
-    public ResponseEntity<Optional<Book>> deleteBook(@PathVariable Long bookId) {
-        ResponseEntity<Optional<Book>> response = bookService.deleteBookById(bookId);
-        return response;
+    public ResponseEntity<ApiResponse<Void>> deleteBook(@PathVariable Long bookId) {
+        ApiResponse<Void> apiResponse = bookService.deleteBookById(bookId);
+
+        switch (apiResponse) {
+            case ApiResponse.Success<Void> success -> {
+                log.info("Deleted book with id: {}", bookId);
+                return ResponseEntity.status(HttpStatus.OK).body(success);
+            }
+            case ApiResponse.Failure<Void> failure -> {
+                log.error("Failed to delete book with id: {}: {}", bookId, failure.errorMessage());
+                return new ResponseEntity<>(failure, failure.status());
+            }
+        }
     }
 
     @GetMapping("/fetchByTitle/{title}")
-    public ResponseEntity<Optional<List<Book>>> fetchBooksByTitle(@PathVariable String title) {
-        ResponseEntity<Optional<List<Book>>> response = bookService.fetchBooksByTitle(title);
-        return response;
+    public ResponseEntity<ApiResponse<List<Book>>> fetchBooksByTitle(@PathVariable String title) {
+        log.info("Received request to fetch books with title containing: {}", title);
+        ApiResponse<List<Book>> apiResponse = bookService.fetchBooksByTitle(title);
+
+        switch (apiResponse) {
+            case ApiResponse.Success<List<Book>> success -> {
+                log.info("Successfully fetched books with title containing: {}", title);
+                return ResponseEntity.status(HttpStatus.OK).body(success);
+            }
+            case ApiResponse.Failure<List<Book>> failure -> {
+                log.error("Failed to fetch books with title containing: {}: {}", title, failure.errorMessage());
+                return ResponseEntity.status(failure.status()).body(failure);
+            }
+        }
     }
 }
