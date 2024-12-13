@@ -3,6 +3,7 @@ package microservices.manager.ManagerClients;
 import lombok.extern.slf4j.Slf4j;
 import microservices.manager.apiResponse.ApiResponse;
 import microservices.manager.apiResponse.ApiResponseBuilder;
+import microservices.manager.apiResponse.ResponseEntityInitializer;
 import microservices.manager.dtos.ApiResponseDTO;
 import microservices.manager.dtos.BookDTO;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -29,11 +31,10 @@ public class BookClient {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public ApiResponse<List<BookDTO>> externalGetAllBooks() {
+    public ResponseEntity<List<BookDTO>> externalGetAllBooks() {
         String url = restServiceUrl + "/book/fetchAll";
         log.debug("This is the url: {}", url);
-        ResponseEntity<ApiResponseDTO<List<BookDTO>>> response;
-        ApiResponseBuilder<List<BookDTO>> apiResponseBuilder = new ApiResponseBuilder<>();
+        ResponseEntity<List<BookDTO>> response = null;
 
         try {
             response = restTemplate.exchange(
@@ -43,35 +44,35 @@ public class BookClient {
                     new ParameterizedTypeReference<>() {
                     }
             );
-        }  catch (HttpClientErrorException clientErrorException){
-            log.debug("Entered exception handling block");
-
-            HttpStatus status = HttpStatus.valueOf(clientErrorException.getStatusCode().value());
-
-            ApiResponse apiResponse = clientErrorException.getResponseBodyAs(ApiResponse.Failure.class);
-
-            return apiResponse;
-        }catch (Exception exception) {
-            log.error("An unexpected error occurred: ", exception);
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to book service");
+        } catch (Exception exception) {
+            log.error("An unexpected error occured: {}", exception.getMessage());
         }
 
-        if (response.getBody() == null) {
-            log.error("Response body is null");
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Empty response from book service");
+        String success = ResponseEntityInitializer.extractHeader(response, "success");
+        log.info("Success: {}", success);
+
+        if (success.equals("false")){
+            String errorMessage = ResponseEntityInitializer.extractHeader(response, "ErrorMessage");
+            String errorStatus = ResponseEntityInitializer.extractHeader(response, "ErrorStatus");
+            HttpStatus status = HttpStatus.valueOf(Integer.parseInt(errorStatus));
+            return ResponseEntityInitializer.NewResponseEntity(
+                status,
+                false,
+                errorMessage,
+                status,
+                response.getBody()
+            );
         }
 
-        HttpStatus statusCode = HttpStatus.valueOf(response.getStatusCode().value());
-
-        log.debug("Received response with status: {}", statusCode);
-        return apiResponseBuilder.parseDto(response.getBody(), statusCode);
+        return ResponseEntityInitializer.NewResponseEntity(
+                HttpStatus.OK,
+                response.getBody()
+        );
     }
 
-    public ApiResponse<BookDTO> externalSaveBook(BookDTO book) {
+    public ResponseEntity<Optional<BookDTO>> externalSaveBook(BookDTO book) {
         String url = restServiceUrl + "/book/saveOneBook";
-        log.debug("This is the url: {}", url);
-        ResponseEntity<ApiResponseDTO<BookDTO>> response;
-        ApiResponseBuilder<BookDTO> apiResponseBuilder = new ApiResponseBuilder<>();
+        ResponseEntity<Optional<BookDTO>> response = null;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -86,28 +87,28 @@ public class BookClient {
 
                     }
             );
-        } catch (HttpClientErrorException clientException) {
-            log.debug("Entered exception handling block");
-
-            HttpStatus status = HttpStatus.valueOf(clientException.getStatusCode().value());
-
-            ApiResponse apiResponse = clientException.getResponseBodyAs(ApiResponse.Failure.class);
-
-            return apiResponse;
         } catch (Exception exception) {
-            log.error("Error message: {}", exception.getMessage());
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to book service");
+            log.error("An unexpected error occurred: ", exception);
         }
 
-        if (response.getBody() == null) {
-            log.error("Response body is null");
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Empty response from book service");
+        String success = ResponseEntityInitializer.extractHeader(response, "success");
+        log.info("Success: {}", success);
+
+        if (success.equals("false")){
+            String errorMessage = ResponseEntityInitializer.extractHeader(response, "ErrorMessage");
+            String errorStatus = ResponseEntityInitializer.extractHeader(response, "ErrorStatus");
+            HttpStatus status = HttpStatus.valueOf(Integer.parseInt(errorStatus));
+            return ResponseEntityInitializer.NewResponseEntity(
+                    status,
+                    false,
+                    errorMessage,
+                    status,
+                    response.getBody()
+            );
         }
 
-        HttpStatus statusCode = HttpStatus.valueOf(response.getStatusCode().value());
-
-        log.debug("Received response with status: {}", statusCode);
-        return apiResponseBuilder.parseDto(response.getBody(), statusCode);
+        log.info("Book saved successfully.");
+        return response;
     }
 
     public ApiResponse<BookDTO> externalGetBookById(long id) {
@@ -123,7 +124,7 @@ public class BookClient {
                     new ParameterizedTypeReference<>() {
                     }
             );
-        }  catch (HttpClientErrorException clientErrorException){
+        } catch (HttpClientErrorException clientErrorException) {
             log.debug("Entered exception handling block");
 
             HttpStatus status = HttpStatus.valueOf(clientErrorException.getStatusCode().value());
@@ -131,7 +132,7 @@ public class BookClient {
             ApiResponse apiResponse = clientErrorException.getResponseBodyAs(ApiResponse.Failure.class);
 
             return apiResponse;
-        }catch (Exception exception) {
+        } catch (Exception exception) {
             log.error("An unexpected error occurred: ", exception);
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to book service");
         }
