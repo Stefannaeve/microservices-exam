@@ -4,12 +4,16 @@ package microservices.exam.service;
 import lombok.extern.slf4j.Slf4j;
 import microservices.exam.apiResponse.ApiResponse;
 import microservices.exam.apiResponse.ApiResponseBuilder;
+import microservices.exam.apiResponse.ResponseEntityInitializer;
 import microservices.exam.eventDriven.BookEventPublisher;
 import microservices.exam.models.Book;
 import microservices.exam.repository.BookRepository;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,37 +29,55 @@ public class BookService {
         this.bookEventPublisher = bookEventPublisher;
     }
 
-    public ApiResponse<List<Book>> fetchAll() {
-        ApiResponseBuilder<List<Book>> apiResponseBuilder = new ApiResponseBuilder<>();
+    public ResponseEntity<Optional<List<Book>>> fetchAll() {
+        HttpHeaders headers = new HttpHeaders();
+        Optional<List<Book>> books = Optional.empty();
+
         try {
-            List<Book> books = bookRepository.findAll();
-            log.info("Found {} books", books.size());
-            return apiResponseBuilder.success(books);
+            books = Optional.of(bookRepository.findAll());
+            if (books.get().size() <= 0){
+                log.info("Found no books");
+                headers.add("Success", "true");
+                return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, false, "Found no books", HttpStatus.NO_CONTENT, books);
+            }
+            log.info("Found {} books", books.get().size());
+
+            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, books);
         } catch (Exception exception) {
             log.error("Error fetching books: {}", exception.getMessage());
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong...");
+            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, false, "An unknown error occurred", exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }
 
-    public ApiResponse<Book> saveOneBook(Book book) {
-        ApiResponseBuilder<Book> apiResponseBuilder = new ApiResponseBuilder<>();
+    public ResponseEntity<Optional<Book>> saveOneBook(Book book) {
+        Optional<Book> savedBook = Optional.empty();
         try {
-            Book savedBook = bookRepository.save(book);
-            log.info("Saved book with id: {}", savedBook.getId());
 
-            bookEventPublisher.publishBookCreatedEvent(
-                    savedBook.getId(),
-                    savedBook.getTitle(),
-                    savedBook.getAuthor(),
-                    savedBook.getPages(),
-                    savedBook.getPublishDate(),
-                    savedBook.getBookContent()
-            );
+            Book bookFromDatabase = bookRepository.findBookByTitleAndAuthorAndPublishDate(book.getTitle(), book.getAuthor(), book.getPublishDate());
+            if (bookFromDatabase == null) {
+                savedBook = Optional.of(bookRepository.save(book));
+                if (savedBook.isEmpty()) {
+                    return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, false, "Failed to save book", HttpStatus.INTERNAL_SERVER_ERROR, savedBook);
+                }
+                log.info("Saved book with id: {}", savedBook.get().getId());
 
-            return apiResponseBuilder.success(savedBook);
+                bookEventPublisher.publishBookCreatedEvent(
+                        savedBook.get().getId(),
+                        savedBook.get().getTitle(),
+                        savedBook.get().getAuthor(),
+                        savedBook.get().getPages(),
+                        savedBook.get().getPublishDate(),
+                        savedBook.get().getBookContent()
+                );
+
+                return ResponseEntityInitializer.NewResponseEntity(HttpStatus.CREATED, savedBook);
+            } else {
+                log.info("Book from database: {}", bookFromDatabase.getTitle());
+                return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, false, "Book already exists", HttpStatus.CONFLICT, savedBook);
+            }
         } catch (Exception e) {
             log.error("Error saving book: {}", e.getMessage());
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save book");
+            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, false, "An unknown error occurred", HttpStatus.INTERNAL_SERVER_ERROR, savedBook);
         }
     }
 
