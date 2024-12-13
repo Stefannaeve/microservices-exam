@@ -2,6 +2,7 @@ package microservices.exam.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import microservices.exam.apiResponse.ApiResponse;
+import microservices.exam.apiResponse.ResponseEntityInitializer;
 import microservices.exam.clients.BookClient;
 import microservices.exam.dtos.CommentDTO;
 import microservices.exam.models.Book;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -43,19 +45,8 @@ public class BookController {
     }
 
     @GetMapping("/fetchAll")
-    public ResponseEntity<ApiResponse<List<Book>>> fetchAll() {
-        ApiResponse<List<Book>> apiResponse = bookService.fetchAll();
-
-        switch (apiResponse) {
-            case ApiResponse.Success<List<Book>> success -> {
-                log.info("Fetched all books successfully.");
-                return ResponseEntity.status(HttpStatus.OK).body(success);
-            }
-            case ApiResponse.Failure<List<Book>> failure -> {
-                log.error("Failed to fetch books: {}", failure.errorMessage());
-                return new ResponseEntity<>(failure, failure.status());
-            }
-        }
+    public ResponseEntity<Optional<List<Book>>> fetchAll() {
+        return bookService.fetchAll();
     }
 
     @GetMapping("/fetchAllComments")
@@ -79,23 +70,9 @@ public class BookController {
     }
 
     @PostMapping("/saveOneBook")
-    public ResponseEntity<ApiResponse<Book>> saveOneBook(@RequestBody Book book) {
-        ApiResponse<Book> apiResponse = bookService.saveOneBook(book);
-
-        switch (apiResponse) {
-            case ApiResponse.Success<Book> success -> {
-                if (success.value().isPresent()) {
-                    log.info("Saved book with id: {}", success.value().get().getId());
-                } else {
-                    log.info("Book saved successfully.");
-                }
-                return ResponseEntity.status(HttpStatus.OK).body(success);
-            }
-            case ApiResponse.Failure<Book> failure -> {
-                log.error("Failed to save book: {}", failure.errorMessage());
-                return new ResponseEntity<>(failure, failure.status());
-            }
-        }
+    public ResponseEntity<Optional<Book>> saveOneBook(@RequestBody Book book) {
+        ResponseEntity<Optional<Book>> apiResponse = bookService.saveOneBook(book);
+        return apiResponse;
     }
 
     @DeleteMapping("/delete/{bookId}")

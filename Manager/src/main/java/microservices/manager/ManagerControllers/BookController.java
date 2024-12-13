@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -22,23 +23,8 @@ public class BookController {
     }
 
     @GetMapping("/fetchAll")
-    public ResponseEntity<ApiResponse<List<BookDTO>>> fetchAllBooks() {
-        ApiResponse<List<BookDTO>> books = bookClient.externalGetAllBooks();
-
-        switch (books) {
-            case ApiResponse.Success<List<BookDTO>> success -> {
-                if (success.value().isPresent()) {
-                    log.info("Success, returning {} books from book service", success.value().get().size());
-                } else {
-                    log.info("Success");
-                }
-                return ResponseEntity.status(200).body(success);
-            }
-            case ApiResponse.Failure<List<BookDTO>> failure -> {
-                log.error(failure.errorMessage());
-                return ResponseEntity.status(failure.status()).body(failure);
-            }
-        }
+    public ResponseEntity<List<BookDTO>> fetchAllBooks() {
+        return bookClient.externalGetAllBooks();
     }
 
     @GetMapping("/fetchBookById/{id}")
@@ -63,22 +49,8 @@ public class BookController {
 
 
     @PostMapping("/saveBook")
-    public ResponseEntity<ApiResponse<BookDTO>> saveBook(@RequestBody BookDTO bookDTO) {
-        ApiResponse<BookDTO> savedBook = bookClient.externalSaveBook(bookDTO);
-
-        switch (savedBook) {
-            case ApiResponse.Success<BookDTO> success -> {
-                if (success.value().isPresent()) {
-                    log.info("Success, saved book with id: {}", success.value().get().getId());
-                } else {
-                    log.info("Success");
-                }
-                return ResponseEntity.status(HttpStatus.CREATED).body(success);
-            }
-            case ApiResponse.Failure<BookDTO> failure -> {
-                log.error("This is the error:  {}", failure.errorMessage());
-                return ResponseEntity.status(failure.status()).body(failure);
-            }
-        }
+    public ResponseEntity<Optional<BookDTO>> saveBook(@RequestBody BookDTO bookDTO) {
+        ResponseEntity<Optional<BookDTO>> savedBook = bookClient.externalSaveBook(bookDTO);
+        return savedBook;
     }
 }

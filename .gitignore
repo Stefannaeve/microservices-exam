@@ -37,3 +37,4 @@ erl_crash.dump
 /docker/.env
 !/docker/.env
 !/docker/.env
+/docker/.env
