@@ -80,6 +80,23 @@ public class BookService {
         }
     }
 
+  public ApiResponse<Book> fetchById(long id) {
+        ApiResponseBuilder<Book> apiResponseBuilder = new ApiResponseBuilder<>();
+        try {
+            Optional<Book> book = bookRepository.findById(id);
+            if (book.isPresent()) {
+                log.info("Book found with id: {}", id);
+                return apiResponseBuilder.success(book.get());
+            } else {
+                log.warn("Book with id {} not found", id);
+                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Book not found");
+            }
+        } catch (Exception exception) {
+            log.error("Error fetching book by id {}: {}", id, exception.getMessage());
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong...");
+        }
+    }
+
     public ApiResponse<Void> deleteBookById(Long bookId) {
         ApiResponseBuilder<Void> apiResponseBuilder = new ApiResponseBuilder<>();
         try {
