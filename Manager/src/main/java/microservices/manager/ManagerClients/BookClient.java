@@ -48,10 +48,6 @@ public class BookClient {
             log.error("An unexpected error occured: {}", exception.getMessage());
         }
 
-        if (response == null){
-            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.NO_CONTENT, false, "Response empty from the book service", HttpStatus.NO_CONTENT, response.getBody());
-        }
-
         String success = ResponseEntityInitializer.extractHeader(response, "success");
         log.info("Success: {}", success);
 
@@ -95,10 +91,6 @@ public class BookClient {
             log.error("An unexpected error occurred: ", exception);
         }
 
-        if (response == null){
-            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.NO_CONTENT, false, "Response empty from the book service", HttpStatus.NO_CONTENT, response.getBody());
-        }
-
         String success = ResponseEntityInitializer.extractHeader(response, "success");
         log.info("Success: {}", success);
 
@@ -119,9 +111,10 @@ public class BookClient {
         return response;
     }
 
-    public ResponseEntity<Optional<BookDTO>> externalGetBookById(long id) {
+    public ApiResponse<BookDTO> externalGetBookById(long id) {
         String url = restServiceUrl + "/book/fetchBookById" + id;
-        ResponseEntity<Optional<BookDTO>> response = ResponseEntity.ok(Optional.empty());
+        ResponseEntity<ApiResponseDTO<BookDTO>> response;
+        ApiResponseBuilder<BookDTO> apiResponseBuilder = new ApiResponseBuilder<>();
 
         try {
             response = restTemplate.exchange(
@@ -131,33 +124,29 @@ public class BookClient {
                     new ParameterizedTypeReference<>() {
                     }
             );
+        } catch (HttpClientErrorException clientErrorException) {
+            log.debug("Entered exception handling block");
+
+            HttpStatus status = HttpStatus.valueOf(clientErrorException.getStatusCode().value());
+
+            ApiResponse apiResponse = clientErrorException.getResponseBodyAs(ApiResponse.Failure.class);
+
+            return apiResponse;
         } catch (Exception exception) {
             log.error("An unexpected error occurred: ", exception);
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to book service");
         }
 
-        if (response == null){
-            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.NO_CONTENT, false, "Response empty from the book service", HttpStatus.NO_CONTENT, response.getBody());
-        }
+        log.info("Finished sending api call to book service");
 
-        String success = ResponseEntityInitializer.extractHeader(response, "success");
-        log.info("Success: {}", success);
-
-        if (success.equals("false")){
-            String errorMessage = ResponseEntityInitializer.extractHeader(response, "ErrorMessage");
-            String errorStatus = ResponseEntityInitializer.extractHeader(response, "ErrorStatus");
-            HttpStatus status = HttpStatus.valueOf(Integer.parseInt(errorStatus));
-            return ResponseEntityInitializer.NewResponseEntity(
-                    status,
-                    false,
-                    errorMessage,
-                    status,
-                    response.getBody()
-            );
+        if (response.getBody() == null) {
+            log.error("Response body is null");
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Empty response from book service");
         }
 
         HttpStatus statusCode = HttpStatus.valueOf(response.getStatusCode().value());
 
         log.debug("Received response with status: {}", statusCode);
-        return response;
+        return apiResponseBuilder.parseDto(response.getBody(), statusCode);
     }
 }
