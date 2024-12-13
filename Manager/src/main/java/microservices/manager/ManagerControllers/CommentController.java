@@ -4,12 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import microservices.manager.ManagerClients.CommentClient;
 import microservices.manager.ManagerServices.CommentService;
 import microservices.manager.apiResponse.ApiResponse;
+import microservices.manager.apiResponse.ResponseEntityInitializer;
 import microservices.manager.dtos.CommentDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -64,22 +66,8 @@ public class CommentController {
     }
 
     @PostMapping("/SaveOneComment")
-    public ResponseEntity<ApiResponse<CommentDTO>> saveOneComment(@RequestBody CommentDTO commentDTO){
-        ApiResponse<CommentDTO> commentResponse = commentService.saveById(commentDTO);
-
-        switch (commentResponse){
-            case ApiResponse.Success<CommentDTO> success -> {
-                if (success.value().isPresent()){
-                    log.info("Success, comment with id: {} saved", success.value().get().getId());
-                } else {
-                    log.info("Success");
-                }
-                return ResponseEntity.status(HttpStatus.OK).body(success);
-            }
-            case ApiResponse.Failure<CommentDTO> failure -> {
-                log.error(failure.errorMessage());
-                return ResponseEntity.status(failure.status()).body(failure);
-            }
-        }
+    public ResponseEntity<Optional<CommentDTO>> saveOneComment(@RequestBody CommentDTO commentDTO){
+        ResponseEntity<Optional<CommentDTO>> response = commentService.saveById(commentDTO);
+        return response;
     }
 }
