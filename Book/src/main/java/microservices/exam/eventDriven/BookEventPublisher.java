@@ -36,12 +36,4 @@ public class BookEventPublisher {
             log.error("Error publishing book deleted event: {}", e.getMessage());
         }
     }
-
-
-    public void publishBookFetchEvent(String title) {
-        log.info("Preparing to publish book fetch event for title: {}", title);
-        BookEvent bookEvent = new BookEvent(null, "FETCH_TITLE", title, null, 0, null, null);
-        rabbitTemplate.convertAndSend(exchangeName, "", bookEvent);
-        log.info("Published book fetch event for title: {}", title);
-    }
 }

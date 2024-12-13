@@ -26,14 +26,13 @@ public class BookEventListener {
         log.info("Received book event: {}", bookEvent);
 
         try {
-            Thread.sleep(5000); // Simulating processing delay for testing
+            Thread.sleep(5000); // For testing purposes to imitate large message payloads
             String eventType = bookEvent.getEventType();
             log.info("Processing event type: {}", eventType);
 
             switch (eventType) {
                 case "CREATE" -> handleBookCreation(bookEvent);
                 case "DELETE" -> handleBookDeletion(bookEvent.getBookId());
-                case "FETCH_TITLE" -> handleBookFetchByTitle(bookEvent.getTitle());
                 default -> log.warn("Unknown event type: {}", eventType);
             }
         } catch (InterruptedException e) {
@@ -55,17 +54,6 @@ public class BookEventListener {
             log.info("Deleted book with id: {}", bookId);
         } else {
             log.warn("Book with id {} not found for deletion", bookId);
-        }
-    }
-
-    private void handleBookFetchByTitle(String title) {
-        log.info("Handling book fetch for title: {}", title);
-        List<Book> books = bookRepository.findByTitle(title);
-        if (!books.isEmpty()) {
-            log.info("Found {} books with title containing: {}", books.size(), title);
-            books.forEach(book -> log.info("Book ID: {}, Title: {}, Author: {}", book.getId(), book.getTitle(), book.getAuthor()));
-        } else {
-            log.warn("No books found with title containing: {}", title);
         }
     }
 }

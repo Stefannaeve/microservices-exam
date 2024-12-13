@@ -28,7 +28,7 @@ public class CommentEventListener {
         log.info("Received comment event: {}", commentEvent);
 
         try {
-            Thread.sleep(5000); // Simulating processing delay for testing
+            Thread.sleep(5000); // For testing purposes to imitate large message payloads
 
             String eventType = commentEvent.getEventType();
             log.info("Processing event type: {}", eventType);
@@ -36,7 +36,6 @@ public class CommentEventListener {
             switch (eventType){
                 case "CREATE" -> handleCommentCreation(commentEvent);
                 case "DELETE" -> handleCommentDeletion(commentEvent.getId());
-                case "UPDATE" -> handleCommentUpdate(commentEvent.getId(), commentEvent.getText());
                 default -> log.warn("Unknown event type: {}", eventType);
             }
         } catch (InterruptedException e) {
@@ -48,7 +47,6 @@ public class CommentEventListener {
     private void handleCommentCreation(CommentEvent commentEvent) {
         log.info("Handling comment creation: commentId={}, userId={}, bookId={}",
                 commentEvent.getId(), commentEvent.getUserId(), commentEvent.getBookId());
-        // Additional logic if needed
     }
 
     private void handleCommentDeletion(Long commentId) {
@@ -59,19 +57,6 @@ public class CommentEventListener {
             log.info("Deleted comment with id: {}", commentId);
         } else {
             log.warn("Comment with id {} not found for deletion", commentId);
-        }
-    }
-
-    private void handleCommentUpdate(Long commentId, String newText) {
-        log.info("Handling comment update for commentId: {}, newText: {}", commentId, newText);
-        Optional<Comment> comment = commentRepository.findById(commentId);
-        if (comment.isPresent()) {
-            Comment existingComment = comment.get();
-            existingComment.setText(newText);
-            commentRepository.save(existingComment);
-            log.info("Updated comment with id: {} to new text: {}", commentId, newText);
-        } else {
-            log.warn("Comment with id {} not found for update", commentId);
         }
     }
 }

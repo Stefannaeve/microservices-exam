@@ -102,7 +102,6 @@ public class BookService {
         ApiResponseBuilder<List<Book>> apiResponseBuilder = new ApiResponseBuilder<>();
 
         try {
-            bookEventPublisher.publishBookFetchEvent(title);
             List<Book> books = bookRepository.findByTitle(title);
             if (!books.isEmpty()) {
                 log.info("Found {} books with title containing: {}", books.size(), title);

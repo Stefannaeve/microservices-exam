@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import microservices.user.models.UserBook;
 
 @Getter
 @Setter
@@ -16,34 +17,26 @@ public class UserEvent {
     private Long bookId;
     private String readingProgress;
     private String readingStatus;
+    private UserBook userBook;
 
-    // for basic events
+    // delete and delete_book events
     public UserEvent(Long userId, String eventType) {
         this.userId = userId;
         this.eventType = eventType;
     }
 
-    // user creation events
+    //  create events
     public UserEvent(Long userId, String eventType, String username) {
         this.userId = userId;
         this.eventType = eventType;
         this.username = username;
     }
 
-    // book deletion events
-    public UserEvent(Long userId, String eventType, Long bookId) {
+    // add_book events
+    public UserEvent(Long userId, String eventType, UserBook userBook) {
         this.userId = userId;
         this.eventType = eventType;
-        this.bookId = bookId;
-    }
-
-    // progress update events
-    public UserEvent(Long userId, String eventType, Long bookId, String readingProgress, String readingStatus) {
-        this.userId = userId;
-        this.eventType = eventType;
-        this.bookId = bookId;
-        this.readingProgress = readingProgress;
-        this.readingStatus = readingStatus;
+        this.userBook = userBook;
     }
 
     @Override
@@ -55,6 +48,7 @@ public class UserEvent {
                 ", bookId=" + bookId +
                 ", readingProgress='" + readingProgress + '\'' +
                 ", readingStatus='" + readingStatus + '\'' +
+                ", userBook=" + userBook +
                 '}';
     }
 }
