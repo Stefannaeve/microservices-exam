@@ -35,7 +35,7 @@ public class Book {
     private int pages;
 
     @Column(name = "publish_date")
-    private Date publishDate;
+    private LocalDate publishDate;
 
     @Lob
     @Column(name = "book_content", columnDefinition = "LONGTEXT")

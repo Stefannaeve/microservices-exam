@@ -6,12 +6,9 @@ import microservices.exam.apiResponse.ApiResponseBuilder;
 import microservices.exam.eventDriven.BookEventPublisher;
 import microservices.exam.models.Book;
 import microservices.exam.repository.BookRepository;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
