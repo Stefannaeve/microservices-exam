@@ -40,15 +40,4 @@ public class CommentEventPublisher {
             log.error("Failed to publish comment deleted event: {}", e.getMessage(), e);
         }
     }
-
-    public void publishCommentUpdatedEvent(Long commentId, String newText) {
-        log.info("Preparing to publish comment updated event: commentId={}, newText={}", commentId, newText);
-        try {
-            CommentEvent commentEvent = new CommentEvent(commentId, "UPDATE", newText);
-            rabbitTemplate.convertAndSend(exchangeName, "", commentEvent);
-            log.info("Successfully published comment updated event to exchange '{}'", exchangeName);
-        } catch (Exception e) {
-            log.error("Failed to publish comment updated event: {}", e.getMessage(), e);
-        }
-    }
 }

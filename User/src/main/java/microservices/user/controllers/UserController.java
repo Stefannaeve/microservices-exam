@@ -91,8 +91,8 @@ public class UserController {
 
         switch (apiResponse) {
             case ApiResponse.Success<User> success -> {
-                log.info("Added book to user with id: {}", userId);
-                return ResponseEntity.status(HttpStatus.CREATED).body(success);
+                log.info("Successfully added book to user with id: {}", userId);
+                return ResponseEntity.status(HttpStatus.OK).body(success);
             }
             case ApiResponse.Failure<User> failure -> {
                 log.error("Failed to add book to user with id: {}. Error: {}", userId, failure.errorMessage());

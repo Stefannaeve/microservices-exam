@@ -53,15 +53,11 @@ public class CommentService {
         }
     }
 
-
     public ApiResponse<Comment> saveOneComment(Comment comment) {
         ApiResponseBuilder<Comment> apiResponseBuilder = new ApiResponseBuilder<>();
         try {
             if (comment.getUserId() == null || comment.getUserId() <= 0) {
                 return apiResponseBuilder.failure(HttpStatus.BAD_REQUEST, "Invalid userId");
-            }
-            if (comment.getBookId() == null || comment.getBookId() <= 0) {
-                return apiResponseBuilder.failure(HttpStatus.BAD_REQUEST, "Invalid bookId");
             }
             Comment savedComment = commentRepository.save(comment);
             commentEventPublisher.publishCommentCreatedEvent(savedComment.getId(), savedComment.getUserId(), savedComment.getBookId());
@@ -69,22 +65,6 @@ public class CommentService {
         } catch (Exception e) {
             log.error("Error saving comment: {}", e.getMessage(), e);
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save comment");
-        }
-    }
-
-    public ApiResponse<Comment> deleteCommentById(Long id) {
-        ApiResponseBuilder<Comment> apiResponseBuilder = new ApiResponseBuilder<>();
-        try {
-            Optional<Comment> comment = commentRepository.findById(id);
-            if (comment.isPresent()) {
-                commentRepository.delete(comment.get());
-                commentEventPublisher.publishCommentDeletedEvent(id);
-                return apiResponseBuilder.success();
-            } else {
-                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Comment with id " + id + " not found");
-            }
-        } catch (Exception e) {
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete comment");
         }
     }
 
@@ -101,21 +81,39 @@ public class CommentService {
         }
     }
 
-    public ApiResponse<Comment> updateComment(Long bookId, Comment updateCOmment){
+    public ApiResponse<Comment> updateComment(Long userId, Long bookId, Long commentId, Comment updatedComment) {
         ApiResponseBuilder<Comment> apiResponseBuilder = new ApiResponseBuilder<>();
         try {
-            Optional<Comment> findComment = commentRepository.findById(bookId);
-            if(findComment.isEmpty()){
-                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Comment not found");
+            Optional<Comment> findComment = commentRepository.findByIdAndUserIdAndBookId(commentId, userId, bookId);
+            if (findComment.isEmpty()) {
+                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Comment not found for the specified user and book");
             }
-
             Comment comment = findComment.get();
-            comment.setText(updateCOmment.getText());
-
-            Comment saveComment = commentRepository.save(comment);
-            return apiResponseBuilder.success(saveComment);
-        } catch (Exception e){
+            comment.setText(updatedComment.getText());
+            Comment savedComment = commentRepository.save(comment);
+            return apiResponseBuilder.success(savedComment);
+        } catch (Exception e) {
+            log.error("Error updating comment with id {}: {}", commentId, e.getMessage());
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update comment");
+        }
+    }
+
+    public ApiResponse<Void> deleteCommentById(Long userId, Long bookId, Long commentId) {
+        ApiResponseBuilder<Void> apiResponseBuilder = new ApiResponseBuilder<>();
+        try {
+            Optional<Comment> comment = commentRepository.findByIdAndUserIdAndBookId(commentId, userId, bookId);
+            if (comment.isPresent()) {
+                commentRepository.delete(comment.get());
+                log.info("Deleted comment with id: {}", commentId);
+                commentEventPublisher.publishCommentDeletedEvent(commentId);
+                return apiResponseBuilder.success();
+            } else {
+                log.warn("Comment with id {} not found for userId {} and bookId {}", commentId, userId, bookId);
+                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Comment not found for the specified user and book");
+            }
+        } catch (Exception e) {
+            log.error("Error deleting comment with id {}: {}", commentId, e.getMessage());
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete comment");
         }
     }
 }

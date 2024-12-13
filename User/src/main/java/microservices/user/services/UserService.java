@@ -82,20 +82,25 @@ public class UserService {
         }
     }
 
-    public ApiResponse<User> addBookToUser(Long userId, UserBook userBook){
+    public ApiResponse<User> addBookToUser(Long userId, UserBook userBook) {
         ApiResponseBuilder<User> apiResponseBuilder = new ApiResponseBuilder<>();
 
         try {
-            User user = userRepo.findById(userId).orElse(null);
-            if (user == null){
-                log.info(String.valueOf(user.getId()));
+            Optional<User> userOptional = userRepo.findById(userId);
+            if (userOptional.isEmpty()) {
                 return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "No matching user found");
             }
+
+            User user = userOptional.get();
             user.getBooks().add(userBook);
-            userRepo.save(user);
-            return apiResponseBuilder.success(user);
+            User updatedUser = userRepo.save(user);
+            userEventPublisher.publishAddBookEvent(userId, userBook);
+
+            log.info("Added book to user with id: {} and queued the event", userId);
+            return apiResponseBuilder.success(updatedUser);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("Error adding book to userId: {}", userId, e);
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to add book to user");
         }
     }
 
@@ -167,7 +172,6 @@ public class UserService {
             book.setReadingStatus(readingStatus);
             userRepo.save(user);
 
-            userEventPublisher.publishProgressUpdateEvent(userId, bookId, newProgress, newStatus);
             return apiResponseBuilder.success(user);
         } catch (Exception e) {
             log.error("Error updating reading progress for userId: {} and bookId: {}", userId, bookId, e);
@@ -188,6 +192,5 @@ public class UserService {
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error occurred");
         }
     }
-
 }
 
