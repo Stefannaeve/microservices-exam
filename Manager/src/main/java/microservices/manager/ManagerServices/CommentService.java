@@ -6,14 +6,19 @@ import microservices.manager.ManagerClients.CommentClient;
 import microservices.manager.ManagerClients.UserClient;
 import microservices.manager.apiResponse.ApiResponse;
 import microservices.manager.apiResponse.ApiResponseBuilder;
+import microservices.manager.apiResponse.ResponseEntityInitializer;
 import microservices.manager.dtos.BookDTO;
 import microservices.manager.dtos.CommentDTO;
 import microservices.manager.dtos.UserDTO;
+import org.apache.coyote.Response;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -28,47 +33,35 @@ public class CommentService {
         this.userClient = userClient;
     }
 
-    public ApiResponse<CommentDTO> saveById(CommentDTO commentDTO){
-        ApiResponseBuilder<CommentDTO> apiResposeBuilder = new ApiResponseBuilder<>();
+    public ResponseEntity<Optional<CommentDTO>> saveById(CommentDTO commentDTO){
+        ResponseEntity<Optional<BookDTO>> book = null;
+        ResponseEntity<Optional<CommentDTO>> comment = ResponseEntity.ok(Optional.empty());
+
         if (commentDTO == null){
-            return apiResposeBuilder.failure(HttpStatus.BAD_REQUEST, "Comment is empty");
+            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, false, "Comment from client is null", HttpStatus.BAD_REQUEST, comment.getBody());
         }
 
         // Check if book exists
         try {
-            ApiResponse<BookDTO> book = bookClient.externalGetBookById(commentDTO.getBookId());
-            switch (book){
-                case ApiResponse.Success<BookDTO> success -> {
-
-                }
-                case ApiResponse.Failure<BookDTO> failure -> {
-                    log.debug(failure.errorMessage());
-                    return apiResposeBuilder.failure(failure.status(), failure.errorMessage());
-                }
-            }
+            book = bookClient.externalGetBookById(commentDTO.getBookId());
         } catch (Exception exception) {
             log.error(exception.getMessage());
-            return apiResposeBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong...");
+        }
+
+        if (book != null){
+            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, false, "Did not find the book", HttpStatus.BAD_REQUEST, comment.getBody());
         }
 
         // Check of user exists
         try {
             ApiResponse<UserDTO> user = userClient.externalGetUserById(commentDTO.getUserId());
-            switch (user){
-                case ApiResponse.Success<UserDTO> success -> {
-
-                }
-                case ApiResponse.Failure<UserDTO> failure -> {
-                    log.debug(failure.errorMessage());
-                    return apiResposeBuilder.failure(failure.status(), failure.errorMessage());
-                }
-            }
         } catch (Exception exception) {
             log.error(exception.getMessage());
-            return apiResposeBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong...");
         }
 
-        ApiResponse<CommentDTO> comment = commentClient.saveById(commentDTO);
-        return comment;
+        //TODO: fix this please
+        ApiResponse<CommentDTO> savedComment = commentClient.saveById(commentDTO);
+
+        return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, Optional.empty());
     }
 }
