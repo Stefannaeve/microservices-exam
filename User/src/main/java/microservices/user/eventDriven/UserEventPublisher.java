@@ -2,6 +2,7 @@
 package microservices.user.eventDriven;
 
 import lombok.extern.slf4j.Slf4j;
+import microservices.user.models.UserBook;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ public class UserEventPublisher {
     public UserEventPublisher(
             RabbitTemplate rabbitTemplate,
             @Value("${amqp.exchange.name}")
-            String exchangeName){
+            String exchangeName) {
         this.rabbitTemplate = rabbitTemplate;
         this.exchangeName = exchangeName;
     }
@@ -35,14 +36,15 @@ public class UserEventPublisher {
 
 
     public void publishBookDeletionEvent(Long userId, Long bookId) {
-        UserEvent userEvent = new UserEvent(userId, "DELETE_BOOK", bookId);
+        UserEvent userEvent = new UserEvent(userId, "DELETE_BOOK");
+        userEvent.setBookId(bookId);
         rabbitTemplate.convertAndSend(exchangeName, "", userEvent);
         log.info("Published book deletion event for userId: {} and bookId: {}", userId, bookId);
     }
 
-    public void publishProgressUpdateEvent(Long userId, Long bookId, String newProgress, String newStatus) {
-        UserEvent userEvent = new UserEvent(userId, "UPDATE_PROGRESS", bookId, newProgress, newStatus);
+    public void publishAddBookEvent(Long userId, UserBook userBook) {
+        UserEvent userEvent = new UserEvent(userId, "ADD_BOOK", userBook);
         rabbitTemplate.convertAndSend(exchangeName, "", userEvent);
-        log.info("Published progress update event for userId: {}, bookId: {}, newProgress: {}, newStatus: {}", userId, bookId, newProgress, newStatus);
+        log.info("Published add book event for userId: {} and book: {}", userId, userBook.getId());
     }
 }

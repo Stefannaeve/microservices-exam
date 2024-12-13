@@ -25,14 +25,13 @@ public class BookEventListener {
         log.info("Received book event: {}", bookEvent);
 
         try {
-            Thread.sleep(5000); // Simulating processing delay for testing
+            Thread.sleep(5000); // For testing purposes to imitate large message payloads
             String eventType = bookEvent.getEventType();
             log.info("Processing event type: {}", eventType);
 
             switch (eventType) {
                 case "CREATE" -> handleBookCreation(bookEvent);
                 case "DELETE" -> handleBookDeletion(bookEvent.getBookId());
-                case "UPDATE" -> handleBookUpdate(bookEvent);
                 default -> log.warn("Unknown event type: {}", eventType);
             }
         } catch (InterruptedException e) {
@@ -54,23 +53,6 @@ public class BookEventListener {
             log.info("Deleted book with id: {}", bookId);
         } else {
             log.warn("Book with id {} not found for deletion", bookId);
-        }
-    }
-
-    private void handleBookUpdate(BookEvent bookEvent) {
-        log.info("Handling book update for bookId: {}", bookEvent.getBookId());
-        Optional<Book> book = bookRepository.findById(bookEvent.getBookId());
-        if (book.isPresent()) {
-            Book existingBook = book.get();
-            existingBook.setTitle(bookEvent.getTitle());
-            existingBook.setAuthor(bookEvent.getAuthor());
-            existingBook.setPages(bookEvent.getPages());
-            existingBook.setPublishDate(bookEvent.getPublishDate());
-            existingBook.setBookContent(bookEvent.getBookContent());
-            bookRepository.save(existingBook);
-            log.info("Updated book with id: {}", bookEvent.getBookId());
-        } else {
-            log.warn("Book with id {} not found for update", bookEvent.getBookId());
         }
     }
 }

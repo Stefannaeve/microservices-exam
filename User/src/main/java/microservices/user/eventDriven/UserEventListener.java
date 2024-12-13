@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import microservices.user.models.ReadingStatus;
 import microservices.user.models.User;
 import microservices.user.models.UserBook;
+import microservices.user.repositories.UserBookRepo;
 import microservices.user.repositories.UserRepo;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
@@ -16,22 +17,25 @@ import java.util.Optional;
 public class UserEventListener {
 
     private final UserRepo userRepo;
+    private final UserBookRepo userBookRepo;
 
-    public UserEventListener(UserRepo userRepo) {
+    public UserEventListener(UserRepo userRepo, UserBookRepo userBookRepo) {
         this.userRepo = userRepo;
+        this.userBookRepo = userBookRepo;
     }
 
     @RabbitListener(queues = "${amqp.queue.user}")
     public void handleUserEvent(UserEvent userEvent) {
         log.info("Received event: {}", userEvent);
+
         try {
-            Thread.sleep(5000); // for testing purposes
+            Thread.sleep(5000); // For testing purposes to imitate large message payloads
             String eventType = userEvent.getEventType();
 
-            switch (eventType){
+            switch (eventType) {
                 case "DELETE" -> handleUserDeletion(userEvent.getUserId());
                 case "DELETE_BOOK" -> handleBookDeletion(userEvent.getUserId(), userEvent.getBookId());
-                case "UPDATE_PROGRESS" -> handleProgressUpdate(userEvent);
+                case "ADD_BOOK" -> handleAddBook(userEvent.getUserId(), userEvent.getUserBook());
                 case "CREATE" -> handleUserCreation(userEvent);
                 default -> log.warn("Unknown event type: {}", eventType);
             }
@@ -46,8 +50,6 @@ public class UserEventListener {
                 userEvent.getUserId(), userEvent.getUsername());
     }
 
-
-
     private void handleUserDeletion(Long userId) {
         User user = userRepo.findById(userId).orElse(null);
         if (user != null) {
@@ -55,6 +57,23 @@ public class UserEventListener {
             log.info("Deleted user and books for userId: {}", userId);
         } else {
             log.warn("User with id {} not found during deletion", userId);
+        }
+    }
+
+    private void handleAddBook(Long userId, UserBook userBook) {
+        User user = userRepo.findById(userId).orElse(null);
+        if (user != null) {
+            UserBook managedBook = userBookRepo.findById(userBook.getId()).orElse(userBook);
+
+            if (user.getBooks().stream().noneMatch(book -> book.getId().equals(managedBook.getId()))) {
+                user.getBooks().add(managedBook);
+                userRepo.save(user);
+                log.info("Added book with id {} to userId: {}", managedBook.getId(), userId);
+            } else {
+                log.warn("Book with id {} already exists for userId: {}", managedBook.getId(), userId);
+            }
+        } else {
+            log.warn("User with id {} not found during book addition", userId);
         }
     }
 
@@ -74,37 +93,6 @@ public class UserEventListener {
             }
         } else {
             log.warn("User with id {} not found during book deletion", userId);
-        }
-    }
-
-    private void handleProgressUpdate(UserEvent userEvent) {
-        Long userId = userEvent.getUserId();
-        Long bookId = userEvent.getBookId();
-        String newProgress = userEvent.getReadingProgress();
-
-        User user = userRepo.findById(userId).orElse(null);
-        if (user == null) {
-            log.warn("User with id {} not found while handling UPDATE_PROGRESS event", userId);
-            return;
-        }
-
-        Optional<UserBook> optionalBook = user.getBooks()
-                .stream()
-                .filter(book -> book.getId().equals(bookId))
-                .findFirst();
-
-        if (optionalBook.isPresent()) {
-            UserBook book = optionalBook.get();
-            book.setReadingProgress(newProgress);
-
-            if ("100%".equals(newProgress)) {
-                book.setReadingStatus(ReadingStatus.Finished);
-            }
-
-            userRepo.save(user);
-            log.info("Updated progress for userId: {}, bookId: {} to {}", userId, bookId, newProgress);
-        } else {
-            log.warn("Book with id {} not found in user {}'s collection", bookId, userId);
         }
     }
 }
