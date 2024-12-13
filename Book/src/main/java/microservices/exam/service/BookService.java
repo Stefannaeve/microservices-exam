@@ -1,3 +1,4 @@
+
 package microservices.exam.service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -79,59 +80,37 @@ public class BookService {
             return ResponseEntityInitializer.NewResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, false, "An unknown error occurred", HttpStatus.INTERNAL_SERVER_ERROR, savedBook);
         }
     }
-  
-  public ApiResponse<Book> fetchById(long id) {
-        ApiResponseBuilder<Book> apiResponseBuilder = new ApiResponseBuilder<>();
-        try {
-            Optional<Book> book = bookRepository.findById(id);
-            if (book.isPresent()) {
-                log.info("Book found with id: {}", id);
-                return apiResponseBuilder.success(book.get());
-            } else {
-                log.warn("Book with id {} not found", id);
-                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Book not found");
-            }
-        } catch (Exception exception) {
-            log.error("Error fetching book by id {}: {}", id, exception.getMessage());
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong...");
-        }
-    }
 
     public ApiResponse<Void> deleteBookById(Long bookId) {
         ApiResponseBuilder<Void> apiResponseBuilder = new ApiResponseBuilder<>();
-        try {
-            Optional<Book> book = bookRepository.findById(bookId);
-            if (book.isPresent()) {
-                bookRepository.delete(book.get());
-                log.info("Deleted book with id: {}", bookId);
+        Optional<Book> bookOptional = bookRepository.findById(bookId);
 
-                bookEventPublisher.publishBookDeletedEvent(bookId);
-                return apiResponseBuilder.success(null);
-            } else {
-                log.warn("Book with id {} not found for deletion", bookId);
-                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Book not found");
-            }
-        } catch (Exception e) {
-            log.error("Error deleting book with id {}: {}", bookId, e.getMessage());
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete book");
+        if (bookOptional.isPresent()) {
+            bookRepository.delete(bookOptional.get());
+            log.info("Deleted book with id: {}", bookId);
+
+            bookEventPublisher.publishBookDeletedEvent(bookId);
+            return apiResponseBuilder.success(null);
+        } else {
+            log.warn("Book with id {} not found for deletion", bookId);
+            return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Book not found");
         }
     }
 
-    public ApiResponse<List<Book>> fetchBooksByTitle(String title) {
-        ApiResponseBuilder<List<Book>> apiResponseBuilder = new ApiResponseBuilder<>();
+    public ApiResponse<Book> fetchById(long id) {
+        ApiResponseBuilder<Book> apiResponseBuilder = new ApiResponseBuilder<>();
+        Optional<Book> book;
 
         try {
-            List<Book> books = bookRepository.findByTitle(title);
-            if (!books.isEmpty()) {
-                log.info("Found {} books with title containing: {}", books.size(), title);
-                return apiResponseBuilder.success(books);
-            } else {
-                log.warn("No books found with title containing: {}", title);
-                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "No books found with the specified title");
-            }
-        } catch (Exception e) {
-            log.error("Error fetching books by title {}: {}", title, e.getMessage());
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch books by title");
+            book = bookRepository.findById(id);
+        } catch (Exception exception) {
+            log.error("Book service, service, error: {}", exception.getMessage());
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong...");
         }
+        if (book.isEmpty()){
+            return apiResponseBuilder.failure(HttpStatus.NO_CONTENT, "Book not found");
+        }
+        log.info("Book found in database");
+        return apiResponseBuilder.success(book.get());
     }
 }
