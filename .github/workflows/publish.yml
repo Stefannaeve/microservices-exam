@@ -1,13 +1,11 @@
 name: Build and Push Docker Image
 
 on:
-  push:
-  #pull_request:
-   # types: [closed]
+  #push:
+  pull_request:
+    types: [closed]
     branches:
       - master
-      - refactoring
-
 
 jobs:
   build-and-push:
