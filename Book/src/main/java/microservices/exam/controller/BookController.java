@@ -62,19 +62,16 @@ public class BookController {
 
     @PostMapping("/saveOneBook")
     public ResponseEntity<Optional<Book>> saveOneBook(@RequestBody Book book) {
-        ResponseEntity<Optional<Book>> response = bookService.saveOneBook(book);
-        return response;
+        return bookService.saveOneBook(book);
     }
 
     @DeleteMapping("/delete/{bookId}")
     public ResponseEntity<Optional<Book>> deleteBook(@PathVariable Long bookId) {
-        ResponseEntity<Optional<Book>> response = bookService.deleteBookById(bookId);
-        return response;
+        return bookService.deleteBookById(bookId);
     }
 
     @GetMapping("/fetchByTitle/{title}")
     public ResponseEntity<Optional<List<Book>>> fetchBooksByTitle(@PathVariable String title) {
-        ResponseEntity<Optional<List<Book>>> response = bookService.fetchBooksByTitle(title);
-        return response;
+        return bookService.fetchBooksByTitle(title);
     }
 }
