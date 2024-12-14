@@ -9,7 +9,6 @@ import microservices.user.models.User;
 import microservices.user.models.UserBook;
 import microservices.user.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.info.ProjectInfoProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
