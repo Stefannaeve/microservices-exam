@@ -29,8 +29,7 @@ public class CommentService {
 
     public ResponseEntity<Optional<CommentDTO>> saveById(CommentDTO commentDTO){
         ResponseEntity<Optional<BookDTO>> book = null;
-        ResponseEntity<Optional<CommentDTO>> comment;
-
+        ResponseEntity<Optional<CommentDTO>> comment = null;
         ResponseEntity<Optional<UserDTO>> user = null;
 
         if (commentDTO == null){
@@ -60,7 +59,7 @@ public class CommentService {
             );
         }
 
-        log.info("Book: {}", book.getBody().get());
+        log.info("Book: {}", book.getBody().get().getTitle());
 
         // Check of user exists
         try {
@@ -79,9 +78,15 @@ public class CommentService {
             );
         }
 
-        log.info("User: {}", user.getBody().get());
+        log.info("User: {}", user.getBody().get().getUsername());
 
-        comment = commentClient.saveById(commentDTO);
+        try {
+            comment = commentClient.saveById(commentDTO);
+        } catch (Exception exception){
+            log.error("SaveById Exception block: {}", exception.getMessage());
+        }
+
+        log.info("Comment: {}", comment.getBody().get().getText());
 
         return ResponseEntityInitializer.NewResponseEntity(
                 HttpStatus.OK,
