@@ -2,7 +2,6 @@ package microservices.exam.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import microservices.exam.apiResponse.ApiResponse;
-import microservices.exam.apiResponse.ResponseEntityInitializer;
 import microservices.exam.clients.BookClient;
 import microservices.exam.dtos.CommentDTO;
 import microservices.exam.models.Book;
@@ -31,8 +30,7 @@ public class BookController {
 
     @GetMapping("/fetchBookById/{id}")
     public ResponseEntity<Optional<Book>> fetchBookById(@PathVariable Long id) {
-        ResponseEntity<Optional<Book>> response = bookService.fetchById(id);
-        return response;
+        return bookService.fetchById(id);
     }
 
     @GetMapping("/fetchAll")
