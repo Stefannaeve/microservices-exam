@@ -3,6 +3,7 @@ package microservices.manager.ManagerClients;
 import lombok.extern.slf4j.Slf4j;
 import microservices.manager.apiResponse.ApiResponse;
 import microservices.manager.apiResponse.ApiResponseBuilder;
+import microservices.manager.apiResponse.ResponseEntityInitializer;
 import microservices.manager.dtos.ApiResponseDTO;
 import microservices.manager.dtos.CommentDTO;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -32,11 +34,10 @@ public class CommentClient {
         this.restServiceUrl = url;
     }
 
-    public ApiResponse<List<CommentDTO>> externalGetAllComments(){
+    public ResponseEntity<Optional<List<CommentDTO>>> externalGetAllComments(){
         String url = restServiceUrl + "/comment/fetchAll";
         log.debug("This is the url: {}", url);
-        ResponseEntity<ApiResponseDTO<List<CommentDTO>>> response;
-        ApiResponseBuilder<List<CommentDTO>> apiResponseBuilder = new ApiResponseBuilder<>();
+        ResponseEntity<Optional<List<CommentDTO>>> response = null;
 
         try {
             response = restTemplate.exchange(
@@ -46,36 +47,44 @@ public class CommentClient {
                     new ParameterizedTypeReference<>() {
                     }
             );
-        } catch (HttpClientErrorException clientErrorException){
-            log.debug("Entered exception handling block");
-
-            HttpStatus status = HttpStatus.valueOf(clientErrorException.getStatusCode().value());
-
-            ApiResponse apiResponse = clientErrorException.getResponseBodyAs(ApiResponse.Failure.class);
-
-            return apiResponse;
-        }
-        catch (Exception exception){
+        } catch (Exception exception){
             log.error("An unexpected error occurred: ", exception);
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to comment service");
         }
 
-        if (response.getBody() == null){
+        if (response == null){
             log.error("Response body is null");
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Empty response from comment service");
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.NO_CONTENT,
+                    false,
+                    "Response empty from the comment service",
+                    HttpStatus.NO_CONTENT,
+                    Optional.empty()
+            );
         }
 
-        HttpStatus statusCode = HttpStatus.valueOf(response.getStatusCode().value());
+        String success = ResponseEntityInitializer.extractHeader(response, "success");
+        log.info("Success: {}", success);
 
-        log.debug("Received response with status: {}", statusCode);
-        return apiResponseBuilder.parseDto(response.getBody(), statusCode);
+        if (success.equals("false")){
+            String errorMessage = ResponseEntityInitializer.extractHeader(response, "ErrorMessage");
+            String errorStatus = ResponseEntityInitializer.extractHeader(response, "ErrorStatus");
+            HttpStatus status = HttpStatus.valueOf(Integer.parseInt(errorStatus));
+            return ResponseEntityInitializer.NewResponseEntity(
+                    status,
+                    false,
+                    errorMessage,
+                    status,
+                    response.getBody()
+            );
+        }
+
+        return response;
     }
 
-    public ApiResponse<CommentDTO> fetchById(long id) {
+    public ResponseEntity<Optional<CommentDTO>> fetchById(long id) {
         String url = restServiceUrl + "/comment/fetchCommentById/" + id;
         log.debug("This is the url: {}", url);
-        ResponseEntity<ApiResponseDTO<CommentDTO>> response;
-        ApiResponseBuilder<CommentDTO> apiResponseBuilder = new ApiResponseBuilder<>();
+        ResponseEntity<Optional<CommentDTO>> response = null;
 
         try {
             response = restTemplate.exchange(
@@ -85,35 +94,43 @@ public class CommentClient {
                     new ParameterizedTypeReference<>() {
                     }
             );
-        }  catch (HttpClientErrorException clientErrorException){
-            log.debug("Entered exception handling block");
-
-            HttpStatus status = HttpStatus.valueOf(clientErrorException.getStatusCode().value());
-
-            ApiResponse apiResponse = clientErrorException.getResponseBodyAs(ApiResponse.Failure.class);
-
-            return apiResponse;
-        }catch (Exception exception){
+        } catch (Exception exception){
             log.error("An unexpected error occurred: ", exception);
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to comment service");
         }
 
-        if (response.getBody() == null){
-            log.error("Response body is null");
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Empty response from comment service");
+        if (response == null){
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.NO_CONTENT,
+                    false,
+                    "Response empty from the book service",
+                    HttpStatus.NO_CONTENT,
+                    Optional.empty()
+            );
         }
 
-        HttpStatus statusCode = HttpStatus.valueOf(response.getStatusCode().value());
+        String success = ResponseEntityInitializer.extractHeader(response, "success");
+        log.info("Success: {}", success);
 
-        log.debug("Received response with status: {}", statusCode);
-        return apiResponseBuilder.parseDto(response.getBody(), statusCode);
+        if (success.equals("false")){
+            String errorMessage = ResponseEntityInitializer.extractHeader(response, "ErrorMessage");
+            String errorStatus = ResponseEntityInitializer.extractHeader(response, "ErrorStatus");
+            HttpStatus status = HttpStatus.valueOf(Integer.parseInt(errorStatus));
+            return ResponseEntityInitializer.NewResponseEntity(
+                    status,
+                    false,
+                    errorMessage,
+                    status,
+                    response.getBody()
+            );
+        }
+
+        return response;
     }
 
-    public ApiResponse<CommentDTO> saveById(CommentDTO commentDTO) {
+    public ResponseEntity<Optional<CommentDTO>> saveById(CommentDTO commentDTO) {
         String url = restServiceUrl + "/comment/fetchCommentById/" + commentDTO.getId();
         log.debug("This is the url: {}", url);
-        ResponseEntity<ApiResponseDTO<CommentDTO>> response;
-        ApiResponseBuilder<CommentDTO> apiResponseBuilder = new ApiResponseBuilder<>();
+        ResponseEntity<Optional<CommentDTO>> response = null;
 
         try {
             response = restTemplate.exchange(
@@ -123,26 +140,36 @@ public class CommentClient {
                     new ParameterizedTypeReference<>() {
                     }
             );
-        }  catch (HttpClientErrorException clientErrorException){
-            log.debug("Entered exception handling block");
-
-            HttpStatus status = HttpStatus.valueOf(clientErrorException.getStatusCode().value());
-
-            ApiResponse apiResponse = clientErrorException.getResponseBodyAs(ApiResponse.Failure.class);
-
-            return apiResponse;
-        }catch (Exception exception){
+        } catch (Exception exception){
             log.error("An unexpected error occurred: ", exception);
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to comment service");
         }
 
-        if (response.getBody() == null){
-            log.error("Response body is null");
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Empty response from comment service");
+        if (response == null){
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.NO_CONTENT,
+                    false,
+                    "Response empty from the book service",
+                    HttpStatus.NO_CONTENT,
+                    Optional.empty()
+            );
         }
 
-        HttpStatus statusCode = HttpStatus.valueOf(response.getStatusCode().value());
+        String success = ResponseEntityInitializer.extractHeader(response, "success");
+        log.info("Success: {}", success);
 
-        return apiResponseBuilder.parseDto(response.getBody(), statusCode);
+        if (success.equals("false")){
+            String errorMessage = ResponseEntityInitializer.extractHeader(response, "ErrorMessage");
+            String errorStatus = ResponseEntityInitializer.extractHeader(response, "ErrorStatus");
+            HttpStatus status = HttpStatus.valueOf(Integer.parseInt(errorStatus));
+            return ResponseEntityInitializer.NewResponseEntity(
+                    status,
+                    false,
+                    errorMessage,
+                    status,
+                    response.getBody()
+            );
+        }
+
+        return response;
     }
 }
