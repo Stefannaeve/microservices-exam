@@ -26,6 +26,11 @@ public class UserController {
         return userClient.externalSaveOneUser(userDTO);
     }
 
+    @PostMapping("/addBookToUser/{userId}")
+    public ResponseEntity<Optional<UserDTO>> addBookToUser(@PathVariable Long userId, @RequestBody UserDTO userDTO){
+        return userClient.externalAddBookToUser(userId, userDTO);
+    }
+
     @GetMapping("/fetchUserById/{userId}")
     public ResponseEntity<Optional<UserDTO>> fetchUserById(@PathVariable Long userId){
         return userClient.externalGetUserById(userId);

@@ -173,4 +173,53 @@ public class UserClient {
 
         return response;
     }
+
+    public ResponseEntity<Optional<UserDTO>> externalAddBookToUser(Long userId, UserDTO user) {
+        String url = restServiceUrl + "/saveOneUser/" + userId;
+        ResponseEntity<Optional<UserDTO>> response = null;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<UserDTO> requestEntity = new HttpEntity<>(user, headers);
+
+        try {
+            response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    requestEntity,
+                    new ParameterizedTypeReference<>() {
+                    }
+            );
+        } catch (Exception e){
+            log.error("An unexpected error occured: ", e);
+        }
+
+        if (response == null){
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.NO_CONTENT,
+                    false,
+                    "Response empty from the user service",
+                    HttpStatus.NO_CONTENT,
+                    Optional.empty()
+            );
+        }
+
+        String success = ResponseEntityInitializer.extractHeader(response, "success");
+        log.info("Success: {}", success);
+
+        if (success.equals("false")){
+            String errorMessage = ResponseEntityInitializer.extractHeader(response, "ErrorMessage");
+            String errorStatus = ResponseEntityInitializer.extractHeader(response, "ErrorStatus");
+            HttpStatus status = HttpStatus.valueOf(Integer.parseInt(errorStatus));
+            return ResponseEntityInitializer.NewResponseEntity(
+                    status,
+                    false,
+                    errorMessage,
+                    status,
+                    response.getBody()
+            );
+        }
+
+        return response;
+    }
 }
