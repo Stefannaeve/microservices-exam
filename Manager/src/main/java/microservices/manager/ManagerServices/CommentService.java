@@ -81,12 +81,11 @@ public class CommentService {
 
         log.info("User: {}", user.getBody().get());
 
-        //TODO: fix this please
-        ResponseEntity<Optional<CommentDTO>> savedComment = commentClient.saveById(commentDTO);
+        comment = commentClient.saveById(commentDTO);
 
         return ResponseEntityInitializer.NewResponseEntity(
                 HttpStatus.OK,
-                savedComment.getBody()
+                comment.getBody()
         );
     }
 }
