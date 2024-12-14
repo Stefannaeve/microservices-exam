@@ -32,4 +32,7 @@ public class UserBook {
     @Enumerated(EnumType.STRING)
     @Column(name = "readingStatus")
     private ReadingStatus readingStatus;
+
+    @Column(name = "rating")
+    private int rating;
 }

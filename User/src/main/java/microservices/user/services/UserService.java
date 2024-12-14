@@ -85,6 +85,11 @@ public class UserService {
     public ApiResponse<User> addBookToUser(Long userId, UserBook userBook) {
         ApiResponseBuilder<User> apiResponseBuilder = new ApiResponseBuilder<>();
 
+        Integer rating = userBook.getRating();
+        if (rating != null && (rating < 1 || rating > 10)) {
+            return apiResponseBuilder.failure(HttpStatus.BAD_REQUEST, "Rating must be between 1 and 10.");
+        }
+
         try {
             Optional<User> userOptional = userRepo.findById(userId);
             if (userOptional.isEmpty()) {
