@@ -23,7 +23,7 @@ public class BookController {
     }
 
     @GetMapping("/fetchAll")
-    public ResponseEntity<List<BookDTO>> fetchAllBooks() {
+    public ResponseEntity<Optional<List<BookDTO>>> fetchAllBooks() {
         return bookClient.externalGetAllBooks();
     }
 
