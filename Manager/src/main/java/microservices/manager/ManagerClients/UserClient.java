@@ -6,9 +6,7 @@ import microservices.manager.dtos.UserDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.View;
@@ -103,6 +101,55 @@ public class UserClient {
                     HttpStatus.NO_CONTENT,
                     false,
                     "Response empty from the book service",
+                    HttpStatus.NO_CONTENT,
+                    Optional.empty()
+            );
+        }
+
+        String success = ResponseEntityInitializer.extractHeader(response, "success");
+        log.info("Success: {}", success);
+
+        if (success.equals("false")){
+            String errorMessage = ResponseEntityInitializer.extractHeader(response, "ErrorMessage");
+            String errorStatus = ResponseEntityInitializer.extractHeader(response, "ErrorStatus");
+            HttpStatus status = HttpStatus.valueOf(Integer.parseInt(errorStatus));
+            return ResponseEntityInitializer.NewResponseEntity(
+                    status,
+                    false,
+                    errorMessage,
+                    status,
+                    response.getBody()
+            );
+        }
+
+        return response;
+    }
+
+    public ResponseEntity<Optional<UserDTO>> externalSaveOneUser(UserDTO user){
+        String url = restServiceUrl + "/saveOneUser";
+        ResponseEntity<Optional<UserDTO>> response = null;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<UserDTO> entity = new HttpEntity<>(user, headers);
+
+        try {
+            response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    entity,
+                    new ParameterizedTypeReference<>() {
+                    }
+            );
+        } catch (Exception exception) {
+            log.error("An unexpected error occured: {}", exception.getMessage());
+        }
+
+        if (response == null){
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.NO_CONTENT,
+                    false,
+                    "Response empty from the user service",
                     HttpStatus.NO_CONTENT,
                     Optional.empty()
             );

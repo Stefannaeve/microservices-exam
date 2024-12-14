@@ -4,10 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import microservices.manager.ManagerClients.UserClient;
 import microservices.manager.dtos.UserDTO;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -22,6 +19,11 @@ public class UserController {
     public UserController(UserClient userClient) {
 
         this.userClient = userClient;
+    }
+
+    @PostMapping("/saveOneUser")
+    public ResponseEntity<Optional<UserDTO>> saveOneUser(@RequestBody UserDTO userDTO){
+        return userClient.externalSaveOneUser(userDTO);
     }
 
     @GetMapping("/fetchUserById/{userId}")
