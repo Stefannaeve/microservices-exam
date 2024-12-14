@@ -18,25 +18,34 @@ public class UserEvent {
     private String readingProgress;
     private String readingStatus;
     private UserBook userBook;
+    private int rating;
 
-    // delete and delete_book events
+    // delete
     public UserEvent(Long userId, String eventType) {
         this.userId = userId;
         this.eventType = eventType;
     }
 
-    //  create events
+    // create
     public UserEvent(Long userId, String eventType, String username) {
         this.userId = userId;
         this.eventType = eventType;
         this.username = username;
     }
 
-    // add_book events
+    // delete book
+    public UserEvent(Long userId, String eventType, Long bookId) {
+        this.userId = userId;
+        this.eventType = eventType;
+        this.bookId = bookId;
+    }
+
+    // add book
     public UserEvent(Long userId, String eventType, UserBook userBook) {
         this.userId = userId;
         this.eventType = eventType;
         this.userBook = userBook;
+        this.rating = userBook.getRating();
     }
 
     @Override

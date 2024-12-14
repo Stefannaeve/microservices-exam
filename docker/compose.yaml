@@ -87,7 +87,7 @@ services:
       timeout: 5s
 
   rabbitMQ:
-    image: 'rabbitmq:3-management'
+    image: 'rabbitmq:3.12-management'
     ports:
       - '15672:15672'
       - '5672:5672'
