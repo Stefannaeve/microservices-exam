@@ -45,7 +45,13 @@ public class BookClient {
         }
 
         if (response == null){
-            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.NO_CONTENT, false, "Response empty from the book service", HttpStatus.NO_CONTENT, Optional.empty());
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.NO_CONTENT,
+                    false,
+                    "Response empty from the book service",
+                    HttpStatus.NO_CONTENT,
+                    Optional.empty()
+            );
         }
 
         String success = ResponseEntityInitializer.extractHeader(response, "success");
@@ -64,10 +70,7 @@ public class BookClient {
             );
         }
 
-        return ResponseEntityInitializer.NewResponseEntity(
-                HttpStatus.OK,
-                response.getBody()
-        );
+        return response;
     }
 
     public ResponseEntity<Optional<BookDTO>> externalSaveBook(BookDTO book) {
@@ -92,7 +95,13 @@ public class BookClient {
         }
 
         if (response == null){
-            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.NO_CONTENT, false, "Response empty from the book service", HttpStatus.NO_CONTENT, response.getBody());
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.NO_CONTENT,
+                    false,
+                    "Response empty from the book service",
+                    HttpStatus.NO_CONTENT,
+                    Optional.empty()
+            );
         }
 
         String success = ResponseEntityInitializer.extractHeader(response, "success");
@@ -111,13 +120,12 @@ public class BookClient {
             );
         }
 
-        log.info("Book saved successfully.");
         return response;
     }
 
     public ResponseEntity<Optional<BookDTO>> externalGetBookById(long id) {
         String url = restServiceUrl + "/book/fetchBookById" + id;
-        ResponseEntity<Optional<BookDTO>> response = ResponseEntity.ok(Optional.empty());
+        ResponseEntity<Optional<BookDTO>> response = null;
 
         try {
             response = restTemplate.exchange(
@@ -132,7 +140,7 @@ public class BookClient {
         }
 
         if (response == null){
-            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.NO_CONTENT, false, "Response empty from the book service", HttpStatus.NO_CONTENT, response.getBody());
+            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.NO_CONTENT, false, "Response empty from the book service", HttpStatus.NO_CONTENT, Optional.empty());
         }
 
         String success = ResponseEntityInitializer.extractHeader(response, "success");
@@ -151,9 +159,6 @@ public class BookClient {
             );
         }
 
-        HttpStatus statusCode = HttpStatus.valueOf(response.getStatusCode().value());
-
-        log.debug("Received response with status: {}", statusCode);
         return response;
     }
 }
