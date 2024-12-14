@@ -22,15 +22,11 @@ public class UserService {
 
     private final UserRepo userRepo;
     private final UserEventPublisher userEventPublisher;
-    private final ProjectInfoProperties projectInfoProperties;
-
 
     @Autowired
-    public UserService(UserRepo userRepo, UserEventPublisher userEventPublisher,
-                       ProjectInfoProperties projectInfoProperties) {
+    public UserService(UserRepo userRepo, UserEventPublisher userEventPublisher) {
         this.userRepo = userRepo;
         this.userEventPublisher = userEventPublisher;
-        this.projectInfoProperties = projectInfoProperties;
     }
 
     public ResponseEntity<Optional<User>> saveOneUser(User userToSave) {
@@ -87,7 +83,7 @@ public class UserService {
         Optional<User> user = Optional.empty();
         Optional<List<Long>> bookId = Optional.empty();
         try {
-            user = Optional.ofNullable(userRepo.findById(userId).orElse(null));
+            user = userRepo.findById(userId);
 
             if (user.isEmpty()) {
                 return ResponseEntityInitializer.NewResponseEntity(
