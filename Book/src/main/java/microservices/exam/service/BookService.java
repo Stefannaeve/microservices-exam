@@ -5,7 +5,6 @@ import microservices.exam.apiResponse.ResponseEntityInitializer;
 import microservices.exam.eventDriven.BookEventPublisher;
 import microservices.exam.models.Book;
 import microservices.exam.repository.BookRepository;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
