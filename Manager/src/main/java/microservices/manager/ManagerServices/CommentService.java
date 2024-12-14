@@ -29,10 +29,18 @@ public class CommentService {
 
     public ResponseEntity<Optional<CommentDTO>> saveById(CommentDTO commentDTO){
         ResponseEntity<Optional<BookDTO>> book = null;
-        ResponseEntity<Optional<CommentDTO>> comment = ResponseEntity.ok(Optional.empty());
+        ResponseEntity<Optional<CommentDTO>> comment = null;
+
+        ResponseEntity<Optional<UserDTO>> user = null;
 
         if (commentDTO == null){
-            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, false, "Comment from client is null", HttpStatus.BAD_REQUEST, comment.getBody());
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.OK,
+                    false,
+                    "Comment from client is null",
+                    HttpStatus.BAD_REQUEST,
+                    Optional.empty()
+            );
         }
 
         // Check if book exists
@@ -42,20 +50,43 @@ public class CommentService {
             log.error(exception.getMessage());
         }
 
-        if (book != null){
-            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, false, "Did not find the book", HttpStatus.BAD_REQUEST, comment.getBody());
+        if (book == null || book.getBody().isEmpty()){
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.BAD_REQUEST,
+                    false,
+                    "Did not find the book",
+                    HttpStatus.BAD_REQUEST,
+                    Optional.empty()
+            );
         }
+
+        log.info("Book: {}", book.getBody().get());
 
         // Check of user exists
         try {
-            ResponseEntity<Optional<UserDTO>> user = userClient.externalGetUserById(commentDTO.getUserId());
+            user = userClient.externalGetUserById(commentDTO.getUserId());
         } catch (Exception exception) {
             log.error(exception.getMessage());
         }
 
+        if (user == null || user.getBody().isEmpty()){
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.BAD_REQUEST,
+                    false,
+                    "did not find the user",
+                    HttpStatus.BAD_REQUEST,
+                    Optional.empty()
+            );
+        }
+
+        log.info("User: {}", user.getBody().get());
+
         //TODO: fix this please
         ResponseEntity<Optional<CommentDTO>> savedComment = commentClient.saveById(commentDTO);
 
-        return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, savedComment.getBody());
+        return ResponseEntityInitializer.NewResponseEntity(
+                HttpStatus.OK,
+                savedComment.getBody()
+        );
     }
 }
