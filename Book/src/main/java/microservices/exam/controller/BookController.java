@@ -74,4 +74,9 @@ public class BookController {
     public ResponseEntity<Optional<List<Book>>> fetchBooksByTitle(@PathVariable String title) {
         return bookService.fetchBooksByTitle(title);
     }
+
+    @GetMapping("/fetchByAuthor/{author}")
+    public ResponseEntity<Optional<List<Book>>> fetchBooksByAuthor(@PathVariable String author) {
+        return bookService.fetchBooksByAuthor(author);
+    }
 }
