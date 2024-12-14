@@ -60,8 +60,8 @@ public class CommentService {
         }
 
         //TODO: fix this please
-        ApiResponse<CommentDTO> savedComment = commentClient.saveById(commentDTO);
+        ResponseEntity<Optional<CommentDTO>> savedComment = commentClient.saveById(commentDTO);
 
-        return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, Optional.empty());
+        return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, savedComment.getBody());
     }
 }

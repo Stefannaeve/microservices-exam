@@ -4,12 +4,15 @@ package microservices.comment.service;
 import lombok.extern.slf4j.Slf4j;
 import microservices.comment.apiResponse.ApiResponse;
 import microservices.comment.apiResponse.ApiResponseBuilder;
+import microservices.comment.apiResponse.ResponseEntityInitializer;
 import microservices.comment.eventDriven.CommentEventPublisher;
 import microservices.comment.models.Comment;
 import microservices.comment.repository.CommentRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,95 +28,196 @@ public class CommentService {
         this.commentEventPublisher = commentEventPublisher;
     }
 
-    public ApiResponse<List<Comment>> fetchAll() {
-        ApiResponseBuilder<List<Comment>> apiResponseBuilder = new ApiResponseBuilder<>();
+    public ResponseEntity<Optional<List<Comment>>> fetchAll() {
+        Optional<List<Comment>> comments = Optional.empty();
         try {
-            List<Comment> comments = commentRepository.findAll();
+            comments = Optional.of(commentRepository.findAll());
             if (comments.isEmpty()) {
-                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "No comments found");
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        false,
+                        "No comments found",
+                        HttpStatus.NOT_FOUND,
+                        comments
+                );
             }
-            return apiResponseBuilder.success(comments);
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.OK,
+                    comments
+            );
         } catch (Exception e) {
             log.error("Error fetching all comments: {}", e.getMessage(), e);
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch comments");
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    false,
+                    "Something went wrong...",
+                    HttpStatus.INTERNAL_SERVER_ERROR, comments
+            );
         }
     }
 
-    public ApiResponse<Comment> fetchById(Long id) {
-        ApiResponseBuilder<Comment> apiResponseBuilder = new ApiResponseBuilder<>();
+    public ResponseEntity<Optional<Comment>> fetchById(Long id) {
+        Optional<Comment> comment = Optional.empty();
         try {
-            Optional<Comment> comment = commentRepository.findById(id);
+            comment = commentRepository.findById(id);
             if (comment.isPresent()) {
-                return apiResponseBuilder.success(comment.get());
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        comment
+                );
             } else {
-                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Comment with id " + id + " not found");
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        false,
+                        "Comment not found",
+                        HttpStatus.NOT_FOUND,
+                        comment
+                );
             }
         } catch (Exception e) {
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch comment");
+            log.error("Error fetching comment: {}", e.getMessage());
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    false,
+                    "Something went wrong...",
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    comment
+            );
         }
     }
 
-    public ApiResponse<Comment> saveOneComment(Comment comment) {
-        ApiResponseBuilder<Comment> apiResponseBuilder = new ApiResponseBuilder<>();
+    public ResponseEntity<Optional<Comment>> saveOneComment(Comment comment) {
+        Optional<Comment> savedComment = Optional.empty();
         try {
             if (comment.getUserId() == null || comment.getUserId() <= 0) {
-                return apiResponseBuilder.failure(HttpStatus.BAD_REQUEST, "Invalid userId");
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        false,
+                        "Invalid userID",
+                        HttpStatus.BAD_REQUEST,
+                        savedComment
+                );
             }
-            Comment savedComment = commentRepository.save(comment);
-            commentEventPublisher.publishCommentCreatedEvent(savedComment.getId(), savedComment.getUserId(), savedComment.getBookId());
-            return apiResponseBuilder.success(savedComment, HttpStatus.CREATED);
+            savedComment = Optional.of(commentRepository.save(comment));
+            commentEventPublisher.publishCommentCreatedEvent(
+                    savedComment
+                            .get()
+                            .getId(),
+                    savedComment
+                            .get()
+                            .getUserId(),
+                    savedComment
+                            .get().
+                            getBookId());
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.CREATED,
+                    savedComment
+            );
         } catch (Exception e) {
             log.error("Error saving comment: {}", e.getMessage(), e);
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save comment");
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    false,
+                    "Something went wrong...",
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    savedComment
+            );
         }
     }
 
-    public ApiResponse<List<Comment>> fetchCommentsByUserAndBook(Long userId, Long bookId) {
-        ApiResponseBuilder<List<Comment>> apiResponseBuilder = new ApiResponseBuilder<>();
+    public ResponseEntity<Optional<List<Comment>>> fetchCommentsByUserAndBook(Long userId, Long bookId) {
+        Optional<List<Comment>> comments = Optional.empty();
         try {
-            List<Comment> comment = commentRepository.findByUserIdAndBookId(userId, bookId);
-            if (comment.isEmpty()) {
-                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "No comments found for the specified user and book");
+            comments = Optional.ofNullable(commentRepository.findByUserIdAndBookId(userId, bookId));
+            if (comments.isEmpty()) {
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        false,
+                        "Found no comments for the specified user and book",
+                        HttpStatus.NOT_FOUND,
+                        comments
+                );
             }
-            return apiResponseBuilder.success(comment);
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.OK,
+                    comments
+            );
         } catch (Exception e) {
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch comments");
+            log.error("Error fetching comments: {}", e.getMessage());
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    false,
+                    "Something went wrong...",
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    comments
+            );
         }
     }
 
-    public ApiResponse<Comment> updateComment(Long userId, Long bookId, Long commentId, Comment updatedComment) {
-        ApiResponseBuilder<Comment> apiResponseBuilder = new ApiResponseBuilder<>();
+    public ResponseEntity<Optional<Comment>> updateComment(Long userId, Long bookId, Long commentId, Comment updatedComment) {
+        Optional<Comment> findComment = Optional.empty();
+        Optional<Comment> comment = Optional.empty();
+        Optional<Comment> savedComment = Optional.empty();
         try {
-            Optional<Comment> findComment = commentRepository.findByIdAndUserIdAndBookId(commentId, userId, bookId);
+            findComment = commentRepository.findByIdAndUserIdAndBookId(commentId, userId, bookId);
             if (findComment.isEmpty()) {
-                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Comment not found for the specified user and book");
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        false,
+                        "Unable to fetch",
+                        HttpStatus.NOT_FOUND,
+                        findComment
+                );
             }
-            Comment comment = findComment.get();
-            comment.setText(updatedComment.getText());
-            Comment savedComment = commentRepository.save(comment);
-            return apiResponseBuilder.success(savedComment);
+            comment = Optional.of(findComment.get());
+            comment.get().setText(updatedComment.getText());
+            savedComment = Optional.of(commentRepository.save(comment.get()));
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.OK,
+                    savedComment
+            );
         } catch (Exception e) {
             log.error("Error updating comment with id {}: {}", commentId, e.getMessage());
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update comment");
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    false,
+                    "Something went wrong...",
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    savedComment
+            );
         }
     }
 
-    public ApiResponse<Void> deleteCommentById(Long userId, Long bookId, Long commentId) {
-        ApiResponseBuilder<Void> apiResponseBuilder = new ApiResponseBuilder<>();
+    public ResponseEntity<Optional<Comment>> deleteCommentById(Long userId, Long bookId, Long commentId) {
+        Optional<Comment> comment = Optional.empty();
         try {
-            Optional<Comment> comment = commentRepository.findByIdAndUserIdAndBookId(commentId, userId, bookId);
+            comment = commentRepository.findByIdAndUserIdAndBookId(commentId, userId, bookId);
             if (comment.isPresent()) {
                 commentRepository.delete(comment.get());
                 log.info("Deleted comment with id: {}", commentId);
                 commentEventPublisher.publishCommentDeletedEvent(commentId);
-                return apiResponseBuilder.success();
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        comment
+                );
             } else {
                 log.warn("Comment with id {} not found for userId {} and bookId {}", commentId, userId, bookId);
-                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Comment not found for the specified user and book");
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        false,
+                        "Comment not found for the specific user and book",
+                        HttpStatus.NOT_FOUND,
+                        comment
+                );
             }
         } catch (Exception e) {
             log.error("Error deleting comment with id {}: {}", commentId, e.getMessage());
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete comment");
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    false,
+                    "Something went wrong...",
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    comment);
         }
     }
 }
