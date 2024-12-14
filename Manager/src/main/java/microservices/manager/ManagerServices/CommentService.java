@@ -4,20 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import microservices.manager.ManagerClients.BookClient;
 import microservices.manager.ManagerClients.CommentClient;
 import microservices.manager.ManagerClients.UserClient;
-import microservices.manager.apiResponse.ApiResponse;
-import microservices.manager.apiResponse.ApiResponseBuilder;
 import microservices.manager.apiResponse.ResponseEntityInitializer;
 import microservices.manager.dtos.BookDTO;
 import microservices.manager.dtos.CommentDTO;
 import microservices.manager.dtos.UserDTO;
-import org.apache.coyote.Response;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -54,7 +48,7 @@ public class CommentService {
 
         // Check of user exists
         try {
-            ApiResponse<UserDTO> user = userClient.externalGetUserById(commentDTO.getUserId());
+            ResponseEntity<Optional<UserDTO>> user = userClient.externalGetUserById(commentDTO.getUserId());
         } catch (Exception exception) {
             log.error(exception.getMessage());
         }
