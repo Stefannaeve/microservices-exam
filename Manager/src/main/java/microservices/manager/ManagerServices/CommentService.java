@@ -30,6 +30,7 @@ public class CommentService {
     public ResponseEntity<Optional<CommentDTO>> saveById(CommentDTO commentDTO){
         ResponseEntity<Optional<BookDTO>> book = null;
         ResponseEntity<Optional<CommentDTO>> comment = null;
+
         ResponseEntity<Optional<UserDTO>> user = null;
 
         if (commentDTO == null){
@@ -59,6 +60,8 @@ public class CommentService {
             );
         }
 
+        log.info("Book: {}", book.getBody().get());
+
         // Check of user exists
         try {
             user = userClient.externalGetUserById(commentDTO.getUserId());
@@ -76,15 +79,14 @@ public class CommentService {
             );
         }
 
-        try {
-            comment = commentClient.saveById(commentDTO);
-        } catch (Exception exception){
-            log.error("SaveById Exception block: {}", exception.getMessage());
-        }
+        log.info("User: {}", user.getBody().get());
+
+        //TODO: fix this please
+        ResponseEntity<Optional<CommentDTO>> savedComment = commentClient.saveById(commentDTO);
 
         return ResponseEntityInitializer.NewResponseEntity(
                 HttpStatus.OK,
-                comment.getBody()
+                savedComment.getBody()
         );
     }
 }
