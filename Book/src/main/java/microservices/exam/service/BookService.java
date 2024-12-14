@@ -1,8 +1,6 @@
 package microservices.exam.service;
 
 import lombok.extern.slf4j.Slf4j;
-import microservices.exam.apiResponse.ApiResponse;
-import microservices.exam.apiResponse.ApiResponseBuilder;
 import microservices.exam.apiResponse.ResponseEntityInitializer;
 import microservices.exam.eventDriven.BookEventPublisher;
 import microservices.exam.models.Book;
@@ -12,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,14 +26,12 @@ public class BookService {
     }
 
     public ResponseEntity<Optional<List<Book>>> fetchAll() {
-        HttpHeaders headers = new HttpHeaders();
         Optional<List<Book>> books = Optional.empty();
 
         try {
             books = Optional.of(bookRepository.findAll());
             if (books.get().size() <= 0){
                 log.info("Found no books");
-                headers.add("Success", "true");
                 return ResponseEntityInitializer.NewResponseEntity(
                         HttpStatus.OK,
                         false,
