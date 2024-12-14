@@ -6,9 +6,7 @@ import microservices.manager.dtos.CommentDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -124,15 +122,19 @@ public class CommentClient {
     }
 
     public ResponseEntity<Optional<CommentDTO>> saveById(CommentDTO commentDTO) {
-        String url = restServiceUrl + "/comment/fetchCommentById/" + commentDTO.getId();
+        String url = restServiceUrl + "/comment/saveOneComment";
         log.debug("This is the url: {}", url);
         ResponseEntity<Optional<CommentDTO>> response = null;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<CommentDTO> requestEntity = new HttpEntity<>(commentDTO, headers);
 
         try {
             response = restTemplate.exchange(
                     url,
-                    HttpMethod.GET,
-                    null,
+                    HttpMethod.POST,
+                    requestEntity,
                     new ParameterizedTypeReference<>() {
                     }
             );
