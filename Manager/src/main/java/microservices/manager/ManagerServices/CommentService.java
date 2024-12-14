@@ -59,8 +59,6 @@ public class CommentService {
             );
         }
 
-        log.info("Book: {}", book.getBody().get().getTitle());
-
         // Check of user exists
         try {
             user = userClient.externalGetUserById(commentDTO.getUserId());
@@ -78,15 +76,11 @@ public class CommentService {
             );
         }
 
-        log.info("User: {}", user.getBody().get().getUsername());
-
         try {
             comment = commentClient.saveById(commentDTO);
         } catch (Exception exception){
             log.error("SaveById Exception block: {}", exception.getMessage());
         }
-
-        log.info("Comment: {}", comment.getBody().get().getText());
 
         return ResponseEntityInitializer.NewResponseEntity(
                 HttpStatus.OK,
