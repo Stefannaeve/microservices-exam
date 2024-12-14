@@ -62,7 +62,7 @@ public class UserController {
     public ResponseEntity<Optional<UserDTO>> deleteUser(@PathVariable Long userId) {
         return userClient.externalDeleteUserById(userId);
     }
-  
+
     @PatchMapping("/{userId}/books/{bookId}/progress")
     public ResponseEntity<Optional<UserDTO>> updateReadingProgress(@PathVariable Long userId, @PathVariable Long bookId, @RequestBody Map<String, String> requestBody) {
         return userClient.externalUpdateReadingProgress(userId, bookId, requestBody);
