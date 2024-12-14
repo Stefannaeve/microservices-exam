@@ -3,6 +3,7 @@ package microservices.manager.ManagerClients;
 import lombok.extern.slf4j.Slf4j;
 import microservices.manager.apiResponse.ApiResponse;
 import microservices.manager.apiResponse.ApiResponseBuilder;
+import microservices.manager.apiResponse.ResponseEntityInitializer;
 import microservices.manager.dtos.ApiResponseDTO;
 import microservices.manager.dtos.UserDTO;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.View;
+
+import java.util.Optional;
 
 import static java.awt.SystemColor.info;
 
@@ -34,29 +37,60 @@ public class UserClient {
         this.error = error;
     }
 
-    public ApiResponse<UserDTO> externalGetUserById(long userId) {
-        ApiResponseBuilder<UserDTO> apiResponseBuilder = new ApiResponseBuilder<>();
+    public ResponseEntity<Optional<UserDTO>> externalGetUserById(long userId) {
         String url = restServiceUrl + "/fetchUserById/" + userId;
         log.error(url);
-        UserDTO response;
+        ResponseEntity<Optional<UserDTO>> response = null;
         try {
 
-            response = restTemplate.getForObject(
-                    restServiceUrl + "/fetchUserById/{userId}", UserDTO.class, userId);
+            //response = restTemplate.getForObject(
+            //        restServiceUrl + "/fetchUserById/{userId}", userId);
+            response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<>() {
+                    }
+            );
 
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
-            return null;
+        } catch (Exception exception) {
+            log.error("An unexpected error occured: {}", exception.getMessage());
+
         }
-        return apiResponseBuilder.success(response);
+
+        if (response == null){
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.NO_CONTENT,
+                    false,
+                    "Response empty from the book service",
+                    HttpStatus.NO_CONTENT,
+                    Optional.empty()
+            );
+        }
+
+        String success = ResponseEntityInitializer.extractHeader(response, "success");
+        log.info("Success: {}", success);
+
+        if (success.equals("false")){
+            String errorMessage = ResponseEntityInitializer.extractHeader(response, "ErrorMessage");
+            String errorStatus = ResponseEntityInitializer.extractHeader(response, "ErrorStatus");
+            HttpStatus status = HttpStatus.valueOf(Integer.parseInt(errorStatus));
+            return ResponseEntityInitializer.NewResponseEntity(
+                    status,
+                    false,
+                    errorMessage,
+                    status,
+                    response.getBody()
+            );
+        }
+
+        return response;
     }
 
-    public ApiResponse<UserDTO> externalGetUserWithBook(long userId, long bookId) {
-        ApiResponseBuilder<UserDTO> apiResponseBuilder = new ApiResponseBuilder<>();
+    public ResponseEntity<Optional<UserDTO>> externalGetUserWithBook(long userId, long bookId) {
         String url = restServiceUrl + "/fetchUserWithBook/" + userId + "/" + bookId;
         log.error(url);
-        ResponseEntity<ApiResponseDTO<UserDTO>> response;
+        ResponseEntity<Optional<UserDTO>> response = null;
         try {
 
             response = restTemplate.exchange(
@@ -66,20 +100,36 @@ public class UserClient {
                     new ParameterizedTypeReference<>() {
                     }
             );
-        } catch (HttpClientErrorException clientErrorException) {
-            log.debug("Entered exception handling block");
-
-            HttpStatus status = HttpStatus.valueOf(clientErrorException.getStatusCode().value());
-
-            ApiResponse apiResponse = clientErrorException.getResponseBodyAs(ApiResponse.Failure.class);
-
-            return apiResponse;
-
-        } catch (Exception e) {
-            log.error("An unexpected error occurred: ", e);
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to user service");
+        } catch (Exception exception) {
+            log.error("An unexpected error occured: {}", exception.getMessage());
         }
-        HttpStatus statusCode = HttpStatus.valueOf(response.getStatusCode().value());
-        return apiResponseBuilder.parseDto(response.getBody(), statusCode);
+
+        if (response == null){
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.NO_CONTENT,
+                    false,
+                    "Response empty from the book service",
+                    HttpStatus.NO_CONTENT,
+                    Optional.empty()
+            );
+        }
+
+        String success = ResponseEntityInitializer.extractHeader(response, "success");
+        log.info("Success: {}", success);
+
+        if (success.equals("false")){
+            String errorMessage = ResponseEntityInitializer.extractHeader(response, "ErrorMessage");
+            String errorStatus = ResponseEntityInitializer.extractHeader(response, "ErrorStatus");
+            HttpStatus status = HttpStatus.valueOf(Integer.parseInt(errorStatus));
+            return ResponseEntityInitializer.NewResponseEntity(
+                    status,
+                    false,
+                    errorMessage,
+                    status,
+                    response.getBody()
+            );
+        }
+
+        return response;
     }
 }
