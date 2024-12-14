@@ -54,7 +54,7 @@ public class CommentService {
 
         // Check of user exists
         try {
-            ApiResponse<UserDTO> user = userClient.externalGetUserById(commentDTO.getUserId());
+            ResponseEntity<Optional<UserDTO>> user = userClient.externalGetUserById(commentDTO.getUserId());
         } catch (Exception exception) {
             log.error(exception.getMessage());
         }
