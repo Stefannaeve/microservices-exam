@@ -2,9 +2,7 @@ package microservices.manager.ManagerControllers;
 
 import lombok.extern.slf4j.Slf4j;
 import microservices.manager.ManagerClients.BookClient;
-import microservices.manager.apiResponse.ApiResponse;
 import microservices.manager.dtos.BookDTO;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,15 +27,13 @@ public class BookController {
 
     @GetMapping("/fetchBookById/{id}")
     public ResponseEntity<Optional<BookDTO>> fetchBookById(@PathVariable Long id) {
-        ResponseEntity<Optional<BookDTO>> book = bookClient.externalGetBookById(id);
-        return book;
+        return bookClient.externalGetBookById(id);
     }
 
 
     @PostMapping("/saveBook")
     public ResponseEntity<Optional<BookDTO>> saveBook(@RequestBody BookDTO bookDTO) {
-        ResponseEntity<Optional<BookDTO>> savedBook = bookClient.externalSaveBook(bookDTO);
-        return savedBook;
+        return bookClient.externalSaveBook(bookDTO);
     }
 
     @DeleteMapping("/delete/{id}")
