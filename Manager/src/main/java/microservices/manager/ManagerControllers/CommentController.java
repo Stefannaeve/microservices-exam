@@ -32,7 +32,7 @@ public class CommentController {
         return commentClient.fetchById(id);
     }
 
-    @PostMapping("/SaveOneComment")
+    @PostMapping("/saveOneComment")
     public ResponseEntity<Optional<CommentDTO>> saveOneComment(@RequestBody CommentDTO commentDTO){
         return commentService.saveById(commentDTO);
     }
