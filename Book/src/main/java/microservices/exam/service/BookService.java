@@ -37,14 +37,30 @@ public class BookService {
             if (books.get().size() <= 0){
                 log.info("Found no books");
                 headers.add("Success", "true");
-                return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, false, "Found no books", HttpStatus.NO_CONTENT, books);
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        false,
+                        "Found no books",
+                        HttpStatus.NO_CONTENT,
+                        books
+                );
             }
             log.info("Found {} books", books.get().size());
 
-            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, books);
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.OK,
+                    books
+            );
         } catch (Exception exception) {
             log.error("Error fetching books: {}", exception.getMessage());
-            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, false, "An unknown error occurred", exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    false,
+                    "An unknown error occurred",
+                    exception.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    books
+            );
         }
     }
 
@@ -56,7 +72,13 @@ public class BookService {
             if (bookFromDatabase == null) {
                 savedBook = Optional.of(bookRepository.save(book));
                 if (savedBook.isEmpty()) {
-                    return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, false, "Failed to save book", HttpStatus.INTERNAL_SERVER_ERROR, savedBook);
+                    return ResponseEntityInitializer.NewResponseEntity(
+                            HttpStatus.OK,
+                            false,
+                            "Failed to save book",
+                            HttpStatus.INTERNAL_SERVER_ERROR,
+                            savedBook
+                    );
                 }
                 log.info("Saved book with id: {}", savedBook.get().getId());
 
@@ -69,14 +91,29 @@ public class BookService {
                         savedBook.get().getBookContent()
                 );
 
-                return ResponseEntityInitializer.NewResponseEntity(HttpStatus.CREATED, savedBook);
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.CREATED,
+                        savedBook
+                );
             } else {
                 log.info("Book from database: {}", bookFromDatabase.getTitle());
-                return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, false, "Book already exists", HttpStatus.CONFLICT, savedBook);
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        false,
+                        "Book already exists",
+                        HttpStatus.CONFLICT,
+                        savedBook
+                );
             }
         } catch (Exception e) {
             log.error("Error saving book: {}", e.getMessage());
-            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, false, "An unknown error occurred", HttpStatus.INTERNAL_SERVER_ERROR, savedBook);
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    false,
+                    "An unknown error occurred",
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    savedBook
+            );
         }
     }
 
@@ -89,14 +126,29 @@ public class BookService {
                 log.info("Deleted book with id: {}", bookId);
 
                 bookEventPublisher.publishBookDeletedEvent(bookId);
-                return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, book);
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        book
+                );
             } else {
                 log.warn("Book with id {} not found for deletion", bookId);
-                return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, false, "Book not found for deletion", HttpStatus.NOT_FOUND, book);
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        false,
+                        "Book not found for deletion",
+                        HttpStatus.NOT_FOUND,
+                        book
+                );
             }
         } catch (Exception e) {
             log.error("Error deleting book with id {}: {}", bookId, e.getMessage());
-            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, false, "An unknown error occurred", HttpStatus.INTERNAL_SERVER_ERROR, book);
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    false,
+                    "An unknown error occurred",
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    book
+            );
         }
     }
 
@@ -106,14 +158,29 @@ public class BookService {
             book = bookRepository.findById(id);
             if (book.isPresent()) {
                 log.info("Book found with id: {}", id);
-                return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, book);
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        book
+                );
             } else {
                 log.warn("Book with id {} not found", id);
-                return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, false, "Book not found", HttpStatus.NOT_FOUND, book);
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        false,
+                        "Book not found",
+                        HttpStatus.NOT_FOUND,
+                        book
+                );
             }
         } catch (Exception exception) {
             log.error("Error fetching book by id {}: {}", id, exception.getMessage());
-            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, false, "An unknown error occurred", HttpStatus.INTERNAL_SERVER_ERROR, book);
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    false,
+                    "An unknown error occurred",
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    book
+            );
 
         }
     }
@@ -124,14 +191,29 @@ public class BookService {
             books = Optional.ofNullable(bookRepository.findByTitle(title));
             if (books.isPresent()) {
                 log.info("Found {} books with title containing: {}", books.get().size(), title);
-                return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, books);
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        books
+                );
             } else {
                 log.warn("No books found with title containing: {}", title);
-                return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, false, "No books found with the specified title", HttpStatus.NOT_FOUND, books);
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        false,
+                        "No books found with the specified title",
+                        HttpStatus.NOT_FOUND,
+                        books
+                );
             }
         } catch (Exception e) {
             log.error("Error fetching books by title {}: {}", title, e.getMessage());
-            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, false, "An unknown error occurred", HttpStatus.INTERNAL_SERVER_ERROR, books);
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    false,
+                    "An unknown error occurred",
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    books
+            );
 
         }
     }
