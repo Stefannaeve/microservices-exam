@@ -2,6 +2,7 @@ package microservices.manager.ManagerClients;
 
 import lombok.extern.slf4j.Slf4j;
 import microservices.manager.apiResponse.ResponseEntityInitializer;
+import microservices.manager.dtos.BookDTO;
 import microservices.manager.dtos.CommentDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
