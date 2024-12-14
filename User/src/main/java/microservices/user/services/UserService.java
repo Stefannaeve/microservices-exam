@@ -192,6 +192,5 @@ public class UserService {
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error occurred");
         }
     }
-
 }
 
