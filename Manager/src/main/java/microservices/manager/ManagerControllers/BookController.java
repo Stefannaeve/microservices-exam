@@ -6,6 +6,7 @@ import microservices.manager.dtos.BookDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +38,18 @@ public class BookController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Optional<BookDTO>> deleteBook(@PathVariable Long id){
+    public ResponseEntity<Optional<BookDTO>> deleteBook(@PathVariable Long id) {
         return bookClient.externalDeleteBook(id);
     }
+
+    @GetMapping("/fetchBookByAuthor/{author}")
+    public ResponseEntity<Optional<List<BookDTO>>> fetchBookByAuthor(@PathVariable String author) {
+        return bookClient.externalGetBookByAuthor(author);
+    }
+
+    @GetMapping("/fetchBookByTitle/{title}")
+    public ResponseEntity<Optional<List<BookDTO>>> fetchBookByTitle(@PathVariable String title) {
+        return bookClient.externalGetBookByTitle(title);
+    }
+
 }
