@@ -14,10 +14,7 @@ import org.springframework.boot.autoconfigure.info.ProjectInfoProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -195,6 +192,27 @@ public class UserService {
             return apiResponseBuilder.success(user);
         } catch (Exception e) {
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error occurred");
+        }
+    }
+
+    public ApiResponse<List<UserBook>> fetchNotFinishedBooks(Long userId){
+        ApiResponseBuilder<List<UserBook>> apiResponseBuilder = new ApiResponseBuilder<>();
+
+        try{
+            Optional<User> findUser = userRepo.findById(userId);
+            if(findUser.isEmpty()){
+                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "User not found");
+            }
+
+            User user = findUser.get();
+            List<UserBook> notFinishedBooks = user.getBooks().stream().filter(book -> book.getReadingStatus() == ReadingStatus.DidNotFinish).toList();
+
+            if(notFinishedBooks.isEmpty()){
+                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "There are no unfinished books for this user");
+            }
+            return apiResponseBuilder.success(notFinishedBooks);
+        } catch(Exception e){
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch unfinished books");
         }
     }
 }

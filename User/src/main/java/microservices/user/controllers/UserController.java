@@ -166,4 +166,19 @@ public class UserController {
        }
     }
 
+    @GetMapping("/{userId}/notFinishedReading")
+    public ResponseEntity<ApiResponse<List<UserBook>>> fetchUnfinishedBooks(@PathVariable Long userId) {
+        ApiResponse<List<UserBook>> apiResponse = userService.fetchNotFinishedBooks(userId);
+
+        switch (apiResponse) {
+            case ApiResponse.Success<List<UserBook>> success -> {
+                log.info("Fetched unfinished books for userId: {}", userId);
+                return ResponseEntity.status(HttpStatus.OK).body(success);
+            }
+            case ApiResponse.Failure<List<UserBook>> failure -> {
+                log.error("Failed to fetch unfinished books for userId: {}. Error: {}", userId, failure.errorMessage());
+                return new ResponseEntity<>(failure, failure.status());
+            }
+        }
+    }
 }
