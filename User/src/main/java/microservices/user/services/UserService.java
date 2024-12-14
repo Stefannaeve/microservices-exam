@@ -10,6 +10,7 @@ import microservices.user.models.User;
 import microservices.user.models.UserBook;
 import microservices.user.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.info.ProjectInfoProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +25,15 @@ public class UserService {
 
     private final UserRepo userRepo;
     private final UserEventPublisher userEventPublisher;
+    private final ProjectInfoProperties projectInfoProperties;
 
 
     @Autowired
-    public UserService(UserRepo userRepo, UserEventPublisher userEventPublisher) {
+    public UserService(UserRepo userRepo, UserEventPublisher userEventPublisher,
+                       ProjectInfoProperties projectInfoProperties) {
         this.userRepo = userRepo;
         this.userEventPublisher = userEventPublisher;
+        this.projectInfoProperties = projectInfoProperties;
     }
 
     public ApiResponse<User> saveOneUser(User userToSave) {
@@ -172,6 +176,20 @@ public class UserService {
         } catch (Exception e) {
             log.error("Error updating reading progress for userId: {} and bookId: {}", userId, bookId, e);
             return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Error, reading progress did not update");
+        }
+    }
+
+    public ApiResponse<User> fetchUserWithBook(Long userId, Long bookId) {
+        ApiResponseBuilder<User> apiResponseBuilder = new ApiResponseBuilder<>();
+        try {
+            User user = userRepo.findById(userId).orElse(null);
+            if (user == null){ return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "User not found");}
+            if (user.getBooks().stream().noneMatch(userBook -> userBook.getId() == bookId)){
+                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "User does not have that book");
+            }
+            return apiResponseBuilder.success(user);
+        } catch (Exception e) {
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error occurred");
         }
     }
 }

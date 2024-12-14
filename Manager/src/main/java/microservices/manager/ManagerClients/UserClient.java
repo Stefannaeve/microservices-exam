@@ -3,12 +3,16 @@ package microservices.manager.ManagerClients;
 import lombok.extern.slf4j.Slf4j;
 import microservices.manager.apiResponse.ApiResponse;
 import microservices.manager.apiResponse.ApiResponseBuilder;
+import microservices.manager.dtos.ApiResponseDTO;
 import microservices.manager.dtos.UserDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.View;
 
@@ -23,7 +27,7 @@ public class UserClient {
     private final View error;
 
     public UserClient(RestTemplateBuilder restTemplateBuilder,
-                      @Value("http://user:8082/user") final String url,
+                      @Value("http://user:8083/user") final String url,
                       View error) {
         this.restServiceUrl = url;
         this.restTemplate = restTemplateBuilder.build();
@@ -46,5 +50,36 @@ public class UserClient {
             return null;
         }
         return apiResponseBuilder.success(response);
+    }
+
+    public ApiResponse<UserDTO> externalGetUserWithBook(long userId, long bookId) {
+        ApiResponseBuilder<UserDTO> apiResponseBuilder = new ApiResponseBuilder<>();
+        String url = restServiceUrl + "/fetchUserWithBook/" + userId + "/" + bookId;
+        log.error(url);
+        ResponseEntity<ApiResponseDTO<UserDTO>> response;
+        try {
+
+            response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<>() {
+                    }
+            );
+        } catch (HttpClientErrorException clientErrorException) {
+            log.debug("Entered exception handling block");
+
+            HttpStatus status = HttpStatus.valueOf(clientErrorException.getStatusCode().value());
+
+            ApiResponse apiResponse = clientErrorException.getResponseBodyAs(ApiResponse.Failure.class);
+
+            return apiResponse;
+
+        } catch (Exception e) {
+            log.error("An unexpected error occurred: ", e);
+            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to connect to user service");
+        }
+        HttpStatus statusCode = HttpStatus.valueOf(response.getStatusCode().value());
+        return apiResponseBuilder.parseDto(response.getBody(), statusCode);
     }
 }
