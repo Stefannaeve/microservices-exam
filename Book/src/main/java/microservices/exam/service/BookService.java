@@ -183,7 +183,7 @@ public class BookService {
         Optional<List<Book>> books = Optional.empty();
         try {
             books = Optional.ofNullable(bookRepository.findByTitle(title));
-            if (books.isPresent()) {
+            if (books.isPresent() && !books.get().isEmpty()) {
                 log.info("Found {} books with title containing: {}", books.get().size(), title);
                 return ResponseEntityInitializer.NewResponseEntity(
                         HttpStatus.OK,
@@ -201,6 +201,39 @@ public class BookService {
             }
         } catch (Exception e) {
             log.error("Error fetching books by title {}: {}", title, e.getMessage());
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    false,
+                    "An unknown error occurred",
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    books
+            );
+
+        }
+    }
+
+    public ResponseEntity<Optional<List<Book>>> fetchBooksByAuthor(String author) {
+        Optional<List<Book>> books = Optional.empty();
+        try {
+            books = Optional.ofNullable(bookRepository.findByAuthor(author));
+            if (books.isPresent() && !books.get().isEmpty()) {
+                log.info("Found {} books with author containing: {}", books.get().size(), author);
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        books
+                );
+            } else {
+                log.warn("No books found with author containing: {}", author);
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        false,
+                        "No books found with the specified author",
+                        HttpStatus.NOT_FOUND,
+                        books
+                );
+            }
+        } catch (Exception e) {
+            log.error("Error fetching books by author {}: {}", author, e.getMessage());
             return ResponseEntityInitializer.NewResponseEntity(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     false,

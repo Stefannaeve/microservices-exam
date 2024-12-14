@@ -2,9 +2,7 @@ package microservices.manager.ManagerControllers;
 
 import lombok.extern.slf4j.Slf4j;
 import microservices.manager.ManagerClients.BookClient;
-import microservices.manager.apiResponse.ApiResponse;
 import microservices.manager.dtos.BookDTO;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,15 +26,29 @@ public class BookController {
     }
 
     @GetMapping("/fetchBookById/{id}")
-    public ResponseEntity<Optional<BookDTO>> fetchBookById(@PathVariable long id) {
-        ResponseEntity<Optional<BookDTO>> book = bookClient.externalGetBookById(id);
-        return book;
+    public ResponseEntity<Optional<BookDTO>> fetchBookById(@PathVariable Long id) {
+        return bookClient.externalGetBookById(id);
     }
 
 
     @PostMapping("/saveBook")
     public ResponseEntity<Optional<BookDTO>> saveBook(@RequestBody BookDTO bookDTO) {
-        ResponseEntity<Optional<BookDTO>> savedBook = bookClient.externalSaveBook(bookDTO);
-        return savedBook;
+        return bookClient.externalSaveBook(bookDTO);
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Optional<BookDTO>> deleteBook(@PathVariable Long id) {
+        return bookClient.externalDeleteBook(id);
+    }
+
+    @GetMapping("/fetchBookByAuthor/{author}")
+    public ResponseEntity<Optional<List<BookDTO>>> fetchBookByAuthor(@PathVariable String author) {
+        return bookClient.externalGetBookByAuthor(author);
+    }
+
+    @GetMapping("/fetchBookByTitle/{title}")
+    public ResponseEntity<Optional<List<BookDTO>>> fetchBookByTitle(@PathVariable String title) {
+        return bookClient.externalGetBookByTitle(title);
+    }
+
 }
