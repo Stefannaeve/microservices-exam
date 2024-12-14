@@ -6,7 +6,6 @@ on:
    # types: [closed]
     branches:
       - master
-      - refactoring
 
 jobs:
   build-and-push:
