@@ -1,12 +1,10 @@
 package microservices.user.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import microservices.user.apiResponse.ApiResponse;
 import microservices.user.models.User;
 import microservices.user.models.UserBook;
 import microservices.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

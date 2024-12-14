@@ -1,10 +1,7 @@
 package microservices.manager.ManagerClients;
 
 import lombok.extern.slf4j.Slf4j;
-import microservices.manager.apiResponse.ApiResponse;
-import microservices.manager.apiResponse.ApiResponseBuilder;
 import microservices.manager.apiResponse.ResponseEntityInitializer;
-import microservices.manager.dtos.ApiResponseDTO;
 import microservices.manager.dtos.UserDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -13,13 +10,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.View;
 
 import java.util.Optional;
-
-import static java.awt.SystemColor.info;
 
 @Slf4j
 @Service
