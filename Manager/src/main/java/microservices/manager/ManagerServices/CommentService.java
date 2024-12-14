@@ -29,7 +29,7 @@ public class CommentService {
 
     public ResponseEntity<Optional<CommentDTO>> saveById(CommentDTO commentDTO){
         ResponseEntity<Optional<BookDTO>> book = null;
-        ResponseEntity<Optional<CommentDTO>> comment;
+        ResponseEntity<Optional<CommentDTO>> comment = null;
 
         ResponseEntity<Optional<UserDTO>> user = null;
 
@@ -81,11 +81,12 @@ public class CommentService {
 
         log.info("User: {}", user.getBody().get());
 
-        comment = commentClient.saveById(commentDTO);
+        //TODO: fix this please
+        ResponseEntity<Optional<CommentDTO>> savedComment = commentClient.saveById(commentDTO);
 
         return ResponseEntityInitializer.NewResponseEntity(
                 HttpStatus.OK,
-                comment.getBody()
+                savedComment.getBody()
         );
     }
 }
