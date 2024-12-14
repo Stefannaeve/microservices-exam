@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,41 +80,59 @@ public class BookService {
         }
     }
 
-    public ApiResponse<Void> deleteBookById(Long bookId) {
-        ApiResponseBuilder<Void> apiResponseBuilder = new ApiResponseBuilder<>();
+    public ResponseEntity<Optional<Book>> deleteBookById(Long bookId) {
+        Optional<Book> book = Optional.empty();
         try {
-            Optional<Book> book = bookRepository.findById(bookId);
+            book = bookRepository.findById(bookId);
             if (book.isPresent()) {
                 bookRepository.delete(book.get());
                 log.info("Deleted book with id: {}", bookId);
 
                 bookEventPublisher.publishBookDeletedEvent(bookId);
-                return apiResponseBuilder.success(null);
+                return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, book);
             } else {
                 log.warn("Book with id {} not found for deletion", bookId);
-                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "Book not found");
+                return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, false, "Book not found for deletion", HttpStatus.NOT_FOUND, book);
             }
         } catch (Exception e) {
             log.error("Error deleting book with id {}: {}", bookId, e.getMessage());
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete book");
+            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, false, "An unknown error occurred", HttpStatus.INTERNAL_SERVER_ERROR, book);
         }
     }
 
-    public ApiResponse<List<Book>> fetchBooksByTitle(String title) {
-        ApiResponseBuilder<List<Book>> apiResponseBuilder = new ApiResponseBuilder<>();
-
+    public ResponseEntity<Optional<Book>> fetchById(long id) {
+        Optional<Book> book = Optional.empty();
         try {
-            List<Book> books = bookRepository.findByTitle(title);
-            if (!books.isEmpty()) {
-                log.info("Found {} books with title containing: {}", books.size(), title);
-                return apiResponseBuilder.success(books);
+            book = bookRepository.findById(id);
+            if (book.isPresent()) {
+                log.info("Book found with id: {}", id);
+                return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, book);
+            } else {
+                log.warn("Book with id {} not found", id);
+                return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, false, "Book not found", HttpStatus.NOT_FOUND, book);
+            }
+        } catch (Exception exception) {
+            log.error("Error fetching book by id {}: {}", id, exception.getMessage());
+            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, false, "An unknown error occurred", HttpStatus.INTERNAL_SERVER_ERROR, book);
+
+        }
+    }
+
+    public ResponseEntity<Optional<List<Book>>> fetchBooksByTitle(String title) {
+        Optional<List<Book>> books = Optional.empty();
+        try {
+            books = Optional.ofNullable(bookRepository.findByTitle(title));
+            if (books.isPresent()) {
+                log.info("Found {} books with title containing: {}", books.get().size(), title);
+                return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, books);
             } else {
                 log.warn("No books found with title containing: {}", title);
-                return apiResponseBuilder.failure(HttpStatus.NOT_FOUND, "No books found with the specified title");
+                return ResponseEntityInitializer.NewResponseEntity(HttpStatus.OK, false, "No books found with the specified title", HttpStatus.NOT_FOUND, books);
             }
         } catch (Exception e) {
             log.error("Error fetching books by title {}: {}", title, e.getMessage());
-            return apiResponseBuilder.failure(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch books by title");
+            return ResponseEntityInitializer.NewResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, false, "An unknown error occurred", HttpStatus.INTERNAL_SERVER_ERROR, books);
+
         }
     }
 }
