@@ -28,7 +28,7 @@ public class BookController {
     }
 
     @GetMapping("/fetchBookById/{id}")
-    public ResponseEntity<Optional<BookDTO>> fetchBookById(@PathVariable long id) {
+    public ResponseEntity<Optional<BookDTO>> fetchBookById(@PathVariable Long id) {
         ResponseEntity<Optional<BookDTO>> book = bookClient.externalGetBookById(id);
         return book;
     }
@@ -38,5 +38,10 @@ public class BookController {
     public ResponseEntity<Optional<BookDTO>> saveBook(@RequestBody BookDTO bookDTO) {
         ResponseEntity<Optional<BookDTO>> savedBook = bookClient.externalSaveBook(bookDTO);
         return savedBook;
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Optional<BookDTO>> deleteBook(@PathVariable Long id){
+        return bookClient.externalDeleteBook(id);
     }
 }
