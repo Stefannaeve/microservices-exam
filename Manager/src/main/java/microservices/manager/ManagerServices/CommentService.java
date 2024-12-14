@@ -29,7 +29,7 @@ public class CommentService {
 
     public ResponseEntity<Optional<CommentDTO>> saveById(CommentDTO commentDTO){
         ResponseEntity<Optional<BookDTO>> book = null;
-        ResponseEntity<Optional<CommentDTO>> comment;
+        ResponseEntity<Optional<CommentDTO>> comment = null;
 
         ResponseEntity<Optional<UserDTO>> user = null;
 
