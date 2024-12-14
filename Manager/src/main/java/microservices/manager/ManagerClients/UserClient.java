@@ -24,7 +24,7 @@ public class UserClient {
     private final RestTemplate restTemplate;
 
     public UserClient(RestTemplateBuilder restTemplateBuilder,
-                      @Value("http://gateway:8000/user") final String url,) {
+                      @Value("http://gateway:8000/user") final String url) {
         this.restServiceUrl = url;
         this.restTemplate = restTemplateBuilder
                 .requestFactory(HttpComponentsClientHttpRequestFactory.class)
