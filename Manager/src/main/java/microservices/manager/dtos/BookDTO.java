@@ -11,6 +11,8 @@ public class BookDTO {
     private String title;
     private String author;
     private int pages;
+    private String readingProgress;
+    private String readingStatus;
     private LocalDate publishDate;
     private String bookContent;
 
@@ -21,6 +23,8 @@ public class BookDTO {
                 ", title='" + title +
                 ", author='" + author +
                 ", pages=" + pages +
+                ", readingProgress=" + readingProgress +
+                ", readingStatus=" + readingStatus +
                 ", publishDate=" + publishDate +
                 ", bookContent='" + bookContent +
                 '}';

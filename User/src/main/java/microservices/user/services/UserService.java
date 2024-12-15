@@ -249,26 +249,28 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<Optional<User>> updateReadingProgress(Long userId, Long bookId, String newProgress, String newStatus) {
+    public ResponseEntity<Optional<User>> updateReadingProgress(Long userId, Long bookId, Map<String, String> requestBody) {
         Optional<User> user = Optional.empty();
         try {
             user = Optional.ofNullable(userRepo.findById(userId).orElse(null));
             if (user.isEmpty()) {
                 return ResponseEntityInitializer.NewResponseEntity(
-                        HttpStatus.OK,
+                        HttpStatus.NOT_FOUND,
                         false,
                         "User not found",
                         HttpStatus.NOT_FOUND,
                         user
                 );
             }
+
             Optional<UserBook> userBook = user.get().getBooks()
                     .stream()
                     .filter(book -> book.getId().equals(bookId))
                     .findFirst();
+
             if (userBook.isEmpty()) {
                 return ResponseEntityInitializer.NewResponseEntity(
-                        HttpStatus.OK,
+                        HttpStatus.NOT_FOUND,
                         false,
                         "Book not found in user's list",
                         HttpStatus.NOT_FOUND,
@@ -276,26 +278,33 @@ public class UserService {
                 );
             }
 
-            ReadingStatus readingStatus;
-            try {
-                readingStatus = ReadingStatus.valueOf(newStatus);
-            } catch (IllegalArgumentException e) {
-                String validStatuses = Arrays.toString(ReadingStatus.values());
-                String errorMessage = "Not valid reading status. Valid options are: " + validStatuses;
-
-                return ResponseEntityInitializer.NewResponseEntity(
-                        HttpStatus.OK,
-                        false,
-                        errorMessage,
-                        HttpStatus.BAD_REQUEST,
-                        user
-                );
-            }
             UserBook book = userBook.get();
-            book.setReadingProgress(newProgress);
-            book.setReadingStatus(readingStatus);
-            userRepo.save(user.get());
 
+            if (requestBody.containsKey("newReadingProgress")) {
+                String newProgress = requestBody.get("newReadingProgress");
+                book.setReadingProgress(newProgress);
+            }
+
+            if (requestBody.containsKey("newReadingStatus")) {
+                String newStatus = requestBody.get("newReadingStatus");
+                try {
+                    ReadingStatus readingStatus = ReadingStatus.valueOf(newStatus);
+                    book.setReadingStatus(readingStatus);
+                } catch (IllegalArgumentException e) {
+                    String validStatuses = Arrays.toString(ReadingStatus.values());
+                    String errorMessage = "Not valid reading status. Valid options are: " + validStatuses;
+
+                    return ResponseEntityInitializer.NewResponseEntity(
+                            HttpStatus.BAD_REQUEST,
+                            false,
+                            errorMessage,
+                            HttpStatus.BAD_REQUEST,
+                            user
+                    );
+                }
+            }
+
+            userRepo.save(user.get());
             return ResponseEntityInitializer.NewResponseEntity(
                     HttpStatus.OK,
                     user
@@ -311,6 +320,7 @@ public class UserService {
             );
         }
     }
+
 
     public ResponseEntity<Optional<User>> fetchUserWithBook(Long userId, Long bookId) {
         Optional<User> user = Optional.empty();
