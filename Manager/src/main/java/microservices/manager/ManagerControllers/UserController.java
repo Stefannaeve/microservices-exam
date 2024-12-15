@@ -61,5 +61,4 @@ public class UserController {
     public ResponseEntity<Optional<UserDTO>> deleteUser(@PathVariable Long userId) {
         return userClient.externalDeleteUserById(userId);
     }
-
 }
