@@ -275,4 +275,52 @@ public class CommentClient {
         return response;
     }
     //endregion PUT
+
+    //region DELETE
+    public ResponseEntity<Optional<CommentDTO>> deleteComment(Long userId, Long bookId, Long commentId) {
+        String url = restServiceUrl + "/comment/delete/user/" + userId + "/book/" + bookId + "/comment/" + commentId;
+        log.info("This is the url: {}", url);
+        ResponseEntity<Optional<CommentDTO>> response = null;
+
+        try {
+            response = restTemplate.exchange(
+                    url,
+                    HttpMethod.DELETE,
+                    null,
+                    new ParameterizedTypeReference<>() {
+                    }
+            );
+        } catch (Exception exception){
+            log.error("An unexpected error occurred: ", exception);
+        }
+
+        if (response == null){
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.NO_CONTENT,
+                    false,
+                    "Response empty from the book service",
+                    HttpStatus.NO_CONTENT,
+                    Optional.empty()
+            );
+        }
+
+        String success = ResponseEntityInitializer.extractHeader(response, "success");
+        log.info("Success: {}", success);
+
+        if (success.equals("false")){
+            String errorMessage = ResponseEntityInitializer.extractHeader(response, "ErrorMessage");
+            String errorStatus = ResponseEntityInitializer.extractHeader(response, "ErrorStatus");
+            HttpStatus status = HttpStatus.valueOf(Integer.parseInt(errorStatus));
+            return ResponseEntityInitializer.NewResponseEntity(
+                    status,
+                    false,
+                    errorMessage,
+                    status,
+                    response.getBody()
+            );
+        }
+
+        return response;
+    }
+    //endregion DELETE
 }
