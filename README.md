@@ -57,8 +57,6 @@ mvn clean install # For local runs
 ```
 ```shell
 cd docker
-```
-```shell
 docker compose --project-name book-hub up -d
 ```
 

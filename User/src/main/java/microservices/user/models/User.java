@@ -20,7 +20,7 @@ public class User {
     @Id
     @GeneratedValue(generator = "user_id_generator")
     @SequenceGenerator(name = "user_id_generator", sequenceName =
-            "user_id_seq", initialValue = 1)
+            "user_id_seq", initialValue = 1, allocationSize = 1)
     @Column(name = "id")
     private Long id;
 
