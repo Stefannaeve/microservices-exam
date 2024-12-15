@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,7 +30,7 @@ public class CommentService {
 
     public ResponseEntity<Optional<CommentDTO>> saveById(CommentDTO commentDTO){
         ResponseEntity<Optional<BookDTO>> book = null;
-        ResponseEntity<Optional<CommentDTO>> comment = null;
+        ResponseEntity<Optional<CommentDTO>> responseEntityComment = null;
         ResponseEntity<Optional<UserDTO>> user = null;
 
         if (commentDTO == null){
@@ -77,14 +78,59 @@ public class CommentService {
         }
 
         try {
-            comment = commentClient.saveById(commentDTO);
+            responseEntityComment = commentClient.saveById(commentDTO);
         } catch (Exception exception){
             log.error("SaveById Exception block: {}", exception.getMessage());
         }
 
-        return ResponseEntityInitializer.NewResponseEntity(
-                HttpStatus.OK,
-                comment.getBody()
-        );
+        return responseEntityComment;
+    }
+
+    public ResponseEntity<Optional<List<CommentDTO>>> fetchByUserIdAndBookId(Long userId, Long bookId) {
+        ResponseEntity<Optional<BookDTO>> book = null;
+        ResponseEntity<Optional<List<CommentDTO>>> responseEntityComments = null;
+        ResponseEntity<Optional<UserDTO>> user = null;
+
+        // Check if book exists
+        try {
+            book = bookClient.externalGetBookById(bookId);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+        }
+
+        if (book == null || book.getBody().isEmpty()){
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.BAD_REQUEST,
+                    false,
+                    "Did not find the book",
+                    HttpStatus.BAD_REQUEST,
+                    Optional.empty()
+            );
+        }
+
+        // Check of user exists
+        try {
+            user = userClient.externalGetUserById(userId);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+        }
+
+        if (user == null || user.getBody().isEmpty()){
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.BAD_REQUEST,
+                    false,
+                    "did not find the user",
+                    HttpStatus.BAD_REQUEST,
+                    Optional.empty()
+            );
+        }
+
+        try {
+            responseEntityComments = commentClient.fetchByUserIdAndBookId(userId, bookId);
+        }catch (Exception exception){
+            log.error("SaveById Exception block: {}", exception.getMessage());
+        }
+
+        return responseEntityComments;
     }
 }

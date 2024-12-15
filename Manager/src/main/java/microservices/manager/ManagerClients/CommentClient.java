@@ -121,6 +121,52 @@ public class CommentClient {
         return response;
     }
 
+    public ResponseEntity<Optional<List<CommentDTO>>> fetchByUserIdAndBookId(Long userId, Long bookId){
+        String url = restServiceUrl + "/comment/user/" + userId + "/book/" + bookId;
+        log.info("This is the url: {}", url);
+        ResponseEntity<Optional<List<CommentDTO>>> response = null;
+
+        try {
+            response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<>() {
+                    }
+            );
+        } catch (Exception exception){
+            log.error("An unexpected error occurred: ", exception);
+        }
+
+        if (response == null){
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.NO_CONTENT,
+                    false,
+                    "Response empty from the book service",
+                    HttpStatus.NO_CONTENT,
+                    Optional.empty()
+            );
+        }
+
+        String success = ResponseEntityInitializer.extractHeader(response, "success");
+        log.info("Success: {}", success);
+
+        if (success.equals("false")){
+            String errorMessage = ResponseEntityInitializer.extractHeader(response, "ErrorMessage");
+            String errorStatus = ResponseEntityInitializer.extractHeader(response, "ErrorStatus");
+            HttpStatus status = HttpStatus.valueOf(Integer.parseInt(errorStatus));
+            return ResponseEntityInitializer.NewResponseEntity(
+                    status,
+                    false,
+                    errorMessage,
+                    status,
+                    response.getBody()
+            );
+        }
+
+        return response;
+    }
+
     public ResponseEntity<Optional<CommentDTO>> saveById(CommentDTO commentDTO) {
         String url = restServiceUrl + "/comment/saveOneComment";
         log.debug("This is the url: {}", url);

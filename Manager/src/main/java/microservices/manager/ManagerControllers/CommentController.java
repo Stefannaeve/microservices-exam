@@ -36,4 +36,10 @@ public class CommentController {
     public ResponseEntity<Optional<CommentDTO>> saveOneComment(@RequestBody CommentDTO commentDTO){
         return commentService.saveById(commentDTO);
     }
+
+    @GetMapping("fetchCommentsByUserAndBook/user/{userId}/book/{bookId}")
+    public ResponseEntity<Optional<List<CommentDTO>>> fetchCommentsByUserAndBook(@PathVariable Long userId, @PathVariable Long bookId){
+        log.info("userId: {}, bookId: {}", userId, bookId);
+        return commentService.fetchByUserIdAndBookId(userId, bookId);
+    }
 }
