@@ -117,8 +117,10 @@ services:
       context: ../Book
       dockerfile: Dockerfile
     image: ${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-book
+    deploy:
+      replicas: 3
     ports:
-      - '8082:8082'
+      - '8084-8086:8082'
     networks:
       - services
     depends_on:
@@ -137,8 +139,10 @@ services:
       context: ../Comment
       dockerfile: Dockerfile
     image: ${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-comment
+    deploy:
+      replicas: 3
     ports:
-      - '8081:8081'
+      - '8081-8083:8081'
     networks:
       - services
     depends_on:
@@ -157,8 +161,10 @@ services:
       context: ../User
       dockerfile: Dockerfile
     image: ${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-user
+    deploy:
+      replicas: 3
     ports:
-      - '8083:8083'
+      - '8087-8089:8083'
     networks:
       - services
     depends_on:

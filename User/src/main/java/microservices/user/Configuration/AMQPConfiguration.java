@@ -1,5 +1,6 @@
 package microservices.user.Configuration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@Slf4j
 @Configuration
 public class AMQPConfiguration {
 
@@ -37,6 +39,4 @@ public class AMQPConfiguration {
         template.setMessageConverter(jackson2JsonMessageConverter());
         return template;
     }
-
 }
-
