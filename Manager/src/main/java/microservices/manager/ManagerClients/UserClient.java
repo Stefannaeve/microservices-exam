@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.View;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -29,55 +30,7 @@ public class UserClient {
         this.error = error;
     }
 
-    public ResponseEntity<Optional<UserDTO>> externalGetUserById(long userId) {
-        String url = restServiceUrl + "/fetchUserById/" + userId;
-        log.error(url);
-        ResponseEntity<Optional<UserDTO>> response = null;
-        try {
 
-            //response = restTemplate.getForObject(
-            //        restServiceUrl + "/fetchUserById/{userId}", userId);
-            response = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    null,
-                    new ParameterizedTypeReference<>() {
-                    }
-            );
-
-        } catch (Exception exception) {
-            log.error("An unexpected error occured: {}", exception.getMessage());
-
-        }
-
-        if (response == null){
-            return ResponseEntityInitializer.NewResponseEntity(
-                    HttpStatus.NO_CONTENT,
-                    false,
-                    "Response empty from the book service",
-                    HttpStatus.NO_CONTENT,
-                    Optional.empty()
-            );
-        }
-
-        String success = ResponseEntityInitializer.extractHeader(response, "success");
-        log.info("Success: {}", success);
-
-        if (success.equals("false")){
-            String errorMessage = ResponseEntityInitializer.extractHeader(response, "ErrorMessage");
-            String errorStatus = ResponseEntityInitializer.extractHeader(response, "ErrorStatus");
-            HttpStatus status = HttpStatus.valueOf(Integer.parseInt(errorStatus));
-            return ResponseEntityInitializer.NewResponseEntity(
-                    status,
-                    false,
-                    errorMessage,
-                    status,
-                    response.getBody()
-            );
-        }
-
-        return response;
-    }
 
     public ResponseEntity<Optional<UserDTO>> externalGetUserWithBook(long userId, long bookId) {
         String url = restServiceUrl + "/fetchUserWithBook/" + userId + "/" + bookId;
@@ -220,6 +173,140 @@ public class UserClient {
             );
         }
 
+        return response;
+    }
+
+    public ResponseEntity<Optional<UserDTO>> externalFetchUserBooks(Long userId) {
+        String url = restServiceUrl + "/fetchUserBooks/" + userId;
+        log.error(url);
+        ResponseEntity<Optional<UserDTO>> response = null;
+        try {
+            response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<>() {
+                    }
+            );
+        }catch (Exception e){
+            log.error("An unexpected error occured: {}", e.getMessage());
+        }
+
+        if (response == null){
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.NO_CONTENT,
+                    false,
+                    "Response empty from the user service",
+                    HttpStatus.NO_CONTENT,
+                    Optional.empty()
+            );
+        }
+
+        String success = ResponseEntityInitializer.extractHeader(response, "success");
+        log.info("Success: {}", success);
+
+        if (success.equals("false")){
+            String errorMessage = ResponseEntityInitializer.extractHeader(response, "ErrorMessage");
+            String errorStatus = ResponseEntityInitializer.extractHeader(response, "ErrorStatus");
+            HttpStatus status = HttpStatus.valueOf(Integer.parseInt(errorStatus));
+            return ResponseEntityInitializer.NewResponseEntity(
+                    status,
+                    false,
+                    errorMessage,
+                    status,
+                    response.getBody()
+            );
+        }
+        return response;
+    }
+
+    public ResponseEntity<Optional<List<UserDTO>>> externalFetchUnFinishedBook(Long userId) {
+        String url = restServiceUrl + "/" + userId + "/notFinishedReading";
+        log.error(url);
+        ResponseEntity<Optional<List<UserDTO>>> response = null;
+
+        try {
+            response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<>() {
+                    }
+            );
+        } catch (Exception exception) {
+            log.error("An unexpected error occurred: {}", exception.getMessage());
+        }
+
+        if (response == null) {
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.NO_CONTENT,
+                    false,
+                    "Response empty from the book service",
+                    HttpStatus.NO_CONTENT,
+                    Optional.empty()
+            );
+        }
+
+        String success = ResponseEntityInitializer.extractHeader(response, "success");
+        log.info("Success: {}", success);
+
+        if (success.equals("false")) {
+            String errorMessage = ResponseEntityInitializer.extractHeader(response, "ErrorMessage");
+            String errorStatus = ResponseEntityInitializer.extractHeader(response, "ErrorStatus");
+            HttpStatus status = HttpStatus.valueOf(Integer.parseInt(errorStatus));
+            return ResponseEntityInitializer.NewResponseEntity(
+                    status,
+                    false,
+                    errorMessage,
+                    status,
+                    Optional.empty()
+            );
+        }
+        return response;
+    }
+
+    public ResponseEntity<Optional<UserDTO>> externalGetUserById(Long userId) {
+        String url = restServiceUrl + "/fetchUserById/" + userId;
+        log.error(url);
+        ResponseEntity<Optional<UserDTO>> response = null;
+
+        try {
+            response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<>() {
+                    }
+            );
+        } catch (Exception exception) {
+            log.error("An unexpected error occurred: {}", exception.getMessage());
+        }
+
+        if (response == null) {
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.NO_CONTENT,
+                    false,
+                    "Response empty from the book service",
+                    HttpStatus.NO_CONTENT,
+                    Optional.empty()
+            );
+        }
+
+        String success = ResponseEntityInitializer.extractHeader(response, "success");
+        log.info("Success: {}", success);
+
+        if (success.equals("false")) {
+            String errorMessage = ResponseEntityInitializer.extractHeader(response, "ErrorMessage");
+            String errorStatus = ResponseEntityInitializer.extractHeader(response, "ErrorStatus");
+            HttpStatus status = HttpStatus.valueOf(Integer.parseInt(errorStatus));
+            return ResponseEntityInitializer.NewResponseEntity(
+                    status,
+                    false,
+                    errorMessage,
+                    status,
+                    Optional.empty()
+            );
+        }
         return response;
     }
 }

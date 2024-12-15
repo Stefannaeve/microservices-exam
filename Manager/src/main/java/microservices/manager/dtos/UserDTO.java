@@ -1,5 +1,6 @@
 package microservices.manager.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,5 +12,7 @@ public class UserDTO {
 
     private Long id;
     private String username;
+
+    @JsonProperty("books")
     private List<BookDTO> userBooks;
 }
