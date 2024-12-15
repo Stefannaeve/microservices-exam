@@ -54,16 +54,16 @@ public class UserController {
         return userService.fetchNotFinishedBooks(userId);
     }
 
+    @DeleteMapping("/{userId}/deleteBook/{bookId}")
+    public ResponseEntity<Optional<User>> deleteBookFromUser(@PathVariable Long userId, @PathVariable Long bookId) {
+        return userService.deleteBookFromUser(userId, bookId);
+    }
+
     //
 
     @DeleteMapping("/delete/{userId}")
     public ResponseEntity<Optional<User>> deleteUser(@PathVariable Long userId) {
         return userService.deleteUserById(userId);
-    }
-
-    @DeleteMapping("/{userId}/deleteBook/{bookId}")
-    public ResponseEntity<Optional<User>> deleteBookFromUser(@PathVariable Long userId, @PathVariable Long bookId) {
-        return userService.deleteBookFromUser(userId, bookId);
     }
 
     @PatchMapping("/{userId}/books/{bookId}/progress")
