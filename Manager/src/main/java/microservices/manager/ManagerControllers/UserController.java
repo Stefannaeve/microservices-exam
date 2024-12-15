@@ -6,6 +6,7 @@ import microservices.manager.dtos.UserDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -39,6 +40,16 @@ public class UserController {
     @GetMapping("/fetchUserWithBook/{userId}/{bookId}")
     public ResponseEntity<Optional<UserDTO>> fetchUserWithBook(@PathVariable Long userId, @PathVariable Long bookId){
         return userClient.externalGetUserWithBook(userId, bookId);
+    }
+
+    @GetMapping("/fetchUserBooks/{userId}")
+    public ResponseEntity<Optional<UserDTO>> fetchUserBooks(@PathVariable Long userId){
+        return userClient.externalFetchUserBooks(userId);
+    }
+
+    @GetMapping("/{userId}/notFinishedReading")
+    public ResponseEntity<Optional<List<UserDTO>>> fetchUnfinishedBooks(@PathVariable Long userId){
+        return userClient.externalFetchUnFinishedBook(userId);
     }
 
 }

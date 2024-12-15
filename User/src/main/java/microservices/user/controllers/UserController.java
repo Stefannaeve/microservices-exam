@@ -24,14 +24,24 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PostMapping("/saveOneUser")
+    public ResponseEntity<Optional<User>> saveOneUser(@RequestBody User userToSave) {
+        return userService.saveOneUser(userToSave);
+    }
+
+    @PostMapping("/addBookToUser/{userId}")
+    public ResponseEntity<Optional<User>> addBookToUser(@PathVariable Long userId, @RequestBody UserBook userBook) {
+        return userService.addBookToUser(userId, userBook);
+    }
+
     @GetMapping("/fetchUserById/{userId}")
     public ResponseEntity<Optional<User>> fetchById(@PathVariable Long userId) {
         return userService.fetchUserById(userId);
     }
 
-    @PostMapping("/saveOneUser")
-    public ResponseEntity<Optional<User>> saveOneUser(@RequestBody User userToSave) {
-        return userService.saveOneUser(userToSave);
+    @GetMapping("/fetchUserWithBook/{userId}/{bookId}")
+    public ResponseEntity<Optional<User>> fetchUserWithBook(@PathVariable Long userId, @PathVariable Long bookId){
+        return userService.fetchUserWithBook(userId, bookId);
     }
 
     @GetMapping("/fetchUserBooks/{userId}")
@@ -39,10 +49,12 @@ public class UserController {
         return userService.fetchUserBooks(userId);
     }
 
-    @PostMapping("/addBookToUser/{userId}")
-    public ResponseEntity<Optional<User>> addBookToUser(@PathVariable Long userId, @RequestBody UserBook userBook) {
-        return userService.addBookToUser(userId, userBook);
+    @GetMapping("/{userId}/notFinishedReading")
+    public ResponseEntity<Optional<List<UserBook>>> fetchUnfinishedBooks(@PathVariable Long userId) {
+        return userService.fetchNotFinishedBooks(userId);
     }
+
+    //
 
     @DeleteMapping("/delete/{userId}")
     public ResponseEntity<Optional<User>> deleteUser(@PathVariable Long userId) {
@@ -59,15 +71,5 @@ public class UserController {
         String newReadingProgress = requestBody.get("newReadingProgress");
         String newReadingStatus = requestBody.get("newReadingStatus");
         return userService.updateReadingProgress(userId, bookId, newReadingProgress, newReadingStatus);
-    }
-
-    @GetMapping("/fetchUserWithBook/{userId}/{bookId}")
-    public ResponseEntity<Optional<User>> fetchUserWithBook(@PathVariable Long userId, @PathVariable Long bookId){
-        return userService.fetchUserWithBook(userId, bookId);
-    }
-
-    @GetMapping("/{userId}/notFinishedReading")
-    public ResponseEntity<Optional<List<UserBook>>> fetchUnfinishedBooks(@PathVariable Long userId) {
-        return userService.fetchNotFinishedBooks(userId);
     }
 }
