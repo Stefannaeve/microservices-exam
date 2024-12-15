@@ -26,3 +26,10 @@ net stop mysql80
 mvn spring-boot:run "-Dspring-boot.run.profiles=docker"
 
 docker rmi stefannaeve/microservices:latest-book stefannaeve/microservices:latest-comment stefannaeve/microservices:latest-user stefannaeve/microservices:latest-manager stefannaeve/microservices:latest-gateway
+
+#### Docker compose up
+docker compose --project-name book-hub up -d
+
+#### Docker compose down (Remove local images)
+docker compose --project-name book-hub down --rmi local
+
