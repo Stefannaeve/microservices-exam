@@ -30,7 +30,6 @@ public class BookController {
         return bookClient.externalGetBookById(id);
     }
 
-
     @PostMapping("/saveBook")
     public ResponseEntity<Optional<BookDTO>> saveBook(@RequestBody BookDTO bookDTO) {
         return bookClient.externalSaveBook(bookDTO);
