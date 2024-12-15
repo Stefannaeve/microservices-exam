@@ -23,7 +23,7 @@ public class CommentClient {
     //region GET
     public CommentClient(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("http://comment:8081") final String url
+            @Value("http://gateway:8000") final String url
     ){
         this.restTemplate = restTemplateBuilder.build();
         this.restServiceUrl = url;

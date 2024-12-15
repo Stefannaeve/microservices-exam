@@ -101,7 +101,11 @@
         <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>
             <artifactId>httpclient5</artifactId>
+<<<<<<< HEAD
             <version>5.2</version>
+=======
+            <version>5.2</version> <!-- Use the latest compatible version -->
+>>>>>>> f40c2382d0b19116a5f9fb24eb0717acc433ac01
         </dependency>
     </dependencies>
 

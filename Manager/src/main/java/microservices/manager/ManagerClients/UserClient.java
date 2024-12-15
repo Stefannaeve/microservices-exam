@@ -10,7 +10,6 @@ import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.View;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,7 @@ public class UserClient {
     private final RestTemplate restTemplate;
 
     public UserClient(RestTemplateBuilder restTemplateBuilder,
-                      @Value("http://user:8083/user") final String url) {
+                      @Value("http://gateway:8000/user") final String url) {
         this.restServiceUrl = url;
         this.restTemplate = restTemplateBuilder
                 .requestFactory(HttpComponentsClientHttpRequestFactory.class)
