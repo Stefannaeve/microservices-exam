@@ -34,9 +34,6 @@ public class UserClient {
         this.error = error;
     }
 
-
-
-
     public ResponseEntity<Optional<UserDTO>> externalGetUserWithBook(long userId, long bookId) {
         String url = restServiceUrl + "/fetchUserWithBook/" + userId + "/" + bookId;
         log.error(url);
