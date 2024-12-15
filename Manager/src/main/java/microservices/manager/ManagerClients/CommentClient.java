@@ -121,6 +121,7 @@ public class CommentClient {
         return response;
     }
 
+    //region GET
     public ResponseEntity<Optional<List<CommentDTO>>> fetchByUserIdAndBookId(Long userId, Long bookId){
         String url = restServiceUrl + "/comment/user/" + userId + "/book/" + bookId;
         log.info("This is the url: {}", url);
