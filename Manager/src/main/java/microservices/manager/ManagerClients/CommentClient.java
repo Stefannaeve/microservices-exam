@@ -20,7 +20,6 @@ public class CommentClient {
     private final String restServiceUrl;
     private final RestTemplate restTemplate;
 
-    //region GET
     public CommentClient(
             RestTemplateBuilder restTemplateBuilder,
             @Value("http://gateway:8000") final String url

@@ -62,7 +62,6 @@ public class UserController {
     @DeleteMapping("/delete/{userId}")
     public ResponseEntity<Optional<User>> deleteUser(@PathVariable Long userId) {
         return userService.deleteUserById(userId);
-
     }
 
     @PatchMapping("/{userId}/books/{bookId}/progress")
