@@ -1,7 +1,7 @@
 package microservices.manager.ManagerClients;
 
 import lombok.extern.slf4j.Slf4j;
-import microservices.manager.apiResponse.ResponseEntityInitializer;
+import microservices.manager.responseEntityInitializer.ResponseEntityInitializer;
 import microservices.manager.dtos.CommentDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -23,7 +23,7 @@ public class CommentClient {
     //region GET
     public CommentClient(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("http://comment:8081") final String url
+            @Value("http://gateway:8000") final String url
     ){
         this.restTemplate = restTemplateBuilder.build();
         this.restServiceUrl = url;
