@@ -57,7 +57,11 @@ mvn clean install # For local runs
 ```
 ```shell
 cd docker
-docker compose --project-name book-hub up -d
+docker compose --project-name book-hub up --scale book=1 --scale user=1 --scale comment=1 -d
+```
+Docker compose up if you want the top amount of each service which is 3
+```shell
+docker compose --project-name book-hub up
 ```
 
 ##### Closing project with docker compose, and remove local docker images from this project
@@ -100,26 +104,6 @@ GITHUB SECRETS
 - Manager Service: ```http://localhost:8080```
 - Consul UI: ```http://localhost:8500```
 - RabbitMQ UI: ```http://localhost:15672```
-
-### Setup guide
-
-```shell
-mvn clean install
-```
-
-```
-Start application 
-```
-
-```
-Run the populateDatabase in the scratchFiles folder, this is to populate the database with books
-```
-
-## Using the application
-
-```
-Use the bookScratchFile in the scratchFile to test the application
-```
 
 
 
