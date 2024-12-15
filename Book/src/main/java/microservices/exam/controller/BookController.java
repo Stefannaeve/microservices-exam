@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import microservices.exam.apiResponse.ApiResponse;
 import microservices.exam.clients.BookClient;
 import microservices.exam.dtos.CommentDTO;
+import microservices.exam.gutenberg.CatalogFetcher;
 import microservices.exam.models.Book;
 import microservices.exam.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,16 @@ public class BookController {
 
     private final BookService bookService;
     private final BookClient bookClient;
+    private final CatalogFetcher
+            catalogFetcher;
 
     @Autowired
-    public BookController(BookService bookService, BookClient bookClient) {
+    public BookController(BookService bookService, BookClient bookClient,
+                          CatalogFetcher catalogFetcher) {
         this.bookService = bookService;
         this.bookClient = bookClient;
+        this.catalogFetcher =
+                catalogFetcher;
     }
 
     @GetMapping("/fetchBookById/{id}")
@@ -112,5 +118,19 @@ public class BookController {
                 return new ResponseEntity<>(failure, failure.status());
             }
         }
+    }
+    @GetMapping("/populateDatabaseFromGutenberg")
+    public String populateDatabaseFromGutenberg(){
+
+        List<Book> books = CatalogFetcher.populateDatabaseFromGutenberg(10);
+        for (Book book : books){
+            bookService.saveOneBook(book);
+        }
+        return "done";
+    }
+
+    @GetMapping("/fetchBookContentById/{bookId}")
+    public String fetchBookContentById(@PathVariable Long bookId){
+        return CatalogFetcher.fetchBookContentFromGutenberg(bookId);
     }
 }
