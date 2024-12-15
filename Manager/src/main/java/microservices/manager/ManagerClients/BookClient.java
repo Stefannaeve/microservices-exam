@@ -22,14 +22,8 @@ public class BookClient {
 
     public BookClient(
             RestTemplateBuilder restTemplateBuilder,
-<<<<<<< HEAD
-            @Value("http://book:8082") final String url,
-            ResourceServerTokenRelayAutoConfiguration resourceServerTokenRelayAutoConfiguration) {
-=======
-
             @Value("http://gateway:8000") final String url
     ) {
->>>>>>> f40c2382d0b19116a5f9fb24eb0717acc433ac01
         this.restServiceUrl = url;
         this.restTemplate = restTemplateBuilder.build();
     }
