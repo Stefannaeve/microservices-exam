@@ -22,18 +22,45 @@ public class CommentController {
         this.commentService = commentService;
     }
 
+    //region GET
     @GetMapping("/fetchAll")
     public ResponseEntity<Optional<List<CommentDTO>>> fetchAllComments(){
-        return commentClient.externalGetAllComments();
+        return commentClient.externalFetchAllComments();
     }
 
     @GetMapping("fetchById/{id}")
     public ResponseEntity<Optional<CommentDTO>> fetchCommentById(@PathVariable long id){
-        return commentClient.fetchById(id);
+        return commentClient.externalFetchById(id);
     }
 
+    @GetMapping("fetchCommentsByUserAndBook/user/{userId}/book/{bookId}")
+    public ResponseEntity<Optional<List<CommentDTO>>> fetchCommentsByUserAndBook(@PathVariable Long userId, @PathVariable Long bookId){
+        log.info("userId: {}, bookId: {}", userId, bookId);
+        return commentService.fetchByUserIdAndBookId(userId, bookId);
+    }
+    //endregion GET
+
+    //region POST
     @PostMapping("/saveOneComment")
     public ResponseEntity<Optional<CommentDTO>> saveOneComment(@RequestBody CommentDTO commentDTO){
         return commentService.saveById(commentDTO);
     }
+    //endregion POST
+
+    //region PUT
+    @PutMapping("/updateComment/user/{userId}/book/{bookId}/comment/{commentId}")
+    public ResponseEntity<Optional<CommentDTO>> updateComment(@PathVariable Long userId,
+                                                              @PathVariable Long bookId,
+                                                              @PathVariable Long commentId,
+                                                              @RequestBody CommentDTO updateComment){
+        return commentService.updateComment(userId, bookId, commentId, updateComment);
+    }
+    //endregion PUT
+
+    //region DELETE
+    @DeleteMapping("/delete/user/{userId}/book/{bookId}/comment/{commentId}")
+    public ResponseEntity<Optional<CommentDTO>> deleteComment(@PathVariable Long userId, @PathVariable Long bookId, @PathVariable Long commentId){
+        return commentService.deleteComment(userId, bookId, commentId);
+    }
+    //endregion DELETE
 }
