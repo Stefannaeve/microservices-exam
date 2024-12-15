@@ -28,6 +28,7 @@ public class CommentService {
         this.commentEventPublisher = commentEventPublisher;
     }
 
+    //region GET
     public ResponseEntity<Optional<List<Comment>>> fetchAll() {
         Optional<List<Comment>> comments = Optional.empty();
         try {
@@ -86,6 +87,37 @@ public class CommentService {
         }
     }
 
+    public ResponseEntity<Optional<List<Comment>>> fetchCommentsByUserAndBook(Long userId, Long bookId) {
+        Optional<List<Comment>> comments = Optional.empty();
+        try {
+            comments = Optional.ofNullable(commentRepository.findByUserIdAndBookId(userId, bookId));
+            if (comments.isEmpty()) {
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        false,
+                        "Found no comments for the specified user and book",
+                        HttpStatus.NOT_FOUND,
+                        comments
+                );
+            }
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.OK,
+                    comments
+            );
+        } catch (Exception e) {
+            log.error("Error fetching comments: {}", e.getMessage());
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    false,
+                    "Something went wrong...",
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    comments
+            );
+        }
+    }
+    //endregion GET
+
+    //region POST
     public ResponseEntity<Optional<Comment>> saveOneComment(Comment comment) {
         Optional<Comment> savedComment = Optional.empty();
         try {
@@ -124,36 +156,9 @@ public class CommentService {
             );
         }
     }
+    //endregion POST
 
-    public ResponseEntity<Optional<List<Comment>>> fetchCommentsByUserAndBook(Long userId, Long bookId) {
-        Optional<List<Comment>> comments = Optional.empty();
-        try {
-            comments = Optional.ofNullable(commentRepository.findByUserIdAndBookId(userId, bookId));
-            if (comments.isEmpty()) {
-                return ResponseEntityInitializer.NewResponseEntity(
-                        HttpStatus.OK,
-                        false,
-                        "Found no comments for the specified user and book",
-                        HttpStatus.NOT_FOUND,
-                        comments
-                );
-            }
-            return ResponseEntityInitializer.NewResponseEntity(
-                    HttpStatus.OK,
-                    comments
-            );
-        } catch (Exception e) {
-            log.error("Error fetching comments: {}", e.getMessage());
-            return ResponseEntityInitializer.NewResponseEntity(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    false,
-                    "Something went wrong...",
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    comments
-            );
-        }
-    }
-
+    //region PUT
     public ResponseEntity<Optional<Comment>> updateComment(Long userId, Long bookId, Long commentId, Comment updatedComment) {
         Optional<Comment> findComment = Optional.empty();
         Optional<Comment> comment = Optional.empty();
@@ -187,7 +192,9 @@ public class CommentService {
             );
         }
     }
+    //endregion PUT
 
+    //region DELETE
     public ResponseEntity<Optional<Comment>> deleteCommentById(Long userId, Long bookId, Long commentId) {
         Optional<Comment> comment = Optional.empty();
         try {
@@ -220,4 +227,5 @@ public class CommentService {
                     comment);
         }
     }
+    //endregion DELETE
 }

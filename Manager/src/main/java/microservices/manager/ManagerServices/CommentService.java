@@ -28,6 +28,57 @@ public class CommentService {
         this.userClient = userClient;
     }
 
+    //region GET
+    public ResponseEntity<Optional<List<CommentDTO>>> fetchByUserIdAndBookId(Long userId, Long bookId) {
+        ResponseEntity<Optional<BookDTO>> book = null;
+        ResponseEntity<Optional<List<CommentDTO>>> responseEntityComments = null;
+        ResponseEntity<Optional<UserDTO>> user = null;
+
+        // Check if book exists
+        try {
+            book = bookClient.externalGetBookById(bookId);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+        }
+
+        if (book == null || book.getBody().isEmpty()){
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.BAD_REQUEST,
+                    false,
+                    "Did not find the book",
+                    HttpStatus.BAD_REQUEST,
+                    Optional.empty()
+            );
+        }
+
+        // Check of user exists
+        try {
+            user = userClient.externalGetUserById(userId);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+        }
+
+        if (user == null || user.getBody().isEmpty()){
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.BAD_REQUEST,
+                    false,
+                    "did not find the user",
+                    HttpStatus.BAD_REQUEST,
+                    Optional.empty()
+            );
+        }
+
+        try {
+            responseEntityComments = commentClient.fetchByUserIdAndBookId(userId, bookId);
+        }catch (Exception exception){
+            log.error("SaveById Exception block: {}", exception.getMessage());
+        }
+
+        return responseEntityComments;
+    }
+    //endregion GET
+
+    //region POST
     public ResponseEntity<Optional<CommentDTO>> saveById(CommentDTO commentDTO){
         ResponseEntity<Optional<BookDTO>> book = null;
         ResponseEntity<Optional<CommentDTO>> responseEntityComment = null;
@@ -85,11 +136,26 @@ public class CommentService {
 
         return responseEntityComment;
     }
+    //endregion POST
 
-    public ResponseEntity<Optional<List<CommentDTO>>> fetchByUserIdAndBookId(Long userId, Long bookId) {
+    //region PUT
+    public ResponseEntity<Optional<CommentDTO>> updateComment(Long userId, Long bookId, Long commentId, CommentDTO updateComment) {
         ResponseEntity<Optional<BookDTO>> book = null;
-        ResponseEntity<Optional<List<CommentDTO>>> responseEntityComments = null;
+        ResponseEntity<Optional<CommentDTO>> responseEntityComment = null;
         ResponseEntity<Optional<UserDTO>> user = null;
+
+        log.info("2userId: {}, bookId: {}, commentId: {}", userId, bookId, commentId);
+        log.info("2userId: {}, bookId: {}, text: {}", updateComment.getUserId(), updateComment.getBookId(), updateComment.getText());
+
+        if (updateComment == null){
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.OK,
+                    false,
+                    "Comment from client is null",
+                    HttpStatus.BAD_REQUEST,
+                    Optional.empty()
+            );
+        }
 
         // Check if book exists
         try {
@@ -126,11 +192,12 @@ public class CommentService {
         }
 
         try {
-            responseEntityComments = commentClient.fetchByUserIdAndBookId(userId, bookId);
-        }catch (Exception exception){
+            responseEntityComment = commentClient.updateComment(userId, bookId, commentId, updateComment);
+        } catch (Exception exception){
             log.error("SaveById Exception block: {}", exception.getMessage());
         }
 
-        return responseEntityComments;
+        return responseEntityComment;
     }
+    //endregion PUT
 }
