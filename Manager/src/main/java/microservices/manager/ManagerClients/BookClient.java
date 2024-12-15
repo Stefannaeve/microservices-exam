@@ -5,6 +5,7 @@ import microservices.manager.responseEntityInitializer.ResponseEntityInitializer
 import microservices.manager.dtos.BookDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cloud.commons.security.ResourceServerTokenRelayAutoConfiguration;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,8 @@ public class BookClient {
 
     public BookClient(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("http://book:8082") final String url
-    ) {
+            @Value("http://book:8082") final String url,
+            ResourceServerTokenRelayAutoConfiguration resourceServerTokenRelayAutoConfiguration) {
         this.restServiceUrl = url;
         this.restTemplate = restTemplateBuilder.build();
     }
@@ -301,4 +302,96 @@ public class BookClient {
 
         return response;
     }
+    public ResponseEntity<Optional<List<BookDTO>>> populateDatabaseFromGutenberg(int maxBookCount){
+        String url = restServiceUrl + "/book/populateDatabaseFromGutenberg/" + maxBookCount;
+        ResponseEntity<Optional<List<BookDTO>>> response = null;
+
+        try {
+            response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<>(){
+                    }
+            );
+            System.out.println(response);
+        } catch (Exception exception) {
+            log.error("An unexpected error occurred", exception);
+        }
+
+        if (response == null) {
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.NO_CONTENT,
+                    false,
+                    "Response empty from the book service",
+                    HttpStatus.NO_CONTENT,
+                    Optional.empty()
+            );
+        }
+
+        String success = ResponseEntityInitializer.extractHeader(response, "success");
+        log.info("Success: {}", success);
+
+        if (success.equals("false")){
+            String errorMessage = ResponseEntityInitializer.extractHeader(response, "ErrorMessage");
+            String errorStatus = ResponseEntityInitializer.extractHeader(response, "ErrorStatus");
+            HttpStatus status = HttpStatus.valueOf(Integer.parseInt(errorStatus));
+            return ResponseEntityInitializer.NewResponseEntity(
+                    status,
+                    false,
+                    errorMessage,
+                    status,
+                    response.getBody()
+            );
+        }
+
+        return response;
+    }
+
+    public ResponseEntity<Optional<BookDTO>> fetchBookContentById(Long id){
+        String url = restServiceUrl + "/book/fetchBookContentById/" + id;
+
+        ResponseEntity<Optional<BookDTO>> response = null;
+
+        try {
+            response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<>(){
+                    }
+            );
+        }  catch (Exception exception) {
+            log.error("An unexpected error occurred: ", exception);
+        }
+
+        if (response == null){
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.NO_CONTENT,
+                    false,
+                    "Response empty from the book service",
+                    HttpStatus.NO_CONTENT,
+                    Optional.empty());
+        }
+
+        String success = ResponseEntityInitializer.extractHeader(response, "success");
+        log.info("Success: {}", success);
+
+        if (success.equals("false")){
+            String errorMessage = ResponseEntityInitializer.extractHeader(response, "ErrorMessage");
+            String errorStatus = ResponseEntityInitializer.extractHeader(response, "ErrorStatus");
+            HttpStatus status = HttpStatus.valueOf(Integer.parseInt(errorStatus));
+            return ResponseEntityInitializer.NewResponseEntity(
+                    status,
+                    false,
+                    errorMessage,
+                    status,
+                    response.getBody()
+            );
+        }
+
+        return response;
+
+    }
+
 }
