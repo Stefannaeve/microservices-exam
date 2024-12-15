@@ -3,6 +3,8 @@ volumes:
     driver: local
   comment_db:
     driver: local
+  user_db:
+    driver: local
 
 services:
   book_db:
@@ -12,6 +14,7 @@ services:
       MYSQL_ROOT_USER: root
       MYSQL_DATABASE: book
     volumes:
+      - book_db:/var/lib/mysql
       - ./mysql/book/init:/docker-entrypoint-initdb.d
     ports:
       - '3306:3306'
@@ -31,6 +34,7 @@ services:
       MYSQL_ROOT_USER: root
       MYSQL_DATABASE: comment
     volumes:
+      - comment_db:/var/lib/mysql
       - ./mysql/comment/init:/docker-entrypoint-initdb.d
     ports:
       - '3307:3306'
@@ -50,6 +54,7 @@ services:
       MYSQL_ROOT_USER: root
       MYSQL_DATABASE: user
     volumes:
+      - user_db:/var/lib/mysql
       - ./mysql/user/init:/docker-entrypoint-initdb.d
     ports:
       - '3308:3306'
