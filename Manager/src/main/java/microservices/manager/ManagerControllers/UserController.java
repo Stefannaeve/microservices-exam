@@ -52,4 +52,13 @@ public class UserController {
         return userClient.externalFetchUnFinishedBook(userId);
     }
 
+    @DeleteMapping("/{userId}/deleteBook/{bookId}")
+    public ResponseEntity<Optional<UserDTO>> deleteBookFromUser(@PathVariable Long userId, @PathVariable Long bookId) {
+        return userClient.externalDeleteBookFromUser(userId, bookId);
+    }
+
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<Optional<UserDTO>> deleteUser(@PathVariable Long userId) {
+        return userClient.externalDeleteUserById(userId);
+    }
 }
