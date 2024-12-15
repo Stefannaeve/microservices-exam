@@ -298,7 +298,7 @@ public class BookService {
             Optional<List<Book>> books = Optional.empty();
 
             return ResponseEntityInitializer.NewResponseEntity(
-                HttpStatus.OK,
+                HttpStatus.INTERNAL_SERVER_ERROR,
                 false,
                 "Encountered error while connecting to external service",
                 HttpStatus.INTERNAL_SERVER_ERROR,
@@ -312,7 +312,7 @@ public class BookService {
             Optional<List<Book>> books = Optional.empty();
 
             return ResponseEntityInitializer.NewResponseEntity(
-                    HttpStatus.OK,
+                    HttpStatus.INTERNAL_SERVER_ERROR,
                     false,
                     "Encountered error while parsing response from external service",
                     HttpStatus.INTERNAL_SERVER_ERROR,
@@ -326,7 +326,7 @@ public class BookService {
             Optional<List<Book>> books = Optional.empty();
 
             return ResponseEntityInitializer.NewResponseEntity(
-                    HttpStatus.OK,
+                    HttpStatus.INTERNAL_SERVER_ERROR,
                     false,
                     "Unexpected error occurred",
                     HttpStatus.INTERNAL_SERVER_ERROR,
@@ -360,8 +360,8 @@ public class BookService {
             log.warn("Book with id {} not found", bookId);
             return ResponseEntityInitializer.NewResponseEntity(
                 HttpStatus.OK,
-         false,
-     "Book not found",
+                false,
+                "Book not found",
                 HttpStatus.NOT_FOUND,
                 book
             );
