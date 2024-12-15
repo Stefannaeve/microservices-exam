@@ -359,41 +359,47 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<Optional<List<UserBook>>> fetchNotFinishedBooks(Long userId) {
-        Optional<User> findUser = userRepo.findById(userId);
+    public ResponseEntity<Optional<List<UserBook>>> fetchNotFinishedBooks(Long userId){
+        Optional<User> findUser = Optional.empty();
         Optional<List<UserBook>> notFinishedBooks = Optional.empty();
+        try{
+            findUser = userRepo.findById(userId);
+            if(findUser.isEmpty()){
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        false,
+                        "User not found",
+                        HttpStatus.NOT_FOUND,
+                        notFinishedBooks
+                );
+            }
 
-        if (findUser.isEmpty()) {
+            User user = findUser.get();
+            notFinishedBooks = Optional.of(user.getBooks().stream().filter(book -> book.getReadingStatus() == ReadingStatus.DidNotFinish).toList());
+
+            if(notFinishedBooks.isEmpty()){
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.OK,
+                        false,
+                        "There are no unfinished books for this user",
+                        HttpStatus.NOT_FOUND,
+                        notFinishedBooks
+                );
+            }
             return ResponseEntityInitializer.NewResponseEntity(
-                    HttpStatus.NOT_FOUND,
+                    HttpStatus.OK,
+                    notFinishedBooks
+            );
+        } catch(Exception e){
+            log.error("Error: {}", e.getMessage());
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
                     false,
-                    "User not found",
-                    HttpStatus.NOT_FOUND,
+                    "An unknown error occurred",
+                    HttpStatus.INTERNAL_SERVER_ERROR,
                     notFinishedBooks
             );
         }
-
-        User user = findUser.get();
-        List<UserBook> filteredBooks = user.getBooks()
-                .stream()
-                .filter(book -> book.getReadingStatus() == ReadingStatus.DidNotFinish)
-                .toList();
-
-        if (filteredBooks.isEmpty()) {
-            return ResponseEntityInitializer.NewResponseEntity(
-                    HttpStatus.NOT_FOUND,
-                    false,
-                    "There are no unfinished books for this user",
-                    HttpStatus.NOT_FOUND,
-                    Optional.empty()
-            );
-        }
-
-        // Ensure the books and user details are correctly populated
-        return ResponseEntityInitializer.NewResponseEntity(
-                HttpStatus.OK,
-                Optional.of(filteredBooks)
-        );
     }
 }
 
