@@ -61,6 +61,7 @@ docker compose --project-name book-hub up --scale book=1 --scale user=1 --scale 
 ```
 Docker compose up if you want the top amount of each service which is 3
 ```shell
+cd docker
 docker compose --project-name book-hub up
 ```
 
