@@ -51,7 +51,13 @@ DATABASE_PASSWORD=
 - Keep "stefannaeve" if you want to pull the images from the groups dockerhub library
 - Change "stefannaeve" to something else if you wish to build local files
 
-##### Building with docker compose from docker folder
+##### Building with docker compose from root folder
+```shell
+mvn clean install # For local runs
+```
+```shell
+cd docker
+```
 ```shell
 docker compose --project-name book-hub up -d
 ```
@@ -59,6 +65,14 @@ docker compose --project-name book-hub up -d
 ##### Closing project with docker compose, and remove local docker images from this project
 ```shell
 docker compose --project-name book-hub down --rmi local
+```
+This if you want to remove volumes at the same time
+```shell
+docker compose --project-name book-hub down --rmi local --volumes
+```
+Remove volumes after down
+```shell
+docker volume rm book-hub_book_db book-hub_comment_db book-hub_user_db
 ```
 
 ### Pull request to main branch
@@ -69,6 +83,7 @@ This workflow file will
 - Build the project
 - Log into the specified dockerhub account
 - Push images to the docker account specified
+  - Same image is pushed twice, one with a portion of the commit hash tag, and one with latest tag
 
 GITHUB SECRETS
 
