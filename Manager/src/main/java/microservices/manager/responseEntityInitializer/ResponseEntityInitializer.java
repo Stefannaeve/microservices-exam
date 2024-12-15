@@ -1,4 +1,4 @@
-package microservices.manager.apiResponse;
+package microservices.manager.responseEntityInitializer;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

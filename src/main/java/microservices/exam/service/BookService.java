@@ -1,8 +1,8 @@
 package microservices.exam.service;
 
 import lombok.extern.slf4j.Slf4j;
-import microservices.exam.apiResponse.ApiResponse;
-import microservices.exam.apiResponse.ApiResponseBuilder;
+import microservices.exam.responseEntityInitializer.ApiResponse;
+import microservices.exam.responseEntityInitializer.ApiResponseBuilder;
 import microservices.exam.models.Book;
 import microservices.exam.repository.BookRepository;
 import org.springframework.http.HttpStatus;

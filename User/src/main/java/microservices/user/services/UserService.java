@@ -2,7 +2,7 @@
 package microservices.user.services;
 
 import lombok.extern.slf4j.Slf4j;
-import microservices.user.apiResponse.ResponseEntityInitializer;
+import microservices.user.responseEntityInitializer.ResponseEntityInitializer;
 import microservices.user.eventDriven.UserEventPublisher;
 import microservices.user.models.ReadingStatus;
 import microservices.user.models.User;

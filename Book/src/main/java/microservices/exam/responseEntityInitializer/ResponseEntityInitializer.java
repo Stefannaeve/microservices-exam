@@ -1,4 +1,4 @@
-package microservices.user.apiResponse;
+package microservices.exam.responseEntityInitializer;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -41,26 +41,15 @@ public class ResponseEntityInitializer<T> {
         return new ResponseEntity<T>(value, headers, status);
     }
 
-    public static <T> ResponseEntity<T> NewResponseEntity(HttpStatus status) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Success", "true");
-
-        return new ResponseEntity<T>(null, headers, status);
-    }
-
-    public static boolean isResponseSuccess(){
-        return false;
-    }
-
-    public static String extractHeader(ResponseEntity<?> entity, String headerName) {
+    public static String extractHeader(ResponseEntity entity, String headerName){
         HttpHeaders headers = entity.getHeaders();
-        List<String> headerValues = headers.get(headerName);
 
-        if (headerValues != null && !headerValues.isEmpty()) {
-            return headerValues.get(0);
+        List<String> customHeaderValues = headers.get("X-Custom-Header");
+
+        if (customHeaderValues != null && !customHeaderValues.isEmpty()) {
+            String customHeaderValue = customHeaderValues.get(0);
+            return customHeaderValue;
         }
-
         return "";
     }
-
 }

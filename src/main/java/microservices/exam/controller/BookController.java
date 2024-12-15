@@ -5,7 +5,7 @@ import microservices.exam.clients.BookClient;
 import microservices.exam.dtos.CommentDTO;
 import microservices.exam.models.Book;
 import microservices.exam.service.BookService;
-import microservices.exam.apiResponse.ApiResponse;
+import microservices.exam.responseEntityInitializer.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import microservices.manager.ManagerClients.BookClient;
 import microservices.manager.ManagerClients.CommentClient;
 import microservices.manager.ManagerClients.UserClient;
-import microservices.manager.apiResponse.ResponseEntityInitializer;
+import microservices.manager.responseEntityInitializer.ResponseEntityInitializer;
 import microservices.manager.dtos.BookDTO;
 import microservices.manager.dtos.CommentDTO;
 import microservices.manager.dtos.UserDTO;
