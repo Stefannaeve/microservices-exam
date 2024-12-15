@@ -4,55 +4,60 @@ import lombok.extern.slf4j.Slf4j;
 import microservices.exam.models.Book;
 import microservices.exam.repository.BookRepository;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.concurrent.Executor;
 
 @Slf4j
 @Component
 public class BookEventListener {
 
     private final BookRepository bookRepository;
+    private final Executor taskExecutor;
 
-    @Autowired
     public BookEventListener(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
+        this.taskExecutor = createTaskExecutor();
+    }
+
+    private Executor createTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(3);
+        executor.setMaxPoolSize(5);
+        executor.setQueueCapacity(10);
+        executor.setThreadNamePrefix("book-listener-");
+        executor.initialize();
+        return executor;
     }
 
     @RabbitListener(queues = "${amqp.queue.book}")
     public void handleBookEvent(BookEvent bookEvent) {
         log.info("Received book event: {}", bookEvent);
 
-        try {
-            Thread.sleep(5000); // For testing purposes to imitate large message payloads
-            String eventType = bookEvent.getEventType();
-            log.info("Processing event type: {}", eventType);
-
-            switch (eventType) {
-                case "CREATE" -> handleBookCreation(bookEvent);
-                case "DELETE" -> handleBookDeletion(bookEvent.getBookId());
-                default -> log.warn("Unknown event type: {}", eventType);
+        taskExecutor.execute(() -> {
+            try {
+                log.info("Processing event type: {}", bookEvent.getEventType());
+                switch (bookEvent.getEventType()) {
+                    case "CREATE" -> handleBookCreation(bookEvent);
+                    case "DELETE" -> handleBookDeletion(bookEvent.getBookId());
+                    default -> log.warn("Unknown event type: {}", bookEvent.getEventType());
+                }
+            } catch (Exception e) {
+                log.error("Error processing book event: {}", e.getMessage(), e);
             }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            log.error("Error processing book event: {}", e.getMessage(), e);
-        }
+        });
     }
 
     private void handleBookCreation(BookEvent bookEvent) {
-        log.info("Handling book creation for bookId: {}, title: {}, author: {}",
-                bookEvent.getBookId(), bookEvent.getTitle(), bookEvent.getAuthor());
+        log.info("Handling book creation for bookId: {}, title: {}", bookEvent.getBookId(), bookEvent.getTitle());
     }
 
     private void handleBookDeletion(Long bookId) {
-        log.info("Handling book deletion for bookId: {}", bookId);
-        Optional<Book> book = bookRepository.findById(bookId);
-        if (book.isPresent()) {
-            bookRepository.delete(book.get());
+        bookRepository.findById(bookId).ifPresentOrElse(book -> {
+            bookRepository.delete(book);
             log.info("Deleted book with id: {}", bookId);
-        } else {
-            log.warn("Book with id {} not found for deletion", bookId);
-        }
+        }, () -> log.warn("Book with id {} not found for deletion", bookId));
     }
 }

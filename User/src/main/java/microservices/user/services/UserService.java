@@ -321,7 +321,6 @@ public class UserService {
         }
     }
 
-
     public ResponseEntity<Optional<User>> fetchUserWithBook(Long userId, Long bookId) {
         Optional<User> user = Optional.empty();
         try {
