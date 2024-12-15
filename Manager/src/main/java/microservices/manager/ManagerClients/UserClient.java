@@ -1,7 +1,7 @@
 package microservices.manager.ManagerClients;
 
 import lombok.extern.slf4j.Slf4j;
-import microservices.manager.apiResponse.ResponseEntityInitializer;
+import microservices.manager.responseEntityInitializer.ResponseEntityInitializer;
 import microservices.manager.dtos.UserDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -22,16 +22,13 @@ public class UserClient {
 
     private final String restServiceUrl;
     private final RestTemplate restTemplate;
-    private final View error;
 
     public UserClient(RestTemplateBuilder restTemplateBuilder,
-                      @Value("http://user:8083/user") final String url,
-                      View error) {
+                      @Value("http://user:8083/user") final String url) {
         this.restServiceUrl = url;
         this.restTemplate = restTemplateBuilder
                 .requestFactory(HttpComponentsClientHttpRequestFactory.class)
                 .build();
-        this.error = error;
     }
 
     public ResponseEntity<Optional<UserDTO>> externalGetUserWithBook(long userId, long bookId) {

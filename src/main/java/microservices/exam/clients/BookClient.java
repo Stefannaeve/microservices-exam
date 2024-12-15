@@ -1,8 +1,8 @@
 package microservices.exam.clients;
 
-import microservices.exam.apiResponse.ApiResponse;
+import microservices.exam.responseEntityInitializer.ApiResponse;
 
-import microservices.exam.apiResponse.ApiResponseBuilder;
+import microservices.exam.responseEntityInitializer.ApiResponseBuilder;
 import microservices.exam.dtos.ApiResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;

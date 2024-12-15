@@ -1,4 +1,4 @@
-package microservices.exam.apiResponse;
+package microservices.exam.responseEntityInitializer;
 
 import microservices.exam.dtos.ApiResponseDTO;
 import org.springframework.http.HttpStatus;
