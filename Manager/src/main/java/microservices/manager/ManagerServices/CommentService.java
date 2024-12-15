@@ -199,5 +199,53 @@ public class CommentService {
 
         return responseEntityComment;
     }
+
+    public ResponseEntity<Optional<CommentDTO>> deleteComment(Long userId, Long bookId, Long commentId) {
+        ResponseEntity<Optional<BookDTO>> book = null;
+        ResponseEntity<Optional<CommentDTO>> responseEntityComment = null;
+        ResponseEntity<Optional<UserDTO>> user = null;
+
+        // Check if book exists
+        try {
+            book = bookClient.externalGetBookById(bookId);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+        }
+
+        if (book == null || book.getBody().isEmpty()){
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.BAD_REQUEST,
+                    false,
+                    "Did not find the book",
+                    HttpStatus.BAD_REQUEST,
+                    Optional.empty()
+            );
+        }
+
+        // Check of user exists
+        try {
+            user = userClient.externalGetUserById(userId);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+        }
+
+        if (user == null || user.getBody().isEmpty()){
+            return ResponseEntityInitializer.NewResponseEntity(
+                    HttpStatus.BAD_REQUEST,
+                    false,
+                    "did not find the user",
+                    HttpStatus.BAD_REQUEST,
+                    Optional.empty()
+            );
+        }
+
+        try {
+            responseEntityComment = commentClient.deleteComment(userId, bookId, commentId);
+        } catch (Exception exception){
+            log.error("SaveById Exception block: {}", exception.getMessage());
+        }
+
+        return responseEntityComment;
+    }
     //endregion PUT
 }

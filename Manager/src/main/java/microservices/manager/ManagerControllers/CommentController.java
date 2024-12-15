@@ -56,4 +56,11 @@ public class CommentController {
         return commentService.updateComment(userId, bookId, commentId, updateComment);
     }
     //endregion PUT
+
+    //region DELETE
+    @DeleteMapping("/delete/user/{userId}/book/{bookId}/comment/{commentId}")
+    public ResponseEntity<Optional<CommentDTO>> deleteComment(@PathVariable Long userId, @PathVariable Long bookId, @PathVariable Long commentId){
+        return commentService.deleteComment(userId, bookId, commentId);
+    }
+    //endregion DELETE
 }
