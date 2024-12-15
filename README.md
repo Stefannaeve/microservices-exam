@@ -30,6 +30,11 @@ add which page this comment belong to
   - What status you are in reading
   - What page you are on
 
+### Prerequisite
+- **Java 21**
+- **Maven v3.3.4**
+- **Docker compose v2.30.3**
+
 ### Building project
 We have put most of our efforts into making the project work from docker, and not built our project with spring-boot:run
 since the very beginning of the semester.
