@@ -139,7 +139,7 @@ public class BookService {
                         HttpStatus.OK,
                         false,
                         "Book not found for deletion",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         book
                 );
             }
@@ -171,7 +171,7 @@ public class BookService {
                         HttpStatus.OK,
                         false,
                         "Book not found",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         book
                 );
             }
@@ -204,7 +204,7 @@ public class BookService {
                         HttpStatus.OK,
                         false,
                         "No books found with the specified title",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         books
                 );
             }
@@ -237,7 +237,7 @@ public class BookService {
                         HttpStatus.OK,
                         false,
                         "No books found with the specified author",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         books
                 );
             }
@@ -351,11 +351,11 @@ public class BookService {
         if (book == null){
             log.warn("Book with id {} not found", bookId);
             return ResponseEntityInitializer.NewResponseEntity(
-                HttpStatus.OK,
-         false,
-     "Book not found",
-                HttpStatus.NOT_FOUND,
-                book
+                    HttpStatus.OK,
+                    false,
+                    "Book not found",
+                    HttpStatus.NO_CONTENT,
+                    book
             );
         }
         try {

@@ -58,7 +58,7 @@ public class UserService {
                         HttpStatus.OK,
                         false,
                         "Could not find the user",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         user
                 );
             }
@@ -89,7 +89,7 @@ public class UserService {
                         HttpStatus.OK,
                         false,
                         "Could not find the user",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         bookId
                 );
             }
@@ -98,7 +98,7 @@ public class UserService {
                         HttpStatus.OK,
                         false,
                         "User has no books",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         bookId
                 );
             }
@@ -146,7 +146,7 @@ public class UserService {
                         HttpStatus.OK,
                         false,
                         "No matching user found",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         updatedUser
                 );
             }
@@ -182,7 +182,7 @@ public class UserService {
                         HttpStatus.OK,
                         false,
                         "User not found",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         user
                 );
             }
@@ -212,7 +212,7 @@ public class UserService {
                         HttpStatus.OK,
                         false,
                         "User not found",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         user
                 );
             }
@@ -234,7 +234,7 @@ public class UserService {
                         HttpStatus.OK,
                         false,
                         "Book not found in user's book list",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         user
                 );
             }
@@ -255,10 +255,10 @@ public class UserService {
             user = Optional.ofNullable(userRepo.findById(userId).orElse(null));
             if (user.isEmpty()) {
                 return ResponseEntityInitializer.NewResponseEntity(
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         false,
                         "User not found",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         user
                 );
             }
@@ -270,10 +270,10 @@ public class UserService {
 
             if (userBook.isEmpty()) {
                 return ResponseEntityInitializer.NewResponseEntity(
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         false,
                         "Book not found in user's list",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         user
                 );
             }
@@ -321,7 +321,7 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<Optional<User>> fetchUserWithBook(Long userId, Long bookId) {
+    public ResponseEntity<Optional<User>> checkIfUserHasBook(Long userId, Long bookId) {
         Optional<User> user = Optional.empty();
         try {
             user = Optional.ofNullable(userRepo.findById(userId).orElse(null));
@@ -330,7 +330,7 @@ public class UserService {
                         HttpStatus.OK,
                         false,
                         "User not found",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         user
                 );
             }
@@ -339,7 +339,7 @@ public class UserService {
                         HttpStatus.OK,
                         false,
                         "User does not have that book",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         user
                 );
             }
@@ -369,7 +369,7 @@ public class UserService {
                         HttpStatus.OK,
                         false,
                         "User not found",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         notFinishedBooks
                 );
             }
@@ -382,7 +382,7 @@ public class UserService {
                         HttpStatus.OK,
                         false,
                         "There are no unfinished books for this user",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         notFinishedBooks
                 );
             }
