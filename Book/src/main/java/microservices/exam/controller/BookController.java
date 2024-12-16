@@ -54,9 +54,7 @@ public class BookController {
 
     @GetMapping("/populateDatabaseFromGutenberg/{maxBookCount}")
     public ResponseEntity<Optional<List<Book>>> populateDatabaseFromGutenberg(@PathVariable int maxBookCount){
-        ResponseEntity<Optional<List<Book>>> gutenberg = bookService.populateDatabaseFromGutenberg(maxBookCount);
-        System.out.println(gutenberg);
-        return gutenberg;
+        return bookService.populateDatabaseFromGutenberg(maxBookCount);
     }
 
     @GetMapping("/fetchBookContentFromGutenberg/{bookId}")

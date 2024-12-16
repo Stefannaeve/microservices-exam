@@ -250,7 +250,6 @@ public class BookService {
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     books
             );
-
         }
     }
 
@@ -279,17 +278,9 @@ public class BookService {
                             i++;
                         }
 
-
                         for (Book book : bookList) {
                             bookRepository.save(book);
                         }
-
-                        System.out.println(bookList);
-                        /**return ResponseEntityInitializer.NewResponseEntity(
-                         HttpStatus.OK,
-                         bookList
-                         );
-                         **/
                         return bookList;
                     }
             ));
