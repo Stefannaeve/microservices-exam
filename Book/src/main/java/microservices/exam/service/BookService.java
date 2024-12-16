@@ -139,7 +139,7 @@ public class BookService {
                         HttpStatus.OK,
                         false,
                         "Book not found for deletion",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         book
                 );
             }
@@ -171,7 +171,7 @@ public class BookService {
                         HttpStatus.OK,
                         false,
                         "Book not found",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         book
                 );
             }
@@ -204,7 +204,7 @@ public class BookService {
                         HttpStatus.OK,
                         false,
                         "No books found with the specified title",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         books
                 );
             }
@@ -237,7 +237,7 @@ public class BookService {
                         HttpStatus.OK,
                         false,
                         "No books found with the specified author",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         books
                 );
             }
@@ -250,66 +250,56 @@ public class BookService {
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     books
             );
-
         }
     }
 
-    public ResponseEntity<Optional<List<Book>>> populateDatabaseFromGutenberg(int maxBookCount){
+    public ResponseEntity<Optional<List<Book>>> populateDatabaseFromGutenberg(int maxBookCount) {
         RestTemplate restTemplate = new RestTemplate();
+        Optional<List<Book>> books = Optional.empty();
         try {
-            restTemplate.execute(
-                "https://www.gutenberg.org/cache/epub/feeds/pg_catalog.csv",
-                HttpMethod.GET,
-                null,
-                clientHttpResponse -> {
-                    InputStreamReader reader = new InputStreamReader(clientHttpResponse.getBody());
-                    CsvToBean<Book> csvToBean = new CsvToBeanBuilder<Book>(reader)
-                        .withType(Book.class)
-                        .withSeparator(',')
-                        .build();
+            books = Optional.ofNullable(restTemplate.execute(
+                    "https://www.gutenberg.org/cache/epub/feeds/pg_catalog.csv",
+                    HttpMethod.GET,
+                    null,
+                    clientHttpResponse -> {
+                        InputStreamReader reader = new InputStreamReader(clientHttpResponse.getBody());
+                        CsvToBean<Book> csvToBean = new CsvToBeanBuilder<Book>(reader)
+                                .withType(Book.class)
+                                .withSeparator(',')
+                                .build();
 
-                    List<Book> books = new ArrayList<>();
-                    Iterator<Book> iterator = csvToBean.iterator();
-                    int i = 0;
+                        List<Book> bookList = new ArrayList<>();
+                        Iterator<Book> iterator = csvToBean.iterator();
+                        int i = 0;
 
-                    while (iterator.hasNext() == true && i < maxBookCount) {
-                        books.add(iterator.next());
-                        iterator.next();
-                        i++;
+                        while (iterator.hasNext() == true && i < maxBookCount) {
+                            bookList.add(iterator.next());
+                            iterator.next();
+                            i++;
+                        }
+
+                        for (Book book : bookList) {
+                            bookRepository.save(book);
+                        }
+                        return bookList;
                     }
-
-
-                    for (Book book : books){
-                        bookRepository.save(book);
-                    }
-
-                    System.out.println(books);
-                    return ResponseEntityInitializer.NewResponseEntity(
-                            HttpStatus.OK,
-                            books
-                    );
-                }
-            );
+            ));
         } catch (RestClientException clientException) {
             log.error("Encountered error while connecting to external service");
             log.error(clientException.getMessage());
             clientException.printStackTrace();
 
-            Optional<List<Book>> books = Optional.empty();
-
             return ResponseEntityInitializer.NewResponseEntity(
-                HttpStatus.OK,
-                false,
-                "Encountered error while connecting to external service",
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                books
+                    HttpStatus.OK,
+                    false,
+                    "Encountered error while connecting to external service",
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    books
             );
         } catch (ClassCastException | NullPointerException | NoSuchElementException parsingException) {
             log.error("Encountered error while parsing response from external service");
             log.error(parsingException.getMessage());
             parsingException.printStackTrace();
-
-            Optional<List<Book>> books = Optional.empty();
 
             return ResponseEntityInitializer.NewResponseEntity(
                     HttpStatus.OK,
@@ -323,8 +313,6 @@ public class BookService {
             log.error(exception.getMessage());
             exception.printStackTrace();
 
-            Optional<List<Book>> books = Optional.empty();
-
             return ResponseEntityInitializer.NewResponseEntity(
                     HttpStatus.OK,
                     false,
@@ -334,13 +322,8 @@ public class BookService {
             );
         }
 
-        Optional<List<Book>> books = Optional.empty();
-
         return ResponseEntityInitializer.NewResponseEntity(
                 HttpStatus.OK,
-                false,
-                "Unexpected error occurred",
-                HttpStatus.INTERNAL_SERVER_ERROR,
                 books
         );
     }
@@ -359,11 +342,11 @@ public class BookService {
         if (book == null){
             log.warn("Book with id {} not found", bookId);
             return ResponseEntityInitializer.NewResponseEntity(
-                HttpStatus.OK,
-         false,
-     "Book not found",
-                HttpStatus.NOT_FOUND,
-                book
+                    HttpStatus.OK,
+                    false,
+                    "Book not found",
+                    HttpStatus.NO_CONTENT,
+                    book
             );
         }
         try {

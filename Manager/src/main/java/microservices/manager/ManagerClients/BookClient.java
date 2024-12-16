@@ -317,6 +317,7 @@ public class BookClient {
             System.out.println(response);
         } catch (Exception exception) {
             log.error("An unexpected error occurred", exception);
+            exception.printStackTrace();
         }
 
         if (response == null) {
@@ -348,8 +349,8 @@ public class BookClient {
         return response;
     }
 
-    public ResponseEntity<Optional<BookDTO>> fetchBookContentById(Long id){
-        String url = restServiceUrl + "/book/fetchBookContentById/" + id;
+    public ResponseEntity<Optional<BookDTO>> fetchBookContentFromGutenberg(Long id){
+        String url = restServiceUrl + "/book/fetchBookContentFromGutenberg/" + id;
 
         ResponseEntity<Optional<BookDTO>> response = null;
 

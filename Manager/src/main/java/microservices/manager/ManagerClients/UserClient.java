@@ -31,8 +31,8 @@ public class UserClient {
                 .build();
     }
 
-    public ResponseEntity<Optional<UserDTO>> externalGetUserWithBook(long userId, long bookId) {
-        String url = restServiceUrl + "/fetchUserWithBook/" + userId + "/" + bookId;
+    public ResponseEntity<Optional<UserDTO>> externalCheckIfUserHasBook(long userId, long bookId) {
+        String url = restServiceUrl + "/checkIfUserHasBook/" + userId + "/" + bookId;
         log.error(url);
         ResponseEntity<Optional<UserDTO>> response = null;
         try {

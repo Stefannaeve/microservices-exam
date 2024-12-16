@@ -35,7 +35,7 @@ public class CommentService {
                         HttpStatus.OK,
                         false,
                         "No comments found",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         comments
                 );
             }
@@ -68,7 +68,7 @@ public class CommentService {
                         HttpStatus.OK,
                         false,
                         "Comment not found",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         comment
                 );
             }
@@ -93,7 +93,7 @@ public class CommentService {
                         HttpStatus.OK,
                         false,
                         "Found no comments for the specified user and book",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         comments
                 );
             }
@@ -167,7 +167,7 @@ public class CommentService {
                         HttpStatus.OK,
                         false,
                         "Unable to fetch",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         findComment
                 );
             }
@@ -210,7 +210,7 @@ public class CommentService {
                         HttpStatus.OK,
                         false,
                         "Comment not found for the specific user and book",
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.NO_CONTENT,
                         comment
                 );
             }

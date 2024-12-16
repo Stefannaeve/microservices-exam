@@ -57,8 +57,8 @@ public class BookController {
         return bookService.populateDatabaseFromGutenberg(maxBookCount);
     }
 
-    @GetMapping("/fetchBookContentById/{bookId}")
-    public ResponseEntity<Optional<Book>> fetchBookContentById(@PathVariable Long bookId){
+    @GetMapping("/fetchBookContentFromGutenberg/{bookId}")
+    public ResponseEntity<Optional<Book>> fetchBookContentFromGutenberg(@PathVariable Long bookId){
         return bookService.fetchBookContentFromGutenberg(bookId);
     }
 }

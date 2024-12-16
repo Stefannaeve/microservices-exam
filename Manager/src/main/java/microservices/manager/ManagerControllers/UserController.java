@@ -38,9 +38,9 @@ public class UserController {
         return userClient.externalGetUserById(userId);
     }
 
-    @GetMapping("/fetchUserWithBook/{userId}/{bookId}")
-    public ResponseEntity<Optional<UserDTO>> fetchUserWithBook(@PathVariable Long userId, @PathVariable Long bookId){
-        return userClient.externalGetUserWithBook(userId, bookId);
+    @GetMapping("/checkIfUserHasBook/{userId}/{bookId}")
+    public ResponseEntity<Optional<UserDTO>> checkIfUserHasBook(@PathVariable Long userId, @PathVariable Long bookId){
+        return userClient.externalCheckIfUserHasBook(userId, bookId);
     }
 
     @GetMapping("/fetchUserBooks/{userId}")

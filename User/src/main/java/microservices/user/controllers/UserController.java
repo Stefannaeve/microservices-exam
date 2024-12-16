@@ -39,9 +39,9 @@ public class UserController {
         return userService.fetchUserById(userId);
     }
 
-    @GetMapping("/fetchUserWithBook/{userId}/{bookId}")
-    public ResponseEntity<Optional<User>> fetchUserWithBook(@PathVariable Long userId, @PathVariable Long bookId){
-        return userService.fetchUserWithBook(userId, bookId);
+    @GetMapping("/checkIfUserHasBook/{userId}/{bookId}")
+    public ResponseEntity<Optional<User>> checkIfUserHasBook(@PathVariable Long userId, @PathVariable Long bookId){
+        return userService.checkIfUserHasBook(userId, bookId);
     }
 
     @GetMapping("/fetchUserBooks/{userId}")
