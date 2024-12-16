@@ -135,9 +135,7 @@ public class UserClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<BookDTO> requestEntity = new HttpEntity<>(bookDTO, headers);
-        log.info("userbook: " + bookDTO.getId() + bookDTO.getTitle() + bookDTO.getAuthor() +  bookDTO.getPages() + bookDTO.getReadingProgress() + bookDTO.getReadingStatus());
-        log.info("rating: " + bookDTO.getRating());
-        log.info("book: " + bookDTO.toString());
+
         try {
             response = restTemplate.exchange(
                     url,

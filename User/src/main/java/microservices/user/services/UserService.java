@@ -133,9 +133,6 @@ public class UserService {
             System.out.println("\n this is null \n");
         }
 
-        log.info("userbook: " + userBook.getId() + userBook.getTitle() + userBook.getAuthor() +  userBook.getPages() + userBook.getReadingProgress() + userBook.getReadingStatus());
-        log.info("rating: " + userBook.getRating());
-        log.info("book: " + userBook.toString());
         if (userBook.getRating() < 1 || userBook.getRating() > 10) {
             return ResponseEntityInitializer.NewResponseEntity(
                     HttpStatus.OK,

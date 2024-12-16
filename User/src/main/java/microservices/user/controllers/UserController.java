@@ -31,9 +31,6 @@ public class UserController {
 
     @PostMapping("/addBookToUser/{userId}")
     public ResponseEntity<Optional<User>> addBookToUser(@PathVariable Long userId, @RequestBody UserBook userBook) {
-        log.info("userbook: " + userBook.getId() + userBook.getTitle() + userBook.getAuthor() +  userBook.getPages() + userBook.getReadingProgress() + userBook.getReadingStatus());
-        log.info("rating: " + userBook.getRating());
-        log.info("book: " + userBook.toString());
         return userService.addBookToUser(userId, userBook);
     }
 
