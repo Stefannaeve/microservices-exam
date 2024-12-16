@@ -329,19 +329,17 @@ public class BookService {
     }
 
     public ResponseEntity<Optional<Book>> fetchBookContentFromGutenberg(Long bookId) {
-        CloseableHttpClient
-                httpClient = HttpClients.custom()
+        CloseableHttpClient httpClient = HttpClients.custom()
                 .setRedirectStrategy(new DefaultRedirectStrategy())
                 .build();
 
         RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory(httpClient));
-        Optional<Book> book = Optional.empty();
+        Optional<Book> book = bookRepository.findById(bookId);
 
-        book = bookRepository.findById(bookId);
-        if (book == null){
+        if (book.isEmpty()) {
             log.warn("Book with id {} not found", bookId);
             return ResponseEntityInitializer.NewResponseEntity(
-                    HttpStatus.OK,
+                    HttpStatus.NO_CONTENT,
                     false,
                     "Book not found",
                     HttpStatus.NO_CONTENT,
@@ -350,21 +348,16 @@ public class BookService {
         }
 
         try {
+            if (book.get().getBookContent() == null || book.get().getBookContent().isEmpty()) {
+                String url = String.format("https://gutenberg.org/ebooks/%d.txt.utf-8", bookId.intValue());
+                ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
-           if (book.get().getBookContent() != null){
-               return ResponseEntityInitializer.NewResponseEntity(
-                       HttpStatus.OK,
-                       book
-               );
-           }
-
-            String url = String.format("https://gutenberg.org/ebooks/%d.txt.utf-8", bookId.intValue());
-            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-
-            if (response.getStatusCode() == HttpStatus.OK){
-                book.get().setBookContent(response.getBody());
-                bookRepository.save(book.get());
+                if (response.getStatusCode() == HttpStatus.OK) {
+                    book.get().setBookContent(response.getBody());
+                    bookRepository.save(book.get());
+                }
             }
+
             return ResponseEntityInitializer.NewResponseEntity(
                     HttpStatus.OK,
                     book
@@ -376,19 +369,20 @@ public class BookService {
             clientException.printStackTrace();
 
             return ResponseEntityInitializer.NewResponseEntity(
-                    HttpStatus.OK,
+                    HttpStatus.INTERNAL_SERVER_ERROR,
                     false,
                     "Encountered error while connecting to external service",
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     book
             );
+
         } catch (Exception exception) {
             log.error("Unexpected error occurred");
             log.error(exception.getMessage());
             exception.printStackTrace();
 
             return ResponseEntityInitializer.NewResponseEntity(
-                    HttpStatus.OK,
+                    HttpStatus.INTERNAL_SERVER_ERROR,
                     false,
                     "Unexpected error occurred",
                     HttpStatus.INTERNAL_SERVER_ERROR,
@@ -396,4 +390,5 @@ public class BookService {
             );
         }
     }
+
 }

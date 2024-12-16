@@ -2,10 +2,12 @@ package microservices.manager.ManagerControllers;
 
 import lombok.extern.slf4j.Slf4j;
 import microservices.manager.ManagerClients.UserClient;
+import microservices.manager.dtos.BookDTO;
 import microservices.manager.dtos.UserDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Book;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,8 +31,8 @@ public class UserController {
     }
 
     @PostMapping("/addBookToUser/{userId}")
-    public ResponseEntity<Optional<UserDTO>> addBookToUser(@PathVariable Long userId, @RequestBody UserDTO userDTO){
-        return userClient.externalAddBookToUser(userId, userDTO);
+    public ResponseEntity<Optional<UserDTO>> addBookToUser(@PathVariable Long userId, @RequestBody BookDTO bookDTO){
+        return userClient.externalAddBookToUser(userId, bookDTO);
     }
 
     @GetMapping("/fetchUserById/{userId}")
@@ -44,12 +46,12 @@ public class UserController {
     }
 
     @GetMapping("/fetchUserBooks/{userId}")
-    public ResponseEntity<Optional<UserDTO>> fetchUserBooks(@PathVariable Long userId){
+    public ResponseEntity<Optional<List<BookDTO>>> fetchUserBooks(@PathVariable Long userId){
         return userClient.externalFetchUserBooks(userId);
     }
 
     @GetMapping("/{userId}/notFinishedReading")
-    public ResponseEntity<Optional<List<UserDTO>>> fetchUnfinishedBooks(@PathVariable Long userId){
+    public ResponseEntity<Optional<List<BookDTO>>> fetchUnfinishedBooks(@PathVariable Long userId){
         return userClient.externalFetchUnFinishedBook(userId);
     }
 

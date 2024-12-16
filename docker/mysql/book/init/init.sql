@@ -1,10 +1,10 @@
-DROP SCHEMA if EXISTS book;
-
-CREATE SCHEMA book;
+CREATE DATABASE IF NOT EXISTS book;
+CREATE SCHEMA IF NOT EXISTS book ;
 
 USE book;
 
-CREATE TABLE book(
+CREATE TABLE IF NOT EXISTS book
+(
     id BIGINT not null auto_increment,
     title VARCHAR(255),
     author VARCHAR(255),

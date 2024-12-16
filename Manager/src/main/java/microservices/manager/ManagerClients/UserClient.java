@@ -2,6 +2,7 @@
 package microservices.manager.ManagerClients;
 
 import lombok.extern.slf4j.Slf4j;
+import microservices.manager.dtos.BookDTO;
 import microservices.manager.responseEntityInitializer.ResponseEntityInitializer;
 import microservices.manager.dtos.UserDTO;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.awt.print.Book;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -126,14 +128,16 @@ public class UserClient {
         return response;
     }
 
-    public ResponseEntity<Optional<UserDTO>> externalAddBookToUser(Long userId, UserDTO user) {
-        String url = restServiceUrl + "/saveOneUser/" + userId;
+    public ResponseEntity<Optional<UserDTO>> externalAddBookToUser(Long userId, BookDTO bookDTO) {
+        String url = restServiceUrl + "/addBookToUser/" + userId;
         ResponseEntity<Optional<UserDTO>> response = null;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<UserDTO> requestEntity = new HttpEntity<>(user, headers);
-
+        HttpEntity<BookDTO> requestEntity = new HttpEntity<>(bookDTO, headers);
+        log.info("userbook: " + bookDTO.getId() + bookDTO.getTitle() + bookDTO.getAuthor() +  bookDTO.getPages() + bookDTO.getReadingProgress() + bookDTO.getReadingStatus());
+        log.info("rating: " + bookDTO.getRating());
+        log.info("book: " + bookDTO.toString());
         try {
             response = restTemplate.exchange(
                     url,
@@ -175,10 +179,10 @@ public class UserClient {
         return response;
     }
 
-    public ResponseEntity<Optional<UserDTO>> externalFetchUserBooks(Long userId) {
+    public ResponseEntity<Optional<List<BookDTO>>> externalFetchUserBooks(Long userId) {
         String url = restServiceUrl + "/fetchUserBooks/" + userId;
         log.error(url);
-        ResponseEntity<Optional<UserDTO>> response = null;
+        ResponseEntity<Optional<List<BookDTO>>> response = null;
         try {
             response = restTemplate.exchange(
                     url,
@@ -219,10 +223,10 @@ public class UserClient {
         return response;
     }
 
-    public ResponseEntity<Optional<List<UserDTO>>> externalFetchUnFinishedBook(Long userId) {
+    public ResponseEntity<Optional<List<BookDTO>>> externalFetchUnFinishedBook(Long userId) {
         String url = restServiceUrl + "/" + userId + "/notFinishedReading";
         log.error(url);
-        ResponseEntity<Optional<List<UserDTO>>> response = null;
+        ResponseEntity<Optional<List<BookDTO>>> response = null;
 
         try {
             response = restTemplate.exchange(
