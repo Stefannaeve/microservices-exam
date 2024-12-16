@@ -1,11 +1,9 @@
 CREATE DATABASE IF NOT EXISTS user;
-DROP SCHEMA if EXISTS user;
-
-CREATE SCHEMA user;
+CREATE SCHEMA IF NOT EXISTS user;
 
 USE user;
 
-CREATE TABLE user
+CREATE TABLE IF NOT EXISTS user
 (
     id       BIGINT NOT NULL AUTO_INCREMENT,
     username VARCHAR(255),
@@ -14,7 +12,7 @@ CREATE TABLE user
     UNIQUE (username)
 );
 
-CREATE TABLE book_Id
+CREATE TABLE IF NOT EXISTS book_id
 (
     id              BIGINT NOT NULL AUTO_INCREMENT,
     pages           int,

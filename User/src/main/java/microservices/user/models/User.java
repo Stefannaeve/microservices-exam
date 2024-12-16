@@ -28,6 +28,5 @@ public class User {
     private String username;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonIgnoreProperties("userIds")
     private List<UserBook> books;
 }

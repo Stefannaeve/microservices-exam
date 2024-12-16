@@ -15,6 +15,7 @@ public class BookDTO {
     private String readingStatus;
     private LocalDate publishDate;
     private String bookContent;
+    private int rating;
 
     @Override
     public String toString() {
@@ -27,6 +28,7 @@ public class BookDTO {
                 ", readingStatus=" + readingStatus +
                 ", publishDate=" + publishDate +
                 ", bookContent='" + bookContent +
+                ", rating='" + rating +
                 '}';
     }
 }

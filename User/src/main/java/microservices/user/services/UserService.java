@@ -2,6 +2,7 @@
 package microservices.user.services;
 
 import lombok.extern.slf4j.Slf4j;
+import microservices.user.repositories.UserBookRepo;
 import microservices.user.responseEntityInitializer.ResponseEntityInitializer;
 import microservices.user.eventDriven.UserEventPublisher;
 import microservices.user.models.ReadingStatus;
@@ -9,11 +10,13 @@ import microservices.user.models.User;
 import microservices.user.models.UserBook;
 import microservices.user.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -21,11 +24,15 @@ public class UserService {
 
     private final UserRepo userRepo;
     private final UserEventPublisher userEventPublisher;
+    private final DataSourceTransactionManagerAutoConfiguration dataSourceTransactionManagerAutoConfiguration;
+    private final UserBookRepo userBookRepo;
 
     @Autowired
-    public UserService(UserRepo userRepo, UserEventPublisher userEventPublisher) {
+    public UserService(UserRepo userRepo, UserEventPublisher userEventPublisher, DataSourceTransactionManagerAutoConfiguration dataSourceTransactionManagerAutoConfiguration, UserBookRepo userBookRepo) {
         this.userRepo = userRepo;
         this.userEventPublisher = userEventPublisher;
+        this.dataSourceTransactionManagerAutoConfiguration = dataSourceTransactionManagerAutoConfiguration;
+        this.userBookRepo = userBookRepo;
     }
 
     public ResponseEntity<Optional<User>> saveOneUser(User userToSave) {
@@ -78,19 +85,17 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<Optional<List<Long>>> fetchUserBooks(Long userId) {
+    public ResponseEntity<Optional<List<UserBook>>> fetchUserBooks(Long userId) {
         Optional<User> user = Optional.empty();
-        Optional<List<Long>> bookId = Optional.empty();
         try {
             user = userRepo.findById(userId);
-
             if (user.isEmpty()) {
                 return ResponseEntityInitializer.NewResponseEntity(
                         HttpStatus.OK,
                         false,
                         "Could not find the user",
                         HttpStatus.NO_CONTENT,
-                        bookId
+                        Optional.empty()
                 );
             }
             else if (user.get().getBooks() == null || user.get().getBooks().isEmpty()) {
@@ -99,17 +104,13 @@ public class UserService {
                         false,
                         "User has no books",
                         HttpStatus.NO_CONTENT,
-                        bookId
+                        Optional.empty()
                 );
             }
-            List<Long> bookIds = new ArrayList<>();
-            for (UserBook book : user.get().getBooks()) {
-                bookIds.add(book.getId());
-            }
-            bookId = Optional.of(bookIds);
+
             return ResponseEntityInitializer.NewResponseEntity(
                     HttpStatus.OK,
-                    bookId
+                    Optional.of(user.get().getBooks().stream().toList())
             );
         } catch (Exception e) {
             return ResponseEntityInitializer.NewResponseEntity(
@@ -117,7 +118,7 @@ public class UserService {
                     false,
                     "An unknown error occurred",
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    bookId
+                    Optional.empty()
             );
         }
     }
@@ -126,10 +127,9 @@ public class UserService {
         Optional<Integer> rating = Optional.empty();
         Optional<User> user = Optional.empty();
         Optional<User> updatedUser = Optional.empty();
-        Optional<User> userOptional = Optional.empty();
+        Optional<User> databaseUser = Optional.empty();
 
-        rating = Optional.of(userBook.getRating());
-        if (rating.isEmpty() && (rating.get() < 1 || rating.get() > 10)) {
+        if (userBook.getRating() < 1 || userBook.getRating() > 10) {
             return ResponseEntityInitializer.NewResponseEntity(
                     HttpStatus.OK,
                     false,
@@ -140,8 +140,8 @@ public class UserService {
         }
 
         try {
-            userOptional = userRepo.findById(userId);
-            if (userOptional.isEmpty()) {
+            databaseUser = userRepo.findById(userId);
+            if (databaseUser.isEmpty()) {
                 return ResponseEntityInitializer.NewResponseEntity(
                         HttpStatus.OK,
                         false,
@@ -151,9 +151,8 @@ public class UserService {
                 );
             }
 
-            user = Optional.of(userOptional.get());
-            user.get().getBooks().add(userBook);
-            updatedUser = Optional.of(userRepo.save(user.get()));
+            databaseUser.get().getBooks().add(userBook);
+            updatedUser = Optional.of(userRepo.save(databaseUser.get()));
             userEventPublisher.publishAddBookEvent(userId, userBook);
 
             log.info("Added book to user with id: {} and queued the event", userId);
@@ -375,7 +374,9 @@ public class UserService {
             }
 
             User user = findUser.get();
-            notFinishedBooks = Optional.of(user.getBooks().stream().filter(book -> book.getReadingStatus() == ReadingStatus.DidNotFinish).toList());
+            notFinishedBooks = Optional.of(user.getBooks().stream()
+                    .filter(book -> book.getReadingStatus() == ReadingStatus.DidNotFinish)
+                    .collect(Collectors.toList()));
 
             if(notFinishedBooks.isEmpty()){
                 return ResponseEntityInitializer.NewResponseEntity(

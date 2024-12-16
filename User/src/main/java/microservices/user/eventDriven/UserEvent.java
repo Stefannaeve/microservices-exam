@@ -45,7 +45,6 @@ public class UserEvent {
         this.userId = userId;
         this.eventType = eventType;
         this.userBook = userBook;
-        this.rating = userBook.getRating();
     }
 
     @Override

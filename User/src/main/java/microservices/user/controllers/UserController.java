@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @GetMapping("/fetchUserBooks/{userId}")
-    public ResponseEntity<Optional<List<Long>>> fetchUserBooks(@PathVariable Long userId) {
+    public ResponseEntity<Optional<List<UserBook>>> fetchUserBooks(@PathVariable Long userId) {
         return userService.fetchUserBooks(userId);
     }
 
