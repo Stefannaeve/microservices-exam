@@ -335,7 +335,6 @@ public class BookService {
                 .build();
 
         RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory(httpClient));
-        String url = String.format("https://gutenberg.org/ebooks/%d.txt.utf-8", bookId.intValue());
         Optional<Book> book = Optional.empty();
 
         book = bookRepository.findById(bookId);
@@ -349,7 +348,17 @@ public class BookService {
                     book
             );
         }
+
         try {
+
+           if (book.get().getBookContent() != null){
+               return ResponseEntityInitializer.NewResponseEntity(
+                       HttpStatus.OK,
+                       book
+               );
+           }
+
+            String url = String.format("https://gutenberg.org/ebooks/%d.txt.utf-8", bookId.intValue());
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
             if (response.getStatusCode() == HttpStatus.OK){
