@@ -118,7 +118,7 @@ services:
       dockerfile: Dockerfile
     image: ${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-book
     deploy:
-      replicas: 3
+      replicas: 2
     ports:
       - '8084-8086:8082'
     networks:
@@ -140,7 +140,7 @@ services:
       dockerfile: Dockerfile
     image: ${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-comment
     deploy:
-      replicas: 3
+      replicas: 2
     ports:
       - '8081-8083:8081'
     networks:
@@ -162,7 +162,7 @@ services:
       dockerfile: Dockerfile
     image: ${DOCKERHUB_USERNAME}/microservices:${IMAGE_TAG}-user
     deploy:
-      replicas: 3
+      replicas: 2
     ports:
       - '8087-8089:8083'
     networks:
