@@ -129,10 +129,6 @@ public class UserService {
         Optional<User> updatedUser = Optional.empty();
         Optional<User> databaseUser = Optional.empty();
 
-        if(userBook == null){
-            System.out.println("\n this is null \n");
-        }
-
         if (userBook.getRating() < 1 || userBook.getRating() > 10) {
             return ResponseEntityInitializer.NewResponseEntity(
                     HttpStatus.OK,
@@ -155,8 +151,6 @@ public class UserService {
                 );
             }
 
-            System.out.println(user.toString());
-            System.out.println(userBook.toString());
             databaseUser.get().getBooks().add(userBook);
             updatedUser = Optional.of(userRepo.save(databaseUser.get()));
             userEventPublisher.publishAddBookEvent(userId, userBook);
@@ -383,9 +377,6 @@ public class UserService {
             notFinishedBooks = Optional.of(user.getBooks().stream()
                     .filter(book -> book.getReadingStatus() == ReadingStatus.DidNotFinish)
                     .collect(Collectors.toList()));
-
-            //notFinishedBooks = userRepo.findBy(user.getBooks(userRepo.findBy(ReadingStatus.DidNotFinish)));
-            //notFinishedBooks = Optional.of(user.getBooks().stream().allMatch(userBook -> userBook.getReadingStatus() == ReadingStatus.DidNotFinish));
 
             if(notFinishedBooks.isEmpty()){
                 return ResponseEntityInitializer.NewResponseEntity(
