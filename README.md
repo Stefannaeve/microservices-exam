@@ -94,15 +94,12 @@ DATABASE_PASSWORD=
 
 ##### Building with docker compose from root folder
 ```shell
-mvn clean install # For local runs
-```
-```shell
 cd docker &&
 docker compose --project-name book-hub up --scale book=1 --scale user=1 --scale comment=1 -d
 ```
 Docker compose up if you want the top amount of each service which is 3
 ```shell
-cd docker
+cd docker &&
 docker compose --project-name book-hub up
 ```
 
@@ -146,7 +143,6 @@ DELETE request can be used after testing
 | Fetches all comments                               | http://localhost:8000/manager/comment/fetchAll                                                      |
 | Updates comment                                    | http://localhost:8000/manager/comment/updateComment/user/{userId}/book/{bookId}/comment/{commentId} |
 | Deletes comment (goes through RabbitMQ)            | http://localhost:8000/manager/comment/delete/user/{userId}/book/{bookId}/comment/{commentId}        |
-| Updates comment                                    | http://localhost:8000/manager/comment/updateComment/user/{userId}/book/{bookId}/comment/{commentid} |
 | Adds a book to a user (goes through RabbitMQ)      | http://localhost:8000/manager/user/addBookToUser/{userId}                                           |
 | Fetches user by id                                 | http://localhost:8000/manager/user/fetchUserById/{userId}                                           |
 | Fetches unfinished books                           | http://localhost:8000/manager/user/{userId}/notFinishedReading                                      |
@@ -214,7 +210,7 @@ While we had initially planned to make a basic frontend, we ended up focusing ou
 ![img.png](documents/images/DatabaseDiagram.png)
 
 
-The separate services have their own database to both for access control and to keep the services as atomic as possible. bookContent is currently a part of the book entity, but we were planning to make it a separate entity like UserBook is to User, when we had time.
+The separate services have their own database to both for access control and to keep the services as atomic as possible. bookContent is currently a part of the book entity, but we were planning to make it a separate entity like UserBook is to User, when we had time. This would simplify both accessing, changing and transferring the data.
 
 ## Tools learned in PGR3402
 ### A bit about consul:
@@ -274,6 +270,5 @@ For example when retrieving a user profile. When a user goes to their profile pa
 This ensures that the profile data is accurately displayed to the user.
 
 net stop mysql80
-mvn spring-boot:run "-Dspring-boot.run.profiles=docker"
 
 
