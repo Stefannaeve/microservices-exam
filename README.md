@@ -90,6 +90,7 @@ DATABASE_PASSWORD=
 - Add your own database password
 - Keep "stefannaeve" if you want to pull the images from the groups dockerhub library
 - Change "stefannaeve" to something else if you wish to build local files
+- If you receive an error from the post_start hook, then you need to update docker compose to v2.30 or later
 
 ##### Building with docker compose from root folder
 ```shell
@@ -164,6 +165,10 @@ GITHUB SECRETS
 
 
 Operations between manager and the sub services are synchronous, but ADD, CREATE, and DELETE requests make the subservises communicate asynchronously between each other to synchronize data.
+
+## Frontend
+While we had initially planned to make a basic frontend, we ended up focusing our time on the requirements for the exam.
+
 
 ## Database Diagram
 
