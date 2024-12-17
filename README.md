@@ -165,6 +165,10 @@ GITHUB SECRETS
 
 Operations between manager and the sub services are synchronous, but ADD, CREATE, and DELETE requests make the subservises communicate asynchronously between each other to synchronize data.
 
+## Frontend
+While we had initially planned to make a basic frontend, we ended up focusing our time on the requirements for the exam.
+
+
 ## Database Diagram
 
 ![img.png](documents/images/DatabaseDiagram.png)
