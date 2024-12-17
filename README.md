@@ -94,15 +94,12 @@ DATABASE_PASSWORD=
 
 ##### Building with docker compose from root folder
 ```shell
-mvn clean install # For local runs
-```
-```shell
 cd docker &&
 docker compose --project-name book-hub up --scale book=1 --scale user=1 --scale comment=1 -d
 ```
-Docker compose up if you want the top amount of each service which is 3
+Docker compose up if you want the top amount of each service which is 2
 ```shell
-cd docker
+cd docker &&
 docker compose --project-name book-hub up
 ```
 
@@ -129,31 +126,30 @@ NB! The order goes in a somewhat order from top to bottom to fully test the appl
 All GET requests does not have an order after the objects are created.
 DELETE request can be used after testing
 
-| Explanation                                        | Endpoints                                                                                           |
-|----------------------------------------------------|-----------------------------------------------------------------------------------------------------|
-| Populates the database through gutenberg           | http://localhost:8000/manager/book/populateDatabaseFromGutenberg/{maxBookCount}                     |
-| Saves a book (goes through RabbitMQ)               | http://localhost:8000/manager/book/saveBook                                                         |
-| Fetches book by id                                 | http://localhost:8000/manager/book/fetchBookById/{bookId}                                           |
-| Fetches all books                                  | http://localhost:8000/manager/book/fetchAll                                                         |
-| Fetches book by author                             | http://localhost:8000/manager/book/fetchBookByAuthor/{author}                                       |
-| Fetches book by title                              | http://localhost:8000/manager/book/fetchBookByTitle/{title}                                         |
-| Fetches book content from gutenberg                | http://localhost:8000/manager/book/fetchBookContentFromGutenberg/{bookId}                           |
-| Deletes book by id (goes through RabbitMQ)         | http://localhost:8000/manager/book/delete/{bookId}                                                  |
-| Creates a user (goes through RabbitMQ              | http://localhost:8000/manager/user/saveOneUser                                                      |
-| Saves a comment (goes through RabbitMQ)            | http://localhost:8000/manager/comment/saveOneComment                                                |
-| Fetches comment by id                              | http://localhost:8000/manager/comment/fetchById/{commentId}                                         |
-| Fetches comment by userid and bookid               | http://localhost:8000/manager/comment/fetchCommentsByUserAndBook/user/{userId}/book/{bookId}        |
-| Fetches all comments                               | http://localhost:8000/manager/comment/fetchAll                                                      |
-| Updates comment                                    | http://localhost:8000/manager/comment/updateComment/user/{userId}/book/{bookId}/comment/{commentId} |
-| Deletes comment (goes through RabbitMQ)            | http://localhost:8000/manager/comment/delete/user/{userId}/book/{bookId}/comment/{commentId}        |
-| Updates comment                                    | http://localhost:8000/manager/comment/updateComment/user/{userId}/book/{bookId}/comment/{commentid} |
-| Adds a book to a user (goes through RabbitMQ)      | http://localhost:8000/manager/user/addBookToUser/{userId}                                           |
-| Fetches user by id                                 | http://localhost:8000/manager/user/fetchUserById/{userId}                                           |
-| Fetches unfinished books                           | http://localhost:8000/manager/user/{userId}/notFinishedReading                                      |
-| Checks if user has a book and fetches it           | http://localhost:8000/manager/user/checkIfUserHasBook/{userId}/{bookId}                             |
-| Updates reading progress and reading status        | http://localhost:8000/manager/user/{userId}/books/{bookId}/progress                                 |
-| Deletes book from a user (goes through RabbitMQ)   | http://localhost:8000/manager/user/{userId}/deleteBook/{bookId}                                     |
-| Deletes user and all books (goes through RabbitMQ) | http://localhost:8000/manager/user/delete/1                                                         |
+| Explanation                                                                                                                | Endpoints                                                                                           |
+|----------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| Populates the database through gutenberg                                                                                   | http://localhost:8000/manager/book/populateDatabaseFromGutenberg/{maxBookCount}                     |
+| Saves a book (goes through RabbitMQ)                                                                                       | http://localhost:8000/manager/book/saveBook                                                         |
+| Fetches book by id                                                                                                         | http://localhost:8000/manager/book/fetchBookById/{bookId}                                           |
+| Fetches all books                                                                                                          | http://localhost:8000/manager/book/fetchAll                                                         |
+| Fetches book by author                                                                                                     | http://localhost:8000/manager/book/fetchBookByAuthor/{author}                                       |
+| Fetches book by title                                                                                                      | http://localhost:8000/manager/book/fetchBookByTitle/{title}                                         |
+| Fetches book content from gutenberg                                                                                        | http://localhost:8000/manager/book/fetchBookContentFromGutenberg/{bookId}                           |
+| Deletes book by id (goes through RabbitMQ)                                                                                 | http://localhost:8000/manager/book/delete/{bookId}                                                  |
+| Creates a user (goes through RabbitMQ                                                                                      | http://localhost:8000/manager/user/saveOneUser                                                      |
+| Saves a comment (goes through RabbitMQ)                                                                                    | http://localhost:8000/manager/comment/saveOneComment                                                |
+| Fetches comment by id                                                                                                      | http://localhost:8000/manager/comment/fetchById/{commentId}                                         |
+| Fetches comment by userid and bookid                                                                                       | http://localhost:8000/manager/comment/fetchCommentsByUserAndBook/user/{userId}/book/{bookId}        |
+| Fetches all comments                                                                                                       | http://localhost:8000/manager/comment/fetchAll                                                      |
+| Updates comment                                                                                                            | http://localhost:8000/manager/comment/updateComment/user/{userId}/book/{bookId}/comment/{commentId} |
+| Deletes comment (goes through RabbitMQ)                                                                                    | http://localhost:8000/manager/comment/delete/user/{userId}/book/{bookId}/comment/{commentId}        |
+| Adds a book to a user (goes through RabbitMQ)                                                                              | http://localhost:8000/manager/user/addBookToUser/{userId}                                           |
+| Fetches user by id                                                                                                         | http://localhost:8000/manager/user/fetchUserById/{userId}                                           |
+| Fetches unfinished books                                                                                                   | http://localhost:8000/manager/user/{userId}/notFinishedReading                                      |
+| Checks if user has a book and fetches the user                                                                             | http://localhost:8000/manager/user/checkIfUserHasBook/{userId}/{bookId}                             |
+| Updates reading progress and reading status (accepted inputs: NotYetStarted, InProgress, Finished, DidNotFinish, ToBeRead) | http://localhost:8000/manager/user/{userId}/books/{bookId}/progress                                 |
+| Deletes book from a user (goes through RabbitMQ)                                                                           | http://localhost:8000/manager/user/{userId}/deleteBook/{bookId}                                     |
+| Deletes user and all books (goes through RabbitMQ)                                                                         | http://localhost:8000/manager/user/delete/1                                                         |
 
 
 
@@ -214,7 +210,7 @@ While we had initially planned to make a basic frontend, we ended up focusing ou
 ![img.png](documents/images/DatabaseDiagram.png)
 
 
-The separate services have their own database to both for access control and to keep the services as atomic as possible. bookContent is currently a part of the book entity, but we were planning to make it a separate entity like UserBook is to User, when we had time.
+The separate services have their own database to both for access control and to keep the services as atomic as possible. bookContent is currently a part of the book entity, but we were planning to make it a separate entity like UserBook is to User, when we had time. This would simplify both accessing, changing and transferring the data.
 
 ## Tools learned in PGR3402
 ### A bit about consul:
@@ -272,8 +268,4 @@ processing which helps the system to handle scenarios more effectively. For exam
 Operations such as GET, PUT and PATCH are synchronous. They require immediate responses to ensure data consistency and provide real time feedback to the users.
 For example when retrieving a user profile. When a user goes to their profile page, the application then sends a GET request to the server to fetch the information.
 This ensures that the profile data is accurately displayed to the user.
-
-net stop mysql80
-mvn spring-boot:run "-Dspring-boot.run.profiles=docker"
-
 
