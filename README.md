@@ -20,7 +20,7 @@
 
 Our main objective in this project is to create a server that allows users to host their own books, as well as fetch public domain books from gutenberg.
 The application will also provide a rating system where the user can rate books.
-The user can add their own comments to books and will be able specify if the comment is positive, negative or neutral.
+The user can add their own comments to books and will be able to specify if the comment is positive, negative or neutral.
 A book reading status will be included in this application. This means that the user can manually add their reading status.
 We are making the application for a specific audience. People looking for an open source
 solution for handling books. These people will be more centered around the idea of an
