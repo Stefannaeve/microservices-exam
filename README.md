@@ -122,12 +122,12 @@ docker volume rm book-hub_book_db book-hub_comment_db book-hub_user_db
 We have made a postman collection, and exported it as a JSON file. The JSON file is inside the document folder in root. 
 If you want to test the project through the JSON file we made, you can import it in postman.
 
-![img.png](documents/HowToImport.png)
+![img.png](documents/images/HowToImport.png)
 
 If the supplied json collection doesn’t work, then you can use this link and fork the collection.
 https://www.postman.com/microservices-0332/microservices-workspace/collection/t7o34o7/microservices-endpoints-test?action=share&creator=29811471
 
-![img.png](documents/ForkCollection.png)
+![img.png](documents/images/ForkCollection.png)
 
 ## Pull request to main branch
 If you fork this repo, you may add your own github secrets, and make a pull request into main, to make the workflow file 
@@ -156,6 +156,21 @@ GITHUB SECRETS
 - Manager Service: ```http://localhost:8080```
 - Consul UI: ```http://localhost:8500```
 - RabbitMQ UI: ```http://localhost:15672```
+
+
+## Service diagram
+
+![img.png](documents/images/NetworkDiagram.png)
+
+
+Operations between manager and the sub services are synchronous, but ADD, CREATE, and DELETE requests make the subservises communicate asynchronously between each other to synchronize data.
+
+## Database Diagram
+
+![img.png](documents/images/DatabaseDiagram.png)
+
+
+The separate services have their own database to both for access control and to keep the services as atomic as possible. bookContent is currently a part of the book entity, but we were planning to make it a separate entity like UserBook is to User, when we had time.
 
 ## Tools learned in PGR3402
 ### A bit about consul:
