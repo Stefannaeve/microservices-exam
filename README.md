@@ -155,17 +155,6 @@ DELETE request can be used after testing
 | Deletes user and all books (goes through RabbitMQ) | http://localhost:8000/manager/user/delete/1                                                         |
 
 
-
-
-
-
-
-
-
-
-
-
-
 ![img.png](documents/img.png)
 
 ## Pull request to main branch
