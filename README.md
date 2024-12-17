@@ -155,6 +155,7 @@ DELETE request can be used after testing
 | Deletes book from a user (goes through RabbitMQ)   | http://localhost:8000/manager/user/{userId}/deleteBook/{bookId}                                     |
 | Deletes user and all books (goes through RabbitMQ) | http://localhost:8000/manager/user/delete/{userId}                                                  |
 
+
 ![img.png](documents/images/HowToImport.png)
 
 If the supplied json collection doesn’t work, then you can use this link and fork the collection.
