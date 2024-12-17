@@ -203,8 +203,7 @@ receive the same message simutaneously. For our application, publishers send mes
 queues. The consumer/listener, retrieve this message payload asynchronously, that allows for efficient scaling as we can add more consumers to handle increased load without affecting publisher
 
 Operations such as CREATE, ADD and DELETE are processed asynchronously through the queue. This decouples services, enhancing the scalability, by not waiting for immediate
-processing which helps the system to handle scenarios more effectively. For example when a user is sending an email, the client queues the message and returns control back to the client immediately,
-allowing for continuation of other tasks while the email is being sent in the background
+processing which helps the system to handle scenarios more effectively. For example, when a user is deleted, all comments belonging to that user is deleted asynchronously allowing the client to keep handling requests., 
 
 Operations such as GET, PUT and PATCH are synchronous. They require immediate responses to ensure data consistency and provide real time feedback to the users.
 For example when retrieving a user profile. When a user goes to their profile page, the application then sends a GET request to the server to fetch the information.
