@@ -66,8 +66,8 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}/books/{bookId}/progress")
-    public ResponseEntity<Optional<UserDTO>> updateReadingProgress(@PathVariable Long userId, @PathVariable Long bookId, @RequestBody Map<String, String> requestBody) {
-        return userClient.externalUpdateReadingProgress(userId, bookId, requestBody);
+    public ResponseEntity<Optional<UserDTO>> updateReadingProgressAndReadingStatus(@PathVariable Long userId, @PathVariable Long bookId, @RequestBody Map<String, String> requestBody) {
+        return userClient.externalUpdateReadingProgressAndReadingStatus(userId, bookId, requestBody);
     }
 
 }

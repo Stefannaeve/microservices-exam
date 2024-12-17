@@ -400,7 +400,7 @@ public class UserClient {
         return response;
     }
 
-    public ResponseEntity<Optional<UserDTO>> externalUpdateReadingProgress(Long userId, Long bookId, Map<String, String> requestBody) {
+    public ResponseEntity<Optional<UserDTO>> externalUpdateReadingProgressAndReadingStatus(Long userId, Long bookId, Map<String, String> requestBody) {
         String url = restServiceUrl + "/" + userId + "/books/" + bookId + "/progress";
         log.info("Request URL: {}", url);
 
