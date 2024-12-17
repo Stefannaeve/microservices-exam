@@ -97,7 +97,7 @@ DATABASE_PASSWORD=
 cd docker &&
 docker compose --project-name book-hub up --scale book=1 --scale user=1 --scale comment=1 -d
 ```
-Docker compose up if you want the top amount of each service which is 3
+Docker compose up if you want the top amount of each service which is 2
 ```shell
 cd docker &&
 docker compose --project-name book-hub up
@@ -268,7 +268,4 @@ processing which helps the system to handle scenarios more effectively. For exam
 Operations such as GET, PUT and PATCH are synchronous. They require immediate responses to ensure data consistency and provide real time feedback to the users.
 For example when retrieving a user profile. When a user goes to their profile page, the application then sends a GET request to the server to fetch the information.
 This ensures that the profile data is accurately displayed to the user.
-
-net stop mysql80
-
 
