@@ -122,7 +122,12 @@ docker volume rm book-hub_book_db book-hub_comment_db book-hub_user_db
 We have made a postman collection, and exported it as a JSON file. The JSON file is inside the document folder in root. 
 If you want to test the project through the JSON file we made, you can import it in postman.
 
-![img.png](documents/img.png)
+![img.png](documents/HowToImport.png)
+
+If the supplied json collection doesn’t work, then you can use this link and fork the collection.
+https://www.postman.com/microservices-0332/microservices-workspace/collection/t7o34o7/microservices-endpoints-test?action=share&creator=29811471
+
+![img.png](documents/ForkCollection.png)
 
 ## Pull request to main branch
 If you fork this repo, you may add your own github secrets, and make a pull request into main, to make the workflow file 
