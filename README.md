@@ -125,7 +125,7 @@ These endpoints are what is provided in postman. This is more for clarification 
 NB! The order goes in a somewhat order from top to bottom to fully test the application depending on what you want to test, but populating the database from gutenberg is the first thing that needs to happen for the book service
 All GET requests does not have an order after the objects are created.
 DELETE request can be used after testing
-                                                |
+
 
 | Explanation                                                                                                                | Endpoints                                                                                           |
 |----------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
