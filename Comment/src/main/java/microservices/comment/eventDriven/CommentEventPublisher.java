@@ -2,7 +2,6 @@
 package microservices.comment.eventDriven;
 
 import lombok.extern.slf4j.Slf4j;
-import microservices.comment.models.Comment;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
