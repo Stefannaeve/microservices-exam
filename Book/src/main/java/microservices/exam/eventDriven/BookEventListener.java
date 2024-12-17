@@ -1,13 +1,11 @@
 package microservices.exam.eventDriven;
 
 import lombok.extern.slf4j.Slf4j;
-import microservices.exam.models.Book;
 import microservices.exam.repository.BookRepository;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
 import java.util.concurrent.Executor;
 
 @Slf4j

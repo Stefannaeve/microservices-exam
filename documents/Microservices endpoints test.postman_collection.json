@@ -4,7 +4,7 @@
 		"name": "Microservices endpoints test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "29811471",
-		"_collection_link": "https://microservices-0332.postman.co/workspace/Microservices-Workspace~192a21f4-2b0f-407a-8ac0-16b199f67d45/collection/29811471-ea18d900-da19-4041-af35-d49f3929ffbe?action=share&source=collection_link&creator=29811471"
+		"_collection_link": "https://www.postman.com/microservices-0332/workspace/microservices-workspace/collection/29811471-ea18d900-da19-4041-af35-d49f3929ffbe?action=share&source=collection_link&creator=29811471"
 	},
 	"item": [
 		{
@@ -41,6 +41,28 @@
 					"response": []
 				},
 				{
+					"name": "Delete book by id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/manager/book/delete/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"manager",
+								"book",
+								"delete",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Fetch book by id",
 					"request": {
 						"method": "GET",
@@ -68,13 +90,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8082/book/fetchAll",
+							"raw": "http://localhost:8000/manager/book/fetchAll",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8082",
+							"port": "8000",
 							"path": [
+								"manager",
 								"book",
 								"fetchAll"
 							]
@@ -83,7 +106,7 @@
 					"response": []
 				},
 				{
-					"name": "book/fetchBookByAuthor",
+					"name": "fetchBookByAuthor",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -105,12 +128,12 @@
 					"response": []
 				},
 				{
-					"name": "book/fetchBookByTitle",
+					"name": "fetchBookByTitle",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8000/manager/book/fetchBookByTitle/Mistborn",
+							"raw": "http://localhost:8000/manager/book/fetchBookByTitle/Test7",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -120,29 +143,7 @@
 								"manager",
 								"book",
 								"fetchBookByTitle",
-								"Mistborn"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete book by id",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8000/manager/book/delete/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"manager",
-								"book",
-								"delete",
-								"1"
+								"Test7"
 							]
 						}
 					},
@@ -152,7 +153,21 @@
 					"name": "populateDatabaseFromGutenberg",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/manager/book/populateDatabaseFromGutenberg/10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"manager",
+								"book",
+								"populateDatabaseFromGutenberg",
+								"10"
+							]
+						}
 					},
 					"response": []
 				},
@@ -160,7 +175,21 @@
 					"name": "fetchBookContentById",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/manager/book/fetchBookContentFromGutenberg/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"manager",
+								"book",
+								"fetchBookContentFromGutenberg",
+								"1"
+							]
+						}
 					},
 					"response": []
 				}
@@ -169,6 +198,99 @@
 		{
 			"name": "Comment",
 			"item": [
+				{
+					"name": "SaveOneComment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": 1,\n  \"bookId\": 1,\n  \"page\": 45,\n  \"positive\": true,\n  \"negative\": false,\n  \"text\": \"This book was amazing!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/manager/comment/saveOneComment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"manager",
+								"comment",
+								"saveOneComment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete comment by id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/manager/comment/delete/user/4/book/12/comment/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"manager",
+								"comment",
+								"delete",
+								"user",
+								"4",
+								"book",
+								"12",
+								"comment",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update comment",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"text\": \"This was a very bad ending!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/manager/comment/updateComment/user/4/book/12/comment/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"manager",
+								"comment",
+								"updateComment",
+								"user",
+								"4",
+								"book",
+								"12",
+								"comment",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "Fetch comment by id",
 					"request": {
@@ -197,7 +319,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8000/manager/comment/fetchCommentsByUserAndBook/user/1/book/1",
+							"raw": "http://localhost:8000/manager/comment/fetchCommentsByUserAndBook/user/4/book/12",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -208,9 +330,9 @@
 								"comment",
 								"fetchCommentsByUserAndBook",
 								"user",
-								"1",
+								"4",
 								"book",
-								"1"
+								"12"
 							]
 						}
 					},
@@ -222,107 +344,16 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8000/comment/fetchAll",
+							"raw": "http://localhost:8000/manager/comment/fetchAll",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8000",
 							"path": [
+								"manager",
 								"comment",
 								"fetchAll"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete comment by id",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8081/comment/delete/user/{userId}/book/{bookId}/comment/{commentId}",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8081",
-							"path": [
-								"comment",
-								"delete",
-								"user",
-								"{userId}",
-								"book",
-								"{bookId}",
-								"comment",
-								"{commentId}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update comment",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"userId\": 1,\r\n    \"bookId\": 1,\r\n    \"page\": 45,\r\n    \"positive\": true,\r\n    \"negative\": false,\r\n    \"text\": \"This book was ok!\",\r\n    \"opinion\": \"positive\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8000/manager/comment/updateComment/user/1/book/1/comment/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"manager",
-								"comment",
-								"updateComment",
-								"user",
-								"1",
-								"book",
-								"1",
-								"comment",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "SaveOneComment",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"userId\": 1,\n  \"bookId\": 1,\n  \"page\": 45,\n  \"positive\": true,\n  \"negative\": false,\n  \"text\": \"This book was amazing!\",\n  \"opinion\": \"positive\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8000/manager/comment/saveOneComment",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"manager",
-								"comment",
-								"saveOneComment"
 							]
 						}
 					},
@@ -340,7 +371,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"Hade1\"\n}",
+							"raw": "{\n    \"username\": \"Paul Atreides\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -348,13 +379,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/user/saveOneUser",
+							"raw": "http://localhost:8000/manager/user/saveOneUser",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8000",
 							"path": [
+								"manager",
 								"user",
 								"saveOneUser"
 							]
@@ -369,7 +401,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\": 1,\n    \"title\": \"Testing\",\n    \"author\": \"Tester\",\n    \"pages\": 300,\n    \"readingProgress\": \"50%\",\n    \"readingStatus\": \"DidNotFinish\",\n    \"rating\": 1\n}",
+							"raw": "{\n    \"id\": 1,\n    \"title\": \"Dune\",\n    \"author\": \"Denis Villeneuve\",\n    \"pages\": 300,\n    \"readingProgress\": \"50%\",\n    \"readingStatus\": \"InProgress\",\n    \"rating\": 5\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -421,13 +453,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8000/user/fetchUserBooks/1",
+							"raw": "http://localhost:8000/manager/user/fetchUserBooks/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8000",
 							"path": [
+								"manager",
 								"user",
 								"fetchUserBooks",
 								"1"
@@ -440,7 +473,21 @@
 					"name": "notFinishedReading",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/manager/user/1/notFinishedReading",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"manager",
+								"user",
+								"1",
+								"notFinishedReading"
+							]
+						}
 					},
 					"response": []
 				},
@@ -450,7 +497,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8000/manager/user/fetchUserWithBook/1/1",
+							"raw": "http://localhost:8000/manager/user/checkIfUserHasBook/1/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -459,7 +506,7 @@
 							"path": [
 								"manager",
 								"user",
-								"fetchUserWithBook",
+								"checkIfUserHasBook",
 								"1",
 								"1"
 							]
@@ -471,7 +518,21 @@
 					"name": "DeleteUserById",
 					"request": {
 						"method": "DELETE",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/manager/user/delete/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"manager",
+								"user",
+								"delete",
+								"1"
+							]
+						}
 					},
 					"response": []
 				},
@@ -479,7 +540,22 @@
 					"name": "DeleteBookFromUser",
 					"request": {
 						"method": "DELETE",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/manager/user/1/deleteBook/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"manager",
+								"user",
+								"1",
+								"deleteBook",
+								"1"
+							]
+						}
 					},
 					"response": []
 				},
@@ -490,7 +566,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"newProgress\": \"100%\"\n}",
+							"raw": "{\n    \"newReadingProgress\": \"70%\",\n    \"newReadingStatus\": \"InProgress\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -498,17 +574,18 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8083/user/1/books/101/progress",
+							"raw": "http://localhost:8000/manager/user/1/books/1/progress",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8083",
+							"port": "8000",
 							"path": [
+								"manager",
 								"user",
 								"1",
 								"books",
-								"101",
+								"1",
 								"progress"
 							]
 						}
