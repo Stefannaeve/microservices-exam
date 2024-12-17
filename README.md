@@ -146,7 +146,7 @@ DELETE request can be used after testing
 | Adds a book to a user (goes through RabbitMQ)      | http://localhost:8000/manager/user/addBookToUser/{userId}                                           |
 | Fetches user by id                                 | http://localhost:8000/manager/user/fetchUserById/{userId}                                           |
 | Fetches unfinished books                           | http://localhost:8000/manager/user/{userId}/notFinishedReading                                      |
-| Checks if user has a book and fetches it           | http://localhost:8000/manager/user/checkIfUserHasBook/{userId}/{bookId}                             |
+| Checks if user has a book and fetches the user    | http://localhost:8000/manager/user/checkIfUserHasBook/{userId}/{bookId}                             |
 | Updates reading progress and reading status        | http://localhost:8000/manager/user/{userId}/books/{bookId}/progress                                 |
 | Deletes book from a user (goes through RabbitMQ)   | http://localhost:8000/manager/user/{userId}/deleteBook/{bookId}                                     |
 | Deletes user and all books (goes through RabbitMQ) | http://localhost:8000/manager/user/delete/1                                                         |
