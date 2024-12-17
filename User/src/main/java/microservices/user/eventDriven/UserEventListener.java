@@ -1,7 +1,6 @@
 package microservices.user.eventDriven;
 
 import lombok.extern.slf4j.Slf4j;
-import microservices.user.models.User;
 import microservices.user.models.UserBook;
 import microservices.user.repositories.UserBookRepo;
 import microservices.user.repositories.UserRepo;
@@ -9,7 +8,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
 import java.util.concurrent.Executor;
 
 @Component

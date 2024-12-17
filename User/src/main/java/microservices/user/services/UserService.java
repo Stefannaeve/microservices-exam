@@ -2,20 +2,23 @@
 package microservices.user.services;
 
 import lombok.extern.slf4j.Slf4j;
-import microservices.user.repositories.UserBookRepo;
-import microservices.user.responseEntityInitializer.ResponseEntityInitializer;
 import microservices.user.eventDriven.UserEventPublisher;
 import microservices.user.models.ReadingStatus;
 import microservices.user.models.User;
 import microservices.user.models.UserBook;
+import microservices.user.repositories.UserBookRepo;
 import microservices.user.repositories.UserRepo;
+import microservices.user.responseEntityInitializer.ResponseEntityInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

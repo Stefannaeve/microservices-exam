@@ -3,8 +3,8 @@ package microservices.manager.ManagerClients;
 
 import lombok.extern.slf4j.Slf4j;
 import microservices.manager.dtos.BookDTO;
-import microservices.manager.responseEntityInitializer.ResponseEntityInitializer;
 import microservices.manager.dtos.UserDTO;
+import microservices.manager.responseEntityInitializer.ResponseEntityInitializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -13,7 +13,6 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.awt.print.Book;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

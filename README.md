@@ -20,7 +20,7 @@
 
 Our main objective in this project is to create a server that allows users to host their own books, as well as fetch public domain books from gutenberg.
 The application will also provide a rating system where the user can rate books.
-The user can add their own comments to books and will be able specify if the comment is positive, negative or neutral.
+The user can add their own comments to books and will be able to specify if the comment is positive, negative or neutral.
 A book reading status will be included in this application. This means that the user can manually add their reading status.
 We are making the application for a specific audience. People looking for an open source
 solution for handling books. These people will be more centered around the idea of an
@@ -90,13 +90,14 @@ DATABASE_PASSWORD=
 - Add your own database password
 - Keep "stefannaeve" if you want to pull the images from the groups dockerhub library
 - Change "stefannaeve" to something else if you wish to build local files
+- If you receive an error from the post_start hook, then you need to update docker compose to v2.30 or later
 
 ##### Building with docker compose from root folder
 ```shell
 mvn clean install # For local runs
 ```
 ```shell
-cd docker
+cd docker &&
 docker compose --project-name book-hub up --scale book=1 --scale user=1 --scale comment=1 -d
 ```
 Docker compose up if you want the top amount of each service which is 3
@@ -121,6 +122,7 @@ docker volume rm book-hub_book_db book-hub_comment_db book-hub_user_db
 ## How to test project
 We have made a postman collection, and exported it as a JSON file. The JSON file is inside the document folder in root. 
 If you want to test the project through the JSON file we made, you can import it in postman.
+
 
 ### Endpoints
 These endpoints are what is provided in postman. This is more for clarification of what they do
@@ -160,16 +162,13 @@ DELETE request can be used after testing
 
 
 
+![img.png](documents/images/HowToImport.png)
 
+If the supplied json collection doesn’t work, then you can use this link and fork the collection.
+https://www.postman.com/microservices-0332/microservices-workspace/collection/t7o34o7/microservices-endpoints-test?action=share&creator=29811471
 
+![img.png](documents/images/ForkCollection.png)
 
-
-
-
-
-
-
-![img.png](documents/img.png)
 
 ## Pull request to main branch
 If you fork this repo, you may add your own github secrets, and make a pull request into main, to make the workflow file 
@@ -198,6 +197,25 @@ GITHUB SECRETS
 - Manager Service: ```http://localhost:8080```
 - Consul UI: ```http://localhost:8500```
 - RabbitMQ UI: ```http://localhost:15672```
+
+
+## Service diagram
+
+![img.png](documents/images/NetworkDiagram.png)
+
+
+Operations between manager and the sub services are synchronous, but ADD, CREATE, and DELETE requests make the subservises communicate asynchronously between each other to synchronize data.
+
+## Frontend
+While we had initially planned to make a basic frontend, we ended up focusing our time on the requirements for the exam.
+
+
+## Database Diagram
+
+![img.png](documents/images/DatabaseDiagram.png)
+
+
+The separate services have their own database to both for access control and to keep the services as atomic as possible. bookContent is currently a part of the book entity, but we were planning to make it a separate entity like UserBook is to User, when we had time.
 
 ## Tools learned in PGR3402
 ### A bit about consul:
@@ -250,8 +268,7 @@ receive the same message simutaneously. For our application, publishers send mes
 queues. The consumer/listener, retrieve this message payload asynchronously, that allows for efficient scaling as we can add more consumers to handle increased load without affecting publisher
 
 Operations such as CREATE, ADD and DELETE are processed asynchronously through the queue. This decouples services, enhancing the scalability, by not waiting for immediate
-processing which helps the system to handle scenarios more effectively. For example when a user is sending an email, the client queues the message and returns control back to the client immediately,
-allowing for continuation of other tasks while the email is being sent in the background
+processing which helps the system to handle scenarios more effectively. For example, when a user is deleted, all comments belonging to that user is deleted asynchronously allowing the client to keep handling requests., 
 
 Operations such as GET, PUT and PATCH are synchronous. They require immediate responses to ensure data consistency and provide real time feedback to the users.
 For example when retrieving a user profile. When a user goes to their profile page, the application then sends a GET request to the server to fetch the information.
