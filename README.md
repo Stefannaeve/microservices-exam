@@ -166,9 +166,6 @@ DELETE request can be used after testing
 
 
 
-
-
-
 ![img.png](documents/img.png)
 
 ## Pull request to main branch
