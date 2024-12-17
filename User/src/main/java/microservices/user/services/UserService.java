@@ -15,10 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -127,8 +124,6 @@ public class UserService {
     }
 
     public ResponseEntity<Optional<User>> addBookToUser(Long userId, UserBook userBook) {
-        Optional<Integer> rating = Optional.empty();
-        Optional<User> user = Optional.empty();
         Optional<User> updatedUser = Optional.empty();
         Optional<User> databaseUser = Optional.empty();
 
@@ -336,7 +331,7 @@ public class UserService {
                         user
                 );
             }
-            if (user.get().getBooks().stream().noneMatch(userBook -> userBook.getId() == bookId)){
+            if (user.get().getBooks().stream().noneMatch(userBook -> Objects.equals(userBook.getId(), bookId))){
                 return ResponseEntityInitializer.NewResponseEntity(
                         HttpStatus.OK,
                         false,
