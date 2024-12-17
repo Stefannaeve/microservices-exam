@@ -197,6 +197,19 @@ Local services, except gateway and manager, are assigned a range of ports (our c
 #### Persistent data storage
 We use docker volumes for database services to retain data even when the containers are restarted
 
+### RabbitMQ
+We use RabbitMQ to manage our messaging between services. We chose a fanout exchange to broadcast the messages to all the bounded queues. This ensures that multiple consumers
+receive the same message simutaneously. For our application, publishers send message payloads to RabbitMQ, which then distrubutes them to the appropiate
+queues. The consumer/listener, retrieve this message payload asynchronously, that allows for efficient scaling as we can add more consumers to handle increased load without affecting publisher
+
+Operations such as CREATE, ADD and DELETE are processed asynchronously through the queue. This decouples services, enhancing the scalability, by not waiting for immediate
+processing which helps the system to handle scenarios more effectively. For example when a user is sending an email, the client queues the message and returns control back to the client immediately,
+allowing for continuation of other tasks while the email is being sent in the background
+
+Operations such as GET, PUT and PATCH are synchronous. They require immediate responses to ensure data consistency and provide real time feedback to the users.
+For example when retrieving a user profile. When a user goes to their profile page, the application sends a GET request to the server to fetch the information.
+This ensures that the profile data is accurately displayed to the user.
+
 net stop mysql80
 mvn spring-boot:run "-Dspring-boot.run.profiles=docker"
 
