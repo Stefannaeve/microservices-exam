@@ -126,6 +126,7 @@ NB! The order goes in a somewhat order from top to bottom to fully test the appl
 All GET requests does not have an order after the objects are created.
 DELETE request can be used after testing
 
+
 | Explanation                                                                                                                | Endpoints                                                                                           |
 |----------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
 | Populates the database through gutenberg                                                                                   | http://localhost:8000/manager/book/populateDatabaseFromGutenberg/{maxBookCount}                     |
@@ -149,12 +150,7 @@ DELETE request can be used after testing
 | Checks if user has a book and fetches the user                                                                             | http://localhost:8000/manager/user/checkIfUserHasBook/{userId}/{bookId}                             |
 | Updates reading progress and reading status (accepted inputs: NotYetStarted, InProgress, Finished, DidNotFinish, ToBeRead) | http://localhost:8000/manager/user/{userId}/books/{bookId}/progress                                 |
 | Deletes book from a user (goes through RabbitMQ)                                                                           | http://localhost:8000/manager/user/{userId}/deleteBook/{bookId}                                     |
-| Deletes user and all books (goes through RabbitMQ)                                                                         | http://localhost:8000/manager/user/delete/1                                                         |
-
-
-
-
-
+| Deletes user and all books (goes through RabbitMQ)                                                                         | http://localhost:8000/manager/user/delete/{userId}                                                  |
 
 
 ![img.png](documents/images/HowToImport.png)
