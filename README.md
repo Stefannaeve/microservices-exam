@@ -207,7 +207,7 @@ processing which helps the system to handle scenarios more effectively. For exam
 allowing for continuation of other tasks while the email is being sent in the background
 
 Operations such as GET, PUT and PATCH are synchronous. They require immediate responses to ensure data consistency and provide real time feedback to the users.
-For example when retrieving a user profile. When a user goes to their profile page, the application sends a GET request to the server to fetch the information.
+For example when retrieving a user profile. When a user goes to their profile page, the application then sends a GET request to the server to fetch the information.
 This ensures that the profile data is accurately displayed to the user.
 
 net stop mysql80
