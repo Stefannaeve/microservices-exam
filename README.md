@@ -123,12 +123,51 @@ docker volume rm book-hub_book_db book-hub_comment_db book-hub_user_db
 We have made a postman collection, and exported it as a JSON file. The JSON file is inside the document folder in root. 
 If you want to test the project through the JSON file we made, you can import it in postman.
 
+### Endpoints
+These endpoints are what is provided in postman. This is more for clarification of what they do
+NB! The order goes in a somewhat order from top to bottom to fully test the application depending on what you want to test, but populating the database from gutenberg is the first thing that needs to happen for the book service
+All GET requests does not have an order after the objects are created.
+DELETE request can be used after testing
+
+| Explanation                                        | Endpoints                                                                                           |
+|----------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| Populates the database through gutenberg           | http://localhost:8000/manager/book/populateDatabaseFromGutenberg/{maxBookCount}                     |
+| Saves a book (goes through RabbitMQ)               | http://localhost:8000/manager/book/saveBook                                                         |
+| Fetches book by id                                 | http://localhost:8000/manager/book/fetchBookById/{bookId}                                           |
+| Fetches all books                                  | http://localhost:8000/manager/book/fetchAll                                                         |
+| Fetches book by author                             | http://localhost:8000/manager/book/fetchBookByAuthor/{author}                                       |
+| Fetches book by title                              | http://localhost:8000/manager/book/fetchBookByTitle/{title}                                         |
+| Fetches book content from gutenberg                | http://localhost:8000/manager/book/fetchBookContentFromGutenberg/{bookId}                           |
+| Deletes book by id (goes through RabbitMQ)         | http://localhost:8000/manager/book/delete/{bookId}                                                  |
+| Creates a user (goes through RabbitMQ              | http://localhost:8000/manager/user/saveOneUser                                                      |
+| Saves a comment (goes through RabbitMQ)            | http://localhost:8000/manager/comment/saveOneComment                                                |
+| Fetches comment by id                              | http://localhost:8000/manager/comment/fetchById/{commentId}                                         |
+| Fetches comment by userid and bookid               | http://localhost:8000/manager/comment/fetchCommentsByUserAndBook/user/{userId}/book/{bookId}        |
+| Fetches all comments                               | http://localhost:8000/manager/comment/fetchAll                                                      |
+| Updates comment                                    | http://localhost:8000/manager/comment/updateComment/user/{userId}/book/{bookId}/comment/{commentId} |
+| Deletes comment (goes through RabbitMQ)            | http://localhost:8000/manager/comment/delete/user/{userId}/book/{bookId}/comment/{commentId}        |
+| Updates comment                                    | http://localhost:8000/manager/comment/updateComment/user/{userId}/book/{bookId}/comment/{commentid} |
+| Adds a book to a user (goes through RabbitMQ)      | http://localhost:8000/manager/user/addBookToUser/{userId}                                           |
+| Fetches user by id                                 | http://localhost:8000/manager/user/fetchUserById/{userId}                                           |
+| Fetches unfinished books                           | http://localhost:8000/manager/user/{userId}/notFinishedReading                                      |
+| Checks if user has a book and fetches it           | http://localhost:8000/manager/user/checkIfUserHasBook/{userId}/{bookId}                             |
+| Updates reading progress and reading status        | http://localhost:8000/manager/user/{userId}/books/{bookId}/progress                                 |
+| Deletes book from a user (goes through RabbitMQ)   | http://localhost:8000/manager/user/{userId}/deleteBook/{bookId}                                     |
+| Deletes user and all books (goes through RabbitMQ) | http://localhost:8000/manager/user/delete/1                                                         |
+
+
+
+
+
+
+
 ![img.png](documents/images/HowToImport.png)
 
 If the supplied json collection doesn’t work, then you can use this link and fork the collection.
 https://www.postman.com/microservices-0332/microservices-workspace/collection/t7o34o7/microservices-endpoints-test?action=share&creator=29811471
 
 ![img.png](documents/images/ForkCollection.png)
+
 
 ## Pull request to main branch
 If you fork this repo, you may add your own github secrets, and make a pull request into main, to make the workflow file 

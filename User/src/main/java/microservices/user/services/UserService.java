@@ -251,7 +251,7 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<Optional<User>> updateReadingProgress(Long userId, Long bookId, Map<String, String> requestBody) {
+    public ResponseEntity<Optional<User>> updateReadingProgressAndReadingStatus(Long userId, Long bookId, Map<String, String> requestBody) {
         Optional<User> user = Optional.empty();
         try {
             user = Optional.ofNullable(userRepo.findById(userId).orElse(null));
