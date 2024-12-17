@@ -10,5 +10,7 @@ public class CommentDTO {
     private Long userId;
     private Long bookId;
     private int page;
+    private boolean positive;
+    private boolean negative;
     private String text;
 }
