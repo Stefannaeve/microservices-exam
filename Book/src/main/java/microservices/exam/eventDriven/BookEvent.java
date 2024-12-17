@@ -3,13 +3,11 @@ package microservices.exam.eventDriven;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import java.time.LocalDate;
 
 
 @Getter
 @Setter
-@ToString
 public class BookEvent {
     private Long bookId;
     private String eventType;
@@ -18,9 +16,6 @@ public class BookEvent {
     private int pages;
     private LocalDate publishDate;
     private String bookContent;
-
-    public BookEvent() {
-    }
 
     // delete events
     public BookEvent(Long bookId, String eventType) {

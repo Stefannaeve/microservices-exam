@@ -37,36 +37,38 @@ public class CommentService {
         // Check if book exists
         try {
             book = bookClient.externalGetBookById(bookId);
+            if (book == null || book.getBody().isEmpty()){
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.BAD_REQUEST,
+                        false,
+                        "Did not find the book",
+                        HttpStatus.BAD_REQUEST,
+                        Optional.empty()
+                );
+            }
         } catch (Exception exception) {
             log.error(exception.getMessage());
         }
 
-        if (book == null || book.getBody().isEmpty()){
-            return ResponseEntityInitializer.NewResponseEntity(
-                    HttpStatus.BAD_REQUEST,
-                    false,
-                    "Did not find the book",
-                    HttpStatus.BAD_REQUEST,
-                    Optional.empty()
-            );
-        }
+
 
         // Check of user exists
         try {
             user = userClient.externalGetUserById(userId);
+            if (user == null || user.getBody().isEmpty()){
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.BAD_REQUEST,
+                        false,
+                        "did not find the user",
+                        HttpStatus.BAD_REQUEST,
+                        Optional.empty()
+                );
+            }
         } catch (Exception exception) {
             log.error(exception.getMessage());
         }
 
-        if (user == null || user.getBody().isEmpty()){
-            return ResponseEntityInitializer.NewResponseEntity(
-                    HttpStatus.BAD_REQUEST,
-                    false,
-                    "did not find the user",
-                    HttpStatus.BAD_REQUEST,
-                    Optional.empty()
-            );
-        }
+
 
         try {
             responseEntityComments = commentClient.fetchByUserIdAndBookId(userId, bookId);
@@ -97,36 +99,36 @@ public class CommentService {
         // Check if book exists
         try {
             book = bookClient.externalGetBookById(commentDTO.getBookId());
+            if (book == null || book.getBody().isEmpty()){
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.BAD_REQUEST,
+                        false,
+                        "Did not find the book",
+                        HttpStatus.BAD_REQUEST,
+                        Optional.empty()
+                );
+            }
         } catch (Exception exception) {
             log.error(exception.getMessage());
         }
 
-        if (book == null || book.getBody().isEmpty()){
-            return ResponseEntityInitializer.NewResponseEntity(
-                    HttpStatus.BAD_REQUEST,
-                    false,
-                    "Did not find the book",
-                    HttpStatus.BAD_REQUEST,
-                    Optional.empty()
-            );
-        }
 
         // Check of user exists
         try {
             user = userClient.externalGetUserById(commentDTO.getUserId());
+            if (user == null || user.getBody().isEmpty()){
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.BAD_REQUEST,
+                        false,
+                        "did not find the user",
+                        HttpStatus.BAD_REQUEST,
+                        Optional.empty()
+                );
+            }
         } catch (Exception exception) {
             log.error(exception.getMessage());
         }
 
-        if (user == null || user.getBody().isEmpty()){
-            return ResponseEntityInitializer.NewResponseEntity(
-                    HttpStatus.BAD_REQUEST,
-                    false,
-                    "did not find the user",
-                    HttpStatus.BAD_REQUEST,
-                    Optional.empty()
-            );
-        }
 
         try {
             responseEntityComment = commentClient.saveById(commentDTO);
@@ -160,36 +162,36 @@ public class CommentService {
         // Check if book exists
         try {
             book = bookClient.externalGetBookById(bookId);
+            if (book == null || book.getBody().isEmpty()){
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.BAD_REQUEST,
+                        false,
+                        "Did not find the book",
+                        HttpStatus.BAD_REQUEST,
+                        Optional.empty()
+                );
+            }
         } catch (Exception exception) {
             log.error(exception.getMessage());
         }
 
-        if (book == null || book.getBody().isEmpty()){
-            return ResponseEntityInitializer.NewResponseEntity(
-                    HttpStatus.BAD_REQUEST,
-                    false,
-                    "Did not find the book",
-                    HttpStatus.BAD_REQUEST,
-                    Optional.empty()
-            );
-        }
 
         // Check of user exists
         try {
             user = userClient.externalGetUserById(userId);
+            if (user == null || user.getBody().isEmpty()){
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.BAD_REQUEST,
+                        false,
+                        "did not find the user",
+                        HttpStatus.BAD_REQUEST,
+                        Optional.empty()
+                );
+            }
         } catch (Exception exception) {
             log.error(exception.getMessage());
         }
 
-        if (user == null || user.getBody().isEmpty()){
-            return ResponseEntityInitializer.NewResponseEntity(
-                    HttpStatus.BAD_REQUEST,
-                    false,
-                    "did not find the user",
-                    HttpStatus.BAD_REQUEST,
-                    Optional.empty()
-            );
-        }
 
         try {
             responseEntityComment = commentClient.updateComment(userId, bookId, commentId, updateComment);
@@ -208,36 +210,36 @@ public class CommentService {
         // Check if book exists
         try {
             book = bookClient.externalGetBookById(bookId);
+            if (book == null || book.getBody().isEmpty()){
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.BAD_REQUEST,
+                        false,
+                        "Did not find the book",
+                        HttpStatus.BAD_REQUEST,
+                        Optional.empty()
+                );
+            }
         } catch (Exception exception) {
             log.error(exception.getMessage());
         }
 
-        if (book == null || book.getBody().isEmpty()){
-            return ResponseEntityInitializer.NewResponseEntity(
-                    HttpStatus.BAD_REQUEST,
-                    false,
-                    "Did not find the book",
-                    HttpStatus.BAD_REQUEST,
-                    Optional.empty()
-            );
-        }
 
         // Check of user exists
         try {
             user = userClient.externalGetUserById(userId);
+            if (user == null || user.getBody().isEmpty()){
+                return ResponseEntityInitializer.NewResponseEntity(
+                        HttpStatus.BAD_REQUEST,
+                        false,
+                        "did not find the user",
+                        HttpStatus.BAD_REQUEST,
+                        Optional.empty()
+                );
+            }
         } catch (Exception exception) {
             log.error(exception.getMessage());
         }
 
-        if (user == null || user.getBody().isEmpty()){
-            return ResponseEntityInitializer.NewResponseEntity(
-                    HttpStatus.BAD_REQUEST,
-                    false,
-                    "did not find the user",
-                    HttpStatus.BAD_REQUEST,
-                    Optional.empty()
-            );
-        }
 
         try {
             responseEntityComment = commentClient.deleteComment(userId, bookId, commentId);

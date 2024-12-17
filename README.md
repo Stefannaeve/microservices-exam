@@ -81,7 +81,7 @@ When using compose up, you are expected to have a .env file, which will run the 
 from stefannaeve/microservices on dockerHub, which will be our latest rendition of our exam, or you may make up your own
 name in the .env file, to make the project run and build locally.
 
-.env file (inside docker folder)
+.env file, add your own password (inside docker folder)
 ```
 DOCKERHUB_USERNAME=stefannaeve
 IMAGE_TAG=latest
@@ -93,13 +93,14 @@ DATABASE_PASSWORD=
 - If you receive an error from the post_start hook, then you need to update docker compose to v2.30 or later
 
 ##### Building with docker compose from root folder
+(If this doesn't work, run them separately)
 ```shell
 cd docker &&
 docker compose --project-name book-hub up --scale book=1 --scale user=1 --scale comment=1 -d
 ```
-Docker compose up if you want the top amount of each service which is 2
+Docker compose up if you want the top amount of each service which is 2 (If this doesn't work, run them separately)
 ```shell
-cd docker &&
+cd docker && 
 docker compose --project-name book-hub up
 ```
 
