@@ -2,10 +2,10 @@
 package microservices.comment.service;
 
 import lombok.extern.slf4j.Slf4j;
-import microservices.comment.responseEntityInitializer.ResponseEntityInitializer;
 import microservices.comment.eventDriven.CommentEventPublisher;
 import microservices.comment.models.Comment;
 import microservices.comment.repository.CommentRepository;
+import microservices.comment.responseEntityInitializer.ResponseEntityInitializer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
